@@ -1,7 +1,43 @@
 {
-  "files": [],
-  "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
-  ]
+  "compilerOptions": {
+    /* Visit https://aka.ms/tsconfig to read more about this file */
+    "target": "es2016" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */, // "lib": [],                                        /* Specify a set of bundled library declaration files that describe the target runtime environment. */
+    "jsx": "preserve" /* Specify what JSX code is generated. */, // "experimentalDecorators": true,                   /* Enable experimental support for TC39 stage 2 draft decorators. */
+    "jsxImportSource": "react" /* Specify module specifier used to import the JSX factory functions when using 'jsx: react-jsx*'. */, // "reactNamespace": "",                             /* Specify the object invoked for 'createElement'. This only applies when targeting 'react' JSX emit. */
+    /* Modules */
+    "module": "commonjs" /* Specify what module code is generated. */,
+    "rootDir": "./" /* Specify the root folder within your source files. */, // "moduleResolution": "node",                       /* Specify how TypeScript looks up a file from a given module specifier. */
+    "baseUrl": "./" /* Specify the base directory to resolve non-relative module names. */, // "paths": {},                                      /* Specify a set of entries that re-map imports to additional lookup locations. */
+    "paths": {
+      "~/*": ["./src/*"],
+      "~components/*": ["./src/components/*"],
+      "~pages/*": ["./src/pages/*"],
+      "~utils/*": ["./src/utils/*"],
+      "~hooks/*": ["./src/hooks/*"],
+      "~context/*": ["./src/context/*"],
+      "~types/*": ["./src/types/*"],
+      "~constants/*": ["./src/constants/*"],
+      "~stores/*": ["./src/stores/*"],
+      "~helpers/*": ["./src/helpers/*"],
+      "~queries": ["./src/queries/*"]
+    },
+
+    "outDir": "build" /* Specify an output folder for all emitted files. */, // "removeComments": true,                           /* Disable emitting comments. */
+    "esModuleInterop": true /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables 'allowSyntheticDefaultImports' for type compatibility. */, // "preserveSymlinks": true,                         /* Disable resolving symlinks to their realpath. This correlates to the same flag in node. */
+    "forceConsistentCasingInFileNames": true /* Ensure that casing is correct in imports. */ /* Type Checking */,
+    "strict": true /* Enable all strict type-checking options. */,
+    "noImplicitAny": true /* Enable error reporting for expressions and declarations with an implied 'any' type. */, // "strictNullChecks": true,                         /* When type checking, take into account 'null' and 'undefined'. */
+
+    "skipLibCheck": true /* Skip type checking all .d.ts files. */,
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "noEmit": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "incremental": true,
+    "ignoreDeprecations": "5.0"
+  },
+  "exclude": ["node_modules", "build/**/*"],
+  "include": ["**/*.ts", "src/**/*", ".eslintrc.js"],
+  "ignorePatterns": ["shell/*"]
 }
