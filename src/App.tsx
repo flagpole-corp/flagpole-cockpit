@@ -1,5 +1,5 @@
-function App() {
-  return <>init dashboard</>;
+const App = (): JSX.Element => {
+  return <>init dashboard</>
 }
 
-export default App;
+export default App
