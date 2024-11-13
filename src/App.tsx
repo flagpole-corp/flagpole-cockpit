@@ -1,5 +1,11 @@
+import { AppRouter } from './routes'
+
 const App = (): JSX.Element => {
-  return <>init dashboard</>
+  return (
+    <>
+      <AppRouter />
+    </>
+  )
 }
 
 export default App

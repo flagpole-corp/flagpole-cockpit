@@ -19,7 +19,8 @@
       "~constants/*": ["./src/constants/*"],
       "~stores/*": ["./src/stores/*"],
       "~helpers/*": ["./src/helpers/*"],
-      "~queries": ["./src/queries/*"]
+      "~queries": ["./src/queries/*"],
+      "~factories": ["./src/factories/*"]
     },
 
     "outDir": "build" /* Specify an output folder for all emitted files. */, // "removeComments": true,                           /* Disable emitting comments. */

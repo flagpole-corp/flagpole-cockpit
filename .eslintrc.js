@@ -36,7 +36,6 @@ module.exports = {
     quotes: ['error', 'single'],
     'react/jsx-uses-react': 'off',
     'react/react-in-jsx-scope': 'off',
-    indent: ['error', 2],
     'max-len': ['error', { code: 120, ignoreUrls: true, ignoreComments: true }],
     'eol-last': ['error', 'always'],
     'object-curly-spacing': ['error', 'always'],

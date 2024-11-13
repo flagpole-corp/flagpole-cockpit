@@ -1,64 +1,58 @@
-import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
+import Content from './Content'
+import SignInCard from './SignInCard'
 
-import AutoFixHighRoundedIcon from '@mui/icons-material/AutoFixHighRounded'
-import ConstructionRoundedIcon from '@mui/icons-material/ConstructionRounded'
-import SettingsSuggestRoundedIcon from '@mui/icons-material/SettingsSuggestRounded'
-import ThumbUpAltRoundedIcon from '@mui/icons-material/ThumbUpAltRounded'
-
-import { SitemarkIcon } from './CustomIcons'
-
-const items = [
-  {
-    icon: <SettingsSuggestRoundedIcon sx={{ color: 'text.secondary' }} />,
-    title: 'Adaptable performance',
-    description: 'Our product effortlessly adjusts to your needs, boosting efficiency and simplifying your tasks.',
-  },
-  {
-    icon: <ConstructionRoundedIcon sx={{ color: 'text.secondary' }} />,
-    title: 'Built to last',
-    description: 'Experience unmatched durability that goes above and beyond with lasting investment.',
-  },
-  {
-    icon: <ThumbUpAltRoundedIcon sx={{ color: 'text.secondary' }} />,
-    title: 'Great user experience',
-    description: 'Integrate our product into your routine with an intuitive and easy-to-use interface.',
-  },
-  {
-    icon: <AutoFixHighRoundedIcon sx={{ color: 'text.secondary' }} />,
-    title: 'Innovative functionality',
-    description:
-      'Stay ahead with features that set new standards, addressing your evolving needs better than the rest.',
-  },
-]
-
-export const Signin = (): JSX.Element => {
+export const SignIn = (): JSX.Element => {
   return (
     <Stack
-      sx={{
-        flexDirection: 'column',
-        alignSelf: 'center',
-        gap: 4,
-        maxWidth: 450,
-      }}
+      direction="column"
+      component="main"
+      sx={[
+        {
+          justifyContent: 'center',
+          height: 'calc((1 - var(--template-frame-height, 0)) * 100%)',
+          marginTop: 'max(40px - var(--template-frame-height, 0px), 0px)',
+          minHeight: '100%',
+        },
+        // eslint-disable-next-line
+        (theme) => ({
+          '&::before': {
+            content: '""',
+            display: 'block',
+            position: 'absolute',
+            zIndex: -1,
+            inset: 0,
+            backgroundImage: 'radial-gradient(ellipse at 50% 50%, hsl(210, 100%, 97%), hsl(0, 0%, 100%))',
+            backgroundRepeat: 'no-repeat',
+            ...theme.applyStyles('dark', {
+              backgroundImage: 'radial-gradient(at 50% 50%, hsla(210, 100%, 16%, 0.5), hsl(220, 30%, 5%))',
+            }),
+          },
+        }),
+      ]}
     >
-      <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-        <SitemarkIcon />
-      </Box>
-      {items.map((item, index) => (
-        <Stack key={index} direction="row" sx={{ gap: 2 }}>
-          {item.icon}
-          <div>
-            <Typography gutterBottom sx={{ fontWeight: 'medium' }}>
-              {item.title}
-            </Typography>
-            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              {item.description}
-            </Typography>
-          </div>
+      <Stack
+        direction={{ xs: 'column-reverse', md: 'row' }}
+        sx={{
+          justifyContent: 'center',
+          gap: { xs: 6, sm: 12 },
+          p: 2,
+          mx: 'auto',
+        }}
+      >
+        <Stack
+          direction={{ xs: 'column-reverse', md: 'row' }}
+          sx={{
+            justifyContent: 'center',
+            gap: { xs: 6, sm: 12 },
+            p: { xs: 2, sm: 4 },
+            m: 'auto',
+          }}
+        >
+          <Content />
+          <SignInCard />
         </Stack>
-      ))}
+      </Stack>
     </Stack>
   )
 }
