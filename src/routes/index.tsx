@@ -1,7 +1,8 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import { ProtectedRoute } from '../components/routing/ProtectedRoute'
+import { ProtectedRoute } from '../components/ProtectedRoute'
 import { SignIn } from '../pages/SignIn'
 import { createRoute } from '../factories/createRoute'
+import { Dashboard } from '~/pages/Dashboard'
 
 export const APP_ROUTES = {
   HOME: createRoute({ path: '/' }),
@@ -16,6 +17,14 @@ export const router = createBrowserRouter([
     element: (
       <ProtectedRoute guestOnly>
         <SignIn />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: APP_ROUTES.DASHBOARD.path,
+    element: (
+      <ProtectedRoute guestOnly>
+        <Dashboard />
       </ProtectedRoute>
     ),
   },

@@ -1,15 +1,18 @@
-import * as React from 'react';
-import { Theme, alpha, Components } from '@mui/material/styles';
-import { SvgIconProps } from '@mui/material/SvgIcon';
-import { buttonBaseClasses } from '@mui/material/ButtonBase';
-import { dividerClasses } from '@mui/material/Divider';
-import { menuItemClasses } from '@mui/material/MenuItem';
-import { selectClasses } from '@mui/material/Select';
-import { tabClasses } from '@mui/material/Tab';
-import UnfoldMoreRoundedIcon from '@mui/icons-material/UnfoldMoreRounded';
-import { gray, brand } from '../themePrimitives';
+import { Theme, alpha, Components } from '@mui/material/styles'
+import { SvgIconProps } from '@mui/material/SvgIcon'
+import { buttonBaseClasses } from '@mui/material/ButtonBase'
+import { dividerClasses } from '@mui/material/Divider'
+import { menuItemClasses } from '@mui/material/MenuItem'
+import { selectClasses } from '@mui/material/Select'
+import { tabClasses } from '@mui/material/Tab'
+import UnfoldMoreRoundedIcon from '@mui/icons-material/UnfoldMoreRounded'
+import { gray, brand } from '../themePrimitives'
+import { forwardRef } from 'react'
 
-/* eslint-disable import/prefer-default-export */
+const SelectIcon = forwardRef<SVGSVGElement, SvgIconProps>(function SelectIcon(props, ref) {
+  return <UnfoldMoreRoundedIcon fontSize="small" {...props} ref={ref} />
+})
+
 export const navigationCustomizations: Components<Theme> = {
   MuiMenuItem: {
     styleOverrides: {
@@ -41,8 +44,7 @@ export const navigationCustomizations: Components<Theme> = {
         border: `1px solid ${(theme.vars || theme).palette.divider}`,
         backgroundImage: 'none',
         background: 'hsl(0, 0%, 100%)',
-        boxShadow:
-          'hsla(220, 30%, 5%, 0.07) 0px 4px 16px 0px, hsla(220, 25%, 10%, 0.07) 0px 8px 16px -5px',
+        boxShadow: 'hsla(220, 30%, 5%, 0.07) 0px 4px 16px 0px, hsla(220, 25%, 10%, 0.07) 0px 8px 16px -5px',
         [`& .${buttonBaseClasses.root}`]: {
           '&.Mui-selected': {
             backgroundColor: alpha(theme.palette.action.selected, 0.3),
@@ -50,17 +52,14 @@ export const navigationCustomizations: Components<Theme> = {
         },
         ...theme.applyStyles('dark', {
           background: gray[900],
-          boxShadow:
-            'hsla(220, 30%, 5%, 0.7) 0px 4px 16px 0px, hsla(220, 25%, 10%, 0.8) 0px 8px 16px -5px',
+          boxShadow: 'hsla(220, 30%, 5%, 0.7) 0px 4px 16px 0px, hsla(220, 25%, 10%, 0.8) 0px 8px 16px -5px',
         }),
       }),
     },
   },
   MuiSelect: {
     defaultProps: {
-      IconComponent: React.forwardRef<SVGSVGElement, SvgIconProps>((props, ref) => (
-        <UnfoldMoreRoundedIcon fontSize="small" {...props} ref={ref} />
-      )),
+      IconComponent: SelectIcon,
     },
     styleOverrides: {
       root: ({ theme }) => ({
@@ -68,7 +67,7 @@ export const navigationCustomizations: Components<Theme> = {
         border: '1px solid',
         borderColor: gray[200],
         backgroundColor: (theme.vars || theme).palette.background.paper,
-        boxShadow: `inset 0 1px 0 1px hsla(220, 0%, 100%, 0.6), inset 0 -1px 0 1px hsla(220, 35%, 90%, 0.5)`,
+        boxShadow: 'inset 0 1px 0 1px hsla(220, 0%, 100%, 0.6), inset 0 -1px 0 1px hsla(220, 35%, 90%, 0.5)',
         '&:hover': {
           borderColor: gray[300],
           backgroundColor: (theme.vars || theme).palette.background.paper,
@@ -276,4 +275,4 @@ export const navigationCustomizations: Components<Theme> = {
       }),
     },
   },
-};
+}

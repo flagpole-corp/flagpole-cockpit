@@ -14,7 +14,7 @@ interface AppThemeProps {
   themeComponents?: ThemeOptions['components']
 }
 
-export default function AppTheme({ children, themeComponents }: AppThemeProps): JSX.Element {
+export const AppTheme = ({ children, themeComponents }: AppThemeProps): JSX.Element => {
   const theme = useMemo(() => {
     return createTheme({
       cssVariables: {
