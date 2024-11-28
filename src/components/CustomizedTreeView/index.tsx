@@ -91,14 +91,13 @@ function TransitionComponent(props: TransitionProps): JSX.Element {
 interface CustomLabelProps {
   children: ReactNode
   color?: Color
-  expandable?: boolean
 }
 
-function CustomLabel({ color, expandable, children, ...other }: CustomLabelProps): JSX.Element {
+function CustomLabel({ color, children, ...other }: CustomLabelProps): JSX.Element {
   const theme = useTheme()
   const colors = {
-    blue: (theme.vars || theme).palette.primary.main,
-    green: (theme.vars || theme).palette.success.main,
+    blue: theme.palette.primary.main,
+    green: theme.palette.success.main,
   }
 
   const iconColor = color ? colors[color] : null

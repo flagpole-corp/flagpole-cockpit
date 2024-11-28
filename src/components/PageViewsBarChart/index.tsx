@@ -8,11 +8,7 @@ import { useTheme } from '@mui/material/styles'
 
 export const PageViewsBarChart = (): JSX.Element => {
   const theme = useTheme()
-  const colorPalette = [
-    (theme.vars || theme).palette.primary.dark,
-    (theme.vars || theme).palette.primary.main,
-    (theme.vars || theme).palette.primary.light,
-  ]
+  const colorPalette = [theme.palette.primary.dark, theme.palette.primary.main, theme.palette.primary.light]
   return (
     <Card variant="outlined" sx={{ width: '100%' }}>
       <CardContent>
