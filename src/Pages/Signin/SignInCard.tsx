@@ -1,3 +1,7 @@
+import { useState } from 'react'
+import { useNavigate, useLocation } from 'react-router-dom'
+import { useForm, Controller } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
 import {
   Box,
   Button,
@@ -11,12 +15,11 @@ import {
   TextField,
   Typography,
 } from '@mui/material'
-
 import { styled } from '@mui/material/styles'
-
-import { ForgotPasswordInput } from '~/components'
 import { GoogleIcon, FacebookIcon } from './CustomIcons'
-import { FormEvent, useState } from 'react'
+import { ForgotPasswordInput } from '~/components'
+import { useAuth } from '~/contexts/AuthContext'
+import { loginSchema, type LoginFormData } from '~/lib/schemas/auth.schema'
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -35,11 +38,34 @@ const Card = styled(MuiCard)(({ theme }) => ({
 }))
 
 const SignInCard = (): JSX.Element => {
-  const [emailError, setEmailError] = useState(false)
-  const [emailErrorMessage, setEmailErrorMessage] = useState('')
-  const [passwordError, setPasswordError] = useState(false)
-  const [passwordErrorMessage, setPasswordErrorMessage] = useState('')
+  const navigate = useNavigate()
+  const location = useLocation()
+  const { login, loginWithGoogle, error: authError, isLoading } = useAuth()
   const [open, setOpen] = useState(false)
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+      remember: false,
+    },
+  })
+
+  const onSubmit = async (data: LoginFormData): Promise<void> => {
+    try {
+      await login(data.email, data.password)
+      // eslint-disable-next-line
+      const from = (location.state as any)?.from?.pathname || '/dashboard'
+      navigate(from, { replace: true })
+    } catch (err) {
+      console.error('Login failed:', err)
+    }
+  }
 
   const handleClickOpen = (): void => {
     setOpen(true)
@@ -49,124 +75,114 @@ const SignInCard = (): JSX.Element => {
     setOpen(false)
   }
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>): void => {
-    if (emailError || passwordError) {
-      event.preventDefault()
-      return
-    }
-    const data = new FormData(event.currentTarget)
-    // eslint-disable-next-line
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    })
-  }
-
-  const validateInputs = (): boolean => {
-    const email = document.getElementById('email') as HTMLInputElement
-    const password = document.getElementById('password') as HTMLInputElement
-
-    let isValid = true
-
-    if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
-      setEmailError(true)
-      setEmailErrorMessage('Please enter a valid email address.')
-      isValid = false
-    } else {
-      setEmailError(false)
-      setEmailErrorMessage('')
-    }
-
-    if (!password.value || password.value.length < 6) {
-      setPasswordError(true)
-      setPasswordErrorMessage('Password must be at least 6 characters long.')
-      isValid = false
-    } else {
-      setPasswordError(false)
-      setPasswordErrorMessage('')
-    }
-
-    return isValid
-  }
-
   return (
     <Card variant="outlined">
       <Typography component="h1" variant="h4" sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}>
         Sign in
       </Typography>
+
+      {authError && (
+        <Typography color="error" sx={{ textAlign: 'center' }}>
+          {authError instanceof Error ? authError.message : 'An error occurred'}
+        </Typography>
+      )}
+
       <Box
         component="form"
-        onSubmit={handleSubmit}
+        onSubmit={handleSubmit(onSubmit)}
         noValidate
         sx={{ display: 'flex', flexDirection: 'column', width: '100%', gap: 2 }}
       >
-        <FormControl>
-          <FormLabel htmlFor="email">Email</FormLabel>
-          <TextField
-            error={emailError}
-            helperText={emailErrorMessage}
-            id="email"
-            type="email"
-            name="email"
-            placeholder="your@email.com"
-            autoComplete="email"
-            autoFocus
-            required
-            fullWidth
-            variant="outlined"
-            color={emailError ? 'error' : 'primary'}
-            sx={{ ariaLabel: 'email' }}
-          />
-        </FormControl>
-        <FormControl>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-            <FormLabel htmlFor="password">Password</FormLabel>
-            <Link
-              component="button"
-              type="button"
-              onClick={handleClickOpen}
-              variant="body2"
-              sx={{ alignSelf: 'baseline' }}
-            >
-              Forgot your password?
-            </Link>
-          </Box>
-          <TextField
-            error={passwordError}
-            helperText={passwordErrorMessage}
-            name="password"
-            placeholder="••••••"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-            autoFocus
-            required
-            fullWidth
-            variant="outlined"
-            color={passwordError ? 'error' : 'primary'}
-          />
-        </FormControl>
-        <FormControlLabel control={<Checkbox value="remember" color="primary" />} label="Remember me" />
+        <Controller
+          name="email"
+          control={control}
+          render={({ field }): JSX.Element => (
+            <FormControl error={!!errors.email}>
+              <FormLabel htmlFor="email">Email</FormLabel>
+              <TextField
+                {...field}
+                id="email"
+                type="email"
+                placeholder="your@email.com"
+                autoComplete="email"
+                autoFocus
+                required
+                fullWidth
+                variant="outlined"
+                error={!!errors.email}
+                helperText={errors.email?.message}
+              />
+            </FormControl>
+          )}
+        />
+
+        <Controller
+          name="password"
+          control={control}
+          render={({ field }): JSX.Element => (
+            <FormControl error={!!errors.password}>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                <FormLabel htmlFor="password">Password</FormLabel>
+                <Link
+                  component="button"
+                  type="button"
+                  onClick={handleClickOpen}
+                  variant="body2"
+                  sx={{ alignSelf: 'baseline' }}
+                >
+                  Forgot your password?
+                </Link>
+              </Box>
+              <TextField
+                {...field}
+                id="password"
+                type="password"
+                placeholder="••••••"
+                autoComplete="current-password"
+                required
+                fullWidth
+                variant="outlined"
+                error={!!errors.password}
+                helperText={errors.password?.message}
+              />
+            </FormControl>
+          )}
+        />
+
+        <Controller
+          name="remember"
+          control={control}
+          render={({ field: { onChange, value, ...field } }): JSX.Element => (
+            <FormControlLabel
+              control={<Checkbox checked={value} onChange={onChange} {...field} />}
+              label="Remember me"
+            />
+          )}
+        />
+
         <ForgotPasswordInput open={open} handleClose={handleClose} />
-        <Button type="submit" fullWidth variant="contained" onClick={validateInputs}>
-          Sign in
+
+        <Button type="submit" fullWidth variant="contained" disabled={isLoading}>
+          {isLoading ? 'Signing in...' : 'Sign in'}
         </Button>
+
         <Typography sx={{ textAlign: 'center' }}>
           Don&apos;t have an account?{' '}
-          <span>
-            <Link href="/material-ui/getting-started/templates/sign-in/" variant="body2" sx={{ alignSelf: 'center' }}>
-              Sign up
-            </Link>
-          </span>
+          <Link href="/signup" variant="body2" sx={{ alignSelf: 'center' }}>
+            Sign up
+          </Link>
         </Typography>
       </Box>
+
       <Divider>or</Divider>
+
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
         <Button
           fullWidth
           variant="outlined"
-          onClick={(): void => alert('Sign in with Google')}
+          onClick={(): Promise<void> => loginWithGoogle()}
           startIcon={<GoogleIcon />}
+          disabled={isLoading}
         >
           Sign in with Google
         </Button>
@@ -175,6 +191,7 @@ const SignInCard = (): JSX.Element => {
           variant="outlined"
           onClick={(): void => alert('Sign in with Facebook')}
           startIcon={<FacebookIcon />}
+          disabled={isLoading}
         >
           Sign in with Facebook
         </Button>

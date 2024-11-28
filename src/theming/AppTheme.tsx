@@ -6,7 +6,8 @@ import { feedbackCustomizations } from './customizations/feedback'
 import { navigationCustomizations } from './customizations/navigation'
 import { surfacesCustomizations } from './customizations/surfaces'
 import { colorSchemes, typography, shadows, shape } from './themePrimitives'
-import { ReactNode, useMemo } from 'react'
+import type { ReactNode } from 'react'
+import { useMemo } from 'react'
 
 interface AppThemeProps {
   children: ReactNode

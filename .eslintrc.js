@@ -42,6 +42,7 @@ module.exports = {
     'react/no-unescaped-entities': 0,
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/no-explicit-any': 'error',
+    '@typescript-eslint/consistent-type-imports': ['error', { prefer: 'type-imports' }],
     '@tanstack/query/exhaustive-deps': 'error',
     '@tanstack/query/no-rest-destructuring': 'warn',
     '@tanstack/query/stable-query-client': 'error',

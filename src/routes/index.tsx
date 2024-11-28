@@ -23,7 +23,7 @@ export const router = createBrowserRouter([
   {
     path: APP_ROUTES.DASHBOARD.path,
     element: (
-      <ProtectedRoute guestOnly>
+      <ProtectedRoute>
         <Dashboard />
       </ProtectedRoute>
     ),

@@ -1,4 +1,4 @@
-import { APP_ROUTES } from '../routes/index'
+import type { APP_ROUTES } from '../routes'
 
 export type AppRoute = {
   path: string

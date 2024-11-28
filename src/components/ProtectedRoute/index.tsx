@@ -1,7 +1,7 @@
 // src/components/routing/ProtectedRoute.tsx
-import { ReactNode, useEffect, useState } from 'react'
+import { ReactNode } from 'react'
 import { Navigate, useLocation } from 'react-router-dom'
-// import { useAuth } from '../../context/auth/AuthContext'
+import { useAuth } from '~/contexts/AuthContext'
 import { APP_ROUTES } from '~/routes'
 
 interface ProtectedRouteProps {
@@ -9,18 +9,9 @@ interface ProtectedRouteProps {
   guestOnly?: boolean
 }
 
-let isAuthenticated = false
-
-export const ProtectedRoute = ({ children, guestOnly }: ProtectedRouteProps): JSX.Element => {
-  const [isLoading, setIsLoading] = useState(true) // this is temp while we dont have the api ready to use
-  // const { isAuthenticated, isLoading } = useAuth()
+export const ProtectedRoute = ({ children, guestOnly = false }: ProtectedRouteProps): JSX.Element => {
+  const { isAuthenticated, isLoading } = useAuth()
   const location = useLocation()
-
-  useEffect(() => {
-    setTimeout(() => {
-      setIsLoading(!isLoading)
-    }, 1500)
-  }, [])
 
   if (isLoading) {
     return <div>Loading...</div>
