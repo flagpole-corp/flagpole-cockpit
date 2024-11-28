@@ -1,11 +1,13 @@
 import DarkModeIcon from '@mui/icons-material/DarkModeRounded'
 import LightModeIcon from '@mui/icons-material/LightModeRounded'
 import Box from '@mui/material/Box'
-import IconButton, { IconButtonOwnProps } from '@mui/material/IconButton'
+import type { IconButtonOwnProps } from '@mui/material/IconButton'
+import IconButton from '@mui/material/IconButton'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import { useColorScheme } from '@mui/material/styles'
-import { useState, MouseEvent, Fragment } from 'react'
+import type { MouseEvent } from 'react'
+import { useState, Fragment } from 'react'
 
 export default function ColorModeIconDropdown(props: IconButtonOwnProps): JSX.Element {
   const { mode, systemMode, setMode } = useColorScheme()

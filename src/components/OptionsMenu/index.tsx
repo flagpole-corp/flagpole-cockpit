@@ -9,7 +9,8 @@ import ListItemIcon, { listItemIconClasses } from '@mui/material/ListItemIcon'
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded'
 import MoreVertRoundedIcon from '@mui/icons-material/MoreVertRounded'
 import { MenuButton } from '../MenuButton'
-import { useState, MouseEvent, Fragment } from 'react'
+import type { MouseEvent } from 'react'
+import { useState, Fragment } from 'react'
 
 const MenuItem = styled(MuiMenuItem)({
   margin: '2px 0',
