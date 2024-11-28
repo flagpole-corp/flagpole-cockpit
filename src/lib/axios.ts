@@ -1,11 +1,11 @@
 import axios from 'axios'
 
 const api = axios.create({
-  // @ts-expect-error
   baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3000',
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true,
 })
 
 // Add token to requests if it exists
