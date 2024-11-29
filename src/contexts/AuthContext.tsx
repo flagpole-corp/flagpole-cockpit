@@ -16,6 +16,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | null>(null)
 
 export const AuthProvider = ({ children }: { children: ReactNode }): JSX.Element => {
+  const token = localStorage.getItem('token')
   const { data: user, isLoading, error } = useUser()
   const loginMutation = useLogin()
   const logoutMutation = useLogout()
@@ -33,12 +34,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }): JSX.Element
     await logoutMutation.mutateAsync(undefined)
   }
 
+  const isActuallyLoading = token ? isLoading : false
+
   return (
     <AuthContext.Provider
       value={{
         user: user ?? null,
         isAuthenticated: !!user,
-        isLoading: isLoading || loginMutation.isPending,
+        isLoading: isActuallyLoading || loginMutation.isPending,
         login,
         loginWithGoogle,
         logout,

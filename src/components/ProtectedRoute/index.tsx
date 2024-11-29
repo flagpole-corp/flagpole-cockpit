@@ -11,8 +11,9 @@ interface ProtectedRouteProps {
 export const ProtectedRoute = ({ children, guestOnly = false }: ProtectedRouteProps): JSX.Element => {
   const { isAuthenticated, isLoading } = useAuth()
   const location = useLocation()
+  const token = localStorage.getItem('token')
 
-  if (isLoading) {
+  if (token && isLoading) {
     return <div>Loading...</div>
   }
 

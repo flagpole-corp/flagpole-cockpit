@@ -30,6 +30,8 @@ export const authKeys = {
 }
 
 export const useUser = (): UseQueryResult<User, Error> => {
+  const token = localStorage.getItem('token')
+
   return useQuery({
     queryKey: authKeys.user,
     queryFn: async (): Promise<User> => {
@@ -39,6 +41,7 @@ export const useUser = (): UseQueryResult<User, Error> => {
     retry: false,
     staleTime: 5 * 60 * 1000,
     gcTime: 10 * 60 * 1000,
+    enabled: !!token,
   })
 }
 
