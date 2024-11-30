@@ -6,30 +6,40 @@ import { MenuButton } from '../MenuButton'
 import ColorModeIconDropdown from '../../theming/ColorModeIconDropdown'
 
 import { Search } from '../Search'
+import { Typography } from '@mui/material'
 
-export const Header = (): JSX.Element => {
+type HeaderProps = {
+  title?: string
+}
+
+export const Header = ({ title = 'Testing' }: HeaderProps): JSX.Element => {
   return (
-    <Stack
-      direction="row"
-      sx={{
-        display: { xs: 'none', md: 'flex' },
-        width: '100%',
-        alignItems: { xs: 'flex-start', md: 'center' },
-        justifyContent: 'space-between',
-        maxWidth: { sm: '100%', md: '1700px' },
-        pt: 1.5,
-      }}
-      spacing={2}
-    >
-      <NavbarBreadcrumbs />
-      <Stack direction="row" sx={{ gap: 1 }}>
-        <Search />
-        <CustomDatePicker />
-        <MenuButton showBadge aria-label="Open notifications">
-          <NotificationsRoundedIcon />
-        </MenuButton>
-        <ColorModeIconDropdown />
+    <>
+      <Stack
+        direction="row"
+        sx={{
+          display: { xs: 'none', md: 'flex' },
+          width: '100%',
+          alignItems: { xs: 'flex-start', md: 'center' },
+          justifyContent: 'space-between',
+          maxWidth: { sm: '100%', md: '1700px' },
+          pt: 1.5,
+        }}
+        spacing={2}
+      >
+        <NavbarBreadcrumbs />
+        <Stack direction="row" sx={{ gap: 1 }}>
+          <Search />
+          <CustomDatePicker />
+          <MenuButton showBadge aria-label="Open notifications">
+            <NotificationsRoundedIcon />
+          </MenuButton>
+          <ColorModeIconDropdown />
+        </Stack>
       </Stack>
-    </Stack>
+      <Typography component="h2" variant="h6" sx={{ mb: 2, '&&&': { mr: 'auto' } }}>
+        {title}
+      </Typography>
+    </>
   )
 }

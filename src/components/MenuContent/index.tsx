@@ -5,7 +5,7 @@ import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 import Stack from '@mui/material/Stack'
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded'
-import AnalyticsRoundedIcon from '@mui/icons-material/AnalyticsRounded'
+import ToggleOnOutlinedIcon from '@mui/icons-material/ToggleOnOutlined'
 import PeopleRoundedIcon from '@mui/icons-material/PeopleRounded'
 import AssignmentRoundedIcon from '@mui/icons-material/AssignmentRounded'
 import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded'
@@ -14,7 +14,7 @@ import HelpRoundedIcon from '@mui/icons-material/HelpRounded'
 
 const mainListItems = [
   { text: 'Home', icon: <HomeRoundedIcon /> },
-  { text: 'Analytics', icon: <AnalyticsRoundedIcon /> },
+  { text: 'Flags', icon: <ToggleOnOutlinedIcon /> },
   { text: 'Clients', icon: <PeopleRoundedIcon /> },
   { text: 'Tasks', icon: <AssignmentRoundedIcon /> },
 ]
