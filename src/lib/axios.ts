@@ -11,9 +11,16 @@ const api = axios.create({
 // Add token to requests if it exists
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token')
+  const user = JSON.parse(localStorage.getItem('user') || 'null')
+
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
   }
+
+  if (user?.currentOrganization) {
+    config.headers['x-organization-id'] = user.currentOrganization
+  }
+
   return config
 })
 

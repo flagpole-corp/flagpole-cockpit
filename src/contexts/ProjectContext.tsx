@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import { createContext, useContext } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import api from '~/lib/axios'
+import { useAuth } from './AuthContext'
 
 interface Project {
   id: string
@@ -12,7 +13,6 @@ interface Project {
 
 interface ProjectContextType {
   currentProject: Project | null
-  setCurrentProject: (project: Project) => void
   isLoading: boolean
   error: Error | null
 }
@@ -26,24 +26,32 @@ export const projectKeys = {
 }
 
 export const ProjectProvider = ({ children }: { children: ReactNode }): JSX.Element => {
+  const { user } = useAuth()
+  const organizationId = user?.currentOrganization
+
   const { data: projects, isLoading } = useQuery({
-    queryKey: projectKeys.lists(),
+    queryKey: projectKeys.list(organizationId || ''), // Always provide a string
     queryFn: async () => {
-      const { data } = await api.get<Project[]>('/api/projects')
+      if (!organizationId) {
+        throw new Error('No organization selected')
+      }
+
+      const { data } = await api.get<Project[]>('/api/projects', {
+        headers: {
+          'x-organization-id': organizationId,
+        },
+      })
       return data
     },
+    enabled: !!organizationId, // Only run query when we have an organizationId
   })
 
-  // Use the first project as default or handle project selection
   const currentProject = projects?.[0] ?? null
 
   return (
     <ProjectContext.Provider
       value={{
         currentProject,
-        setCurrentProject: (): void => {
-          /* TODO: Implement project switching */
-        },
         isLoading,
         error: null,
       }}

@@ -12,17 +12,22 @@ export interface LoginCredentials {
   password: string
 }
 
-export interface AuthResponse {
-  access_token: string
-  user: User
-}
-
 export interface User {
   id: string
   email: string
   firstName?: string
   lastName?: string
-  currentOrganization?: string
+  currentOrganization: string
+  organizations: Array<{
+    organization: string
+    role: string
+    joinedAt: string
+  }>
+}
+
+export interface AuthResponse {
+  access_token: string
+  user: User
 }
 
 export const authKeys = {
@@ -34,13 +39,17 @@ export const useUser = (): UseQueryResult<User, Error> => {
 
   return useQuery({
     queryKey: authKeys.user,
-    queryFn: async (): Promise<User> => {
+    queryFn: async () => {
       const { data } = await api.get<User>('/api/auth/me')
+      // Store updated user data
+      localStorage.setItem('user', JSON.stringify(data))
       return data
     },
-    retry: false,
-    staleTime: 5 * 60 * 1000,
-    gcTime: 10 * 60 * 1000,
+    // Initialize with stored data
+    initialData: token ? JSON.parse(localStorage.getItem('user') || 'null') : null,
+    // retry: false,
+    // staleTime: 5 * 60 * 1000,
+    // gcTime: 10 * 60 * 1000,
     enabled: !!token,
   })
 }
@@ -49,12 +58,13 @@ export const useLogin = (): UseMutationResult<AuthResponse, Error, LoginCredenti
   const queryClient = useQueryClient()
 
   return useMutation<AuthResponse, Error, LoginCredentials>({
-    mutationFn: async (credentials): Promise<AuthResponse> => {
+    mutationFn: async (credentials) => {
       const { data } = await api.post<AuthResponse>('/api/auth/login', credentials)
       return data
     },
     onSuccess: (data) => {
       localStorage.setItem('token', data.access_token)
+      localStorage.setItem('user', JSON.stringify(data.user))
       api.defaults.headers.common['Authorization'] = `Bearer ${data.access_token}`
       queryClient.setQueryData(authKeys.user, data.user)
     },
@@ -64,15 +74,16 @@ export const useLogin = (): UseMutationResult<AuthResponse, Error, LoginCredenti
 export const useLogout = (): UseMutationResult<void, Error, void> => {
   const queryClient = useQueryClient()
 
-  return useMutation<void, Error, void>({
-    mutationFn: async (): Promise<void> => {
+  return useMutation({
+    mutationFn: async () => {
       await api.post('/api/auth/logout')
     },
     onSuccess: () => {
       localStorage.removeItem('token')
+      localStorage.removeItem('user')
       delete api.defaults.headers.common['Authorization']
       queryClient.setQueryData(authKeys.user, null)
-      queryClient.invalidateQueries()
+      queryClient.clear() // Clear all queries
     },
   })
 }
