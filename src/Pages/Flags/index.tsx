@@ -19,14 +19,8 @@ const TabPanel = (props: TabPanelProps): JSX.Element => {
   const { children, value, index, ...other } = props
 
   return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`project-tabpanel-${index}`}
-      aria-labelledby={`project-tab-${index}`}
-      {...other}
-    >
-      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+    <div role="tabpanel" hidden={value !== index} {...other}>
+      {value === index && <Box mt={2}>{children}</Box>}
     </div>
   )
 }
@@ -143,7 +137,7 @@ export const Flags = (): JSX.Element => {
   }
 
   return (
-    <Box width="100%" maxWidth="1200px">
+    <Box width="100%">
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
         <Typography variant="h5" component="h1">
           Feature Flags
@@ -184,6 +178,7 @@ export const Flags = (): JSX.Element => {
             <DataGrid
               rows={flags ?? []}
               columns={columns}
+              disableColumnMenu
               getRowId={(row): string => row._id}
               loading={flagsLoading}
               pageSizeOptions={[5, 10, 25]}
