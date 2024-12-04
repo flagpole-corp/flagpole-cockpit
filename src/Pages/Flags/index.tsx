@@ -1,22 +1,8 @@
 import type { ReactNode, SyntheticEvent } from 'react'
 import { useState } from 'react'
-import {
-  Box,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Switch,
-  Typography,
-  CircularProgress,
-  Chip,
-  Button,
-  Tabs,
-  Tab,
-} from '@mui/material'
+import { Box, Typography, CircularProgress, Button, Tabs, Tab, Chip, Switch } from '@mui/material'
+import type { GridColDef } from '@mui/x-data-grid'
+import { DataGrid } from '@mui/x-data-grid'
 import AddIcon from '@mui/icons-material/Add'
 import { useFeatureFlags, useToggleFeatureFlag } from '~/lib/queries/flags'
 import { useProjects } from '~/lib/queries/projects'
@@ -67,12 +53,74 @@ export const Flags = (): JSX.Element => {
       toast.success('Flag updated successfully')
     } catch (error) {
       toast.error('Failed to update flag')
-      // Handle error (show toast, etc.)
       console.error('Failed to toggle flag:', error)
     }
   }
 
-  const isLoading = projectsLoading || flagsLoading
+  const columns: GridColDef[] = [
+    {
+      field: 'name',
+      headerName: 'Name',
+      flex: 1,
+      minWidth: 150,
+    },
+    {
+      field: 'description',
+      headerName: 'Description',
+      flex: 2,
+      minWidth: 200,
+    },
+    {
+      field: 'isEnabled',
+      headerName: 'Status',
+      width: 120,
+      renderCell: (params) => (
+        <Switch
+          checked={params.value}
+          onChange={(): Promise<void> => handleToggleFlag(params.row._id)}
+          disabled={toggleMutation.isPending}
+        />
+      ),
+    },
+    {
+      field: 'environments',
+      headerName: 'Environments',
+      flex: 1,
+      minWidth: 200,
+      renderCell: (params) => (
+        <Box>
+          {params.value.map((env: string) => (
+            <Chip key={env} label={env} size="small" sx={{ mr: 0.5, mb: 0.5 }} />
+          ))}
+        </Box>
+      ),
+    },
+    {
+      field: 'updatedAt',
+      headerName: 'Last Updated',
+      flex: 1,
+      minWidth: 150,
+      renderCell: (row) => formatDistanceToNow(row.value, { addSuffix: true }),
+    },
+    {
+      field: 'actions',
+      headerName: 'Actions',
+      width: 100,
+      sortable: false,
+      renderCell: () => (
+        <Button
+          size="small"
+          onClick={(): void => {
+            /* TODO: Open edit modal */
+          }}
+        >
+          Edit
+        </Button>
+      ),
+    },
+  ]
+
+  const isLoading = projectsLoading
 
   if (isLoading) {
     return (
@@ -132,53 +180,18 @@ export const Flags = (): JSX.Element => {
 
       {projects.map((project, index) => (
         <TabPanel key={project._id} value={currentTabIndex} index={index}>
-          <TableContainer component={Paper}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Name</TableCell>
-                  <TableCell>Description</TableCell>
-                  <TableCell>Status</TableCell>
-                  <TableCell>Environments</TableCell>
-                  <TableCell>Last Updated</TableCell>
-                  <TableCell align="right">Actions</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {flags?.map((flag) => (
-                  <TableRow key={flag._id}>
-                    <TableCell component="th" scope="row">
-                      {flag.name}
-                    </TableCell>
-                    <TableCell>{flag.description}</TableCell>
-                    <TableCell>
-                      <Switch
-                        checked={flag.isEnabled}
-                        onChange={(): Promise<void> => handleToggleFlag(flag._id)}
-                        disabled={toggleMutation.isPending}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      {flag.environments.map((env) => (
-                        <Chip key={env} label={env} size="small" sx={{ mr: 0.5 }} />
-                      ))}
-                    </TableCell>
-                    <TableCell>{formatDistanceToNow(new Date(flag.updatedAt), { addSuffix: true })}</TableCell>
-                    <TableCell align="right">
-                      <Button
-                        size="small"
-                        onClick={(): void => {
-                          /* TODO: Open edit modal */
-                        }}
-                      >
-                        Edit
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+          <Box sx={{ height: 400, width: '100%' }}>
+            <DataGrid
+              rows={flags ?? []}
+              columns={columns}
+              getRowId={(row): string => row._id}
+              loading={flagsLoading}
+              pageSizeOptions={[5, 10, 25]}
+              initialState={{
+                pagination: { paginationModel: { pageSize: 10 } },
+              }}
+            />
+          </Box>
         </TabPanel>
       ))}
     </Box>
