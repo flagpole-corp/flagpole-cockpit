@@ -52,20 +52,24 @@ export const useFeatureFlags = (
 }
 
 export const useToggleFeatureFlag = (): UseMutationResult<
-  FeatureFlag, // Return type from the mutation
+  FeatureFlag,
   Error,
-  ToggleFlagVariables, // Variables type
-  ToggleFlagContext // Context type
+  ToggleFlagVariables,
+  ToggleFlagContext
 > => {
   const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: async ({ flagId, projectId }: ToggleFlagVariables) => {
-      const { data } = await api.patch<FeatureFlag>(`/api/feature-flags/${flagId}/toggle`, null, {
-        headers: {
-          'x-project-id': projectId,
-        },
-      })
+      const { data } = await api.patch<FeatureFlag>(
+        `/api/feature-flags/${flagId}/toggle`,
+        {},
+        {
+          headers: {
+            'x-project-id': projectId,
+          },
+        }
+      )
       return data
     },
     onMutate: async ({ flagId, projectId }) => {
