@@ -4,6 +4,7 @@ export type AppRoute = {
   path: string
   protected?: boolean
   guestOnly?: boolean
+  adminOnly?: boolean
 }
 
 export type AppRoutes = typeof APP_ROUTES

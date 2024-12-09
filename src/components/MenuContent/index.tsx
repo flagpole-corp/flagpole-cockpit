@@ -26,10 +26,11 @@ const mainListItems: ListItemsType[] = [
   { text: 'Tasks', icon: <AssignmentRoundedIcon />, url: '/' },
 ]
 
-const secondaryListItems = [
-  { text: 'Settings', icon: <SettingsRoundedIcon /> },
-  { text: 'About', icon: <InfoRoundedIcon /> },
-  { text: 'Feedback', icon: <HelpRoundedIcon /> },
+const secondaryListItems: ListItemsType[] = [
+  { text: 'Onboarding', icon: <SettingsRoundedIcon />, url: '/admin/onboarding' },
+  { text: 'Settings', icon: <SettingsRoundedIcon />, url: '/' },
+  { text: 'About', icon: <InfoRoundedIcon />, url: '/' },
+  { text: 'Feedback', icon: <HelpRoundedIcon />, url: '/' },
 ]
 
 export const MenuContent = (): JSX.Element => {
@@ -55,7 +56,7 @@ export const MenuContent = (): JSX.Element => {
 
       <List dense>
         {secondaryListItems.map((item, index) => (
-          <ListItem key={index} disablePadding sx={{ display: 'block' }}>
+          <ListItem key={index} disablePadding component={NavLink} to={item.url} sx={{ display: 'block' }}>
             <ListItemButton>
               <ListItemIcon>{item.icon}</ListItemIcon>
               <ListItemText primary={item.text} />

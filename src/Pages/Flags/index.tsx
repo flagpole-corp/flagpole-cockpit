@@ -1,6 +1,21 @@
 import type { ReactNode, SyntheticEvent } from 'react'
 import { useState } from 'react'
-import { Box, Typography, CircularProgress, Button, Tabs, Tab, Chip, Switch } from '@mui/material'
+import {
+  Box,
+  Typography,
+  CircularProgress,
+  Button,
+  Tabs,
+  Tab,
+  Chip,
+  Switch,
+  Tooltip,
+  IconButton,
+  Popover,
+  TextField,
+  Alert,
+  Stack,
+} from '@mui/material'
 import type { GridColDef } from '@mui/x-data-grid'
 import { DataGrid } from '@mui/x-data-grid'
 import AddIcon from '@mui/icons-material/Add'
@@ -8,6 +23,9 @@ import { useFeatureFlags, useToggleFeatureFlag } from '~/lib/queries/flags'
 import { useProjects } from '~/lib/queries/projects'
 import { formatDistanceToNow } from 'date-fns'
 import { toast } from 'react-toastify'
+import ContentCopyIcon from '@mui/icons-material/ContentCopy'
+import KeyIcon from '@mui/icons-material/Key'
+import { useApiKeys, useCreateApiKey } from '~/lib/queries/api-keys'
 
 interface TabPanelProps {
   children?: ReactNode
@@ -27,12 +45,17 @@ const TabPanel = (props: TabPanelProps): JSX.Element => {
 
 export const Flags = (): JSX.Element => {
   const [currentTabIndex, setCurrentTabIndex] = useState(0)
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
+  const [copiedKey, setCopiedKey] = useState(false)
   const { data: projects, isLoading: projectsLoading } = useProjects()
 
   const currentProject = projects?.[currentTabIndex]
   const { data: flags, isLoading: flagsLoading } = useFeatureFlags(currentProject?._id ?? '', {
     enabled: !!currentProject,
   })
+
+  const { data: apiKeys, isLoading: apiKeysLoading } = useApiKeys(currentProject?._id ?? '')
+  const createApiKey = useCreateApiKey()
 
   const toggleMutation = useToggleFeatureFlag()
 
@@ -49,6 +72,93 @@ export const Flags = (): JSX.Element => {
       toast.error('Failed to update flag')
       console.error('Failed to toggle flag:', error)
     }
+  }
+
+  const handleCreateApiKey = async (): Promise<void> => {
+    if (!currentProject) return
+    try {
+      await createApiKey.mutateAsync({
+        name: `API Key for ${currentProject.name}`,
+        projectId: currentProject._id,
+      })
+      toast.success('API key created successfully')
+      // eslint-disable-next-line
+    } catch (error) {
+      toast.error('Failed to create API key')
+    }
+  }
+
+  const handleCopyKey = (key: string): void => {
+    navigator.clipboard.writeText(key)
+    setCopiedKey(true)
+    setTimeout(() => setCopiedKey(false), 2000)
+  }
+
+  const renderApiKeySection = (): ReactNode => {
+    if (apiKeysLoading) return null
+
+    if (!apiKeys?.length) {
+      return (
+        <Alert
+          action={
+            <Button
+              color="inherit"
+              size="small"
+              startIcon={<KeyIcon />}
+              onClick={handleCreateApiKey}
+              disabled={createApiKey.isPending}
+            >
+              Generate API Key
+            </Button>
+          }
+        >
+          No API key found for this project
+        </Alert>
+      )
+    }
+
+    return (
+      <Box mb={2}>
+        <Button
+          onClick={(event): void => setAnchorEl(event.currentTarget)}
+          startIcon={<KeyIcon />}
+          variant="outlined"
+          size="small"
+        >
+          Show API Key
+        </Button>
+        <Popover
+          open={Boolean(anchorEl)}
+          anchorEl={anchorEl}
+          onClose={(): void => setAnchorEl(null)}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left',
+          }}
+        >
+          <Box p={2} maxWidth={400}>
+            <Typography variant="subtitle2" gutterBottom>
+              API Key
+            </Typography>
+            <Box display="flex" alignItems="center" gap={1}>
+              <TextField
+                size="small"
+                value={apiKeys[0].key}
+                InputProps={{
+                  readOnly: true,
+                }}
+                fullWidth
+              />
+              <Tooltip title={copiedKey ? 'Copied!' : 'Copy to clipboard'}>
+                <IconButton onClick={(): void => handleCopyKey(apiKeys[0].key)} size="small">
+                  <ContentCopyIcon fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            </Box>
+          </Box>
+        </Popover>
+      </Box>
+    )
   }
 
   const columns: GridColDef[] = [
@@ -174,7 +284,8 @@ export const Flags = (): JSX.Element => {
 
       {projects.map((project, index) => (
         <TabPanel key={project._id} value={currentTabIndex} index={index}>
-          <Box sx={{ height: 400, width: '100%' }}>
+          <Stack spacing={2} sx={{ width: '100%' }}>
+            {renderApiKeySection()}
             <DataGrid
               rows={flags ?? []}
               columns={columns}
@@ -186,7 +297,7 @@ export const Flags = (): JSX.Element => {
                 pagination: { paginationModel: { pageSize: 10 } },
               }}
             />
-          </Box>
+          </Stack>
         </TabPanel>
       ))}
     </Box>

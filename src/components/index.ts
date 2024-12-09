@@ -1,4 +1,5 @@
 export * from './ForgotPasswordInput'
+export * from './AdminRoute'
 export * from './AppNavBar'
 export * from './CardAlert'
 export * from './ChartUserByCountry'
