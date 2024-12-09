@@ -1,15 +1,22 @@
 import type { Query, QueryKey } from '@tanstack/react-query'
 import { QueryClient, QueryCache } from '@tanstack/react-query'
-import { toast } from 'react-toastify'
 import { createApiError } from './errors/apiError'
 import { isAuthError, isNetworkError, getErrorMessage } from './errors/utils'
 import { authKeys } from './queries/auth'
 
-const ERROR_HANDLERS: Record<string, (message: string) => void> = {
-  [authKeys.user[0]]: (message) => toast.error(message),
+let showSnackbarRef: ((message: string, severity: 'error' | 'success' | 'info' | 'warning') => void) | null = null
+
+export const setSnackbarRef = (ref: typeof showSnackbarRef): void => {
+  showSnackbarRef = ref
 }
 
-const handleDefaultError = (message: string): string | number => toast.error(message)
+const ERROR_HANDLERS: Record<string, (message: string) => void> = {
+  [authKeys.user[0]]: (message) => showSnackbarRef?.(message, 'error'),
+}
+
+const handleDefaultError = (message: string): void => {
+  showSnackbarRef?.(message, 'error')
+}
 
 const queryCacheOnError = (error: Error, query: Query<unknown, unknown, unknown, QueryKey>): void => {
   const apiError = createApiError(error)
@@ -17,13 +24,13 @@ const queryCacheOnError = (error: Error, query: Query<unknown, unknown, unknown,
 
   if (isAuthError(apiError)) {
     localStorage.removeItem('token')
-    toast.error(errorMessage)
+    showSnackbarRef?.(errorMessage, 'error')
     window.location.href = '/signin'
     return
   }
 
   if (isNetworkError(apiError)) {
-    toast.error(errorMessage)
+    showSnackbarRef?.(errorMessage, 'error')
     return
   }
 

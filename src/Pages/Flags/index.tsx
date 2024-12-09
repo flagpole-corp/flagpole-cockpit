@@ -26,6 +26,7 @@ import { toast } from 'react-toastify'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import KeyIcon from '@mui/icons-material/Key'
 import { useApiKeys, useCreateApiKey } from '~/lib/queries/api-keys'
+import { useSnackbar } from '~/contexts/SnackbarContext'
 
 interface TabPanelProps {
   children?: ReactNode
@@ -44,6 +45,7 @@ const TabPanel = (props: TabPanelProps): JSX.Element => {
 }
 
 export const Flags = (): JSX.Element => {
+  const { showSnackbar } = useSnackbar()
   const [currentTabIndex, setCurrentTabIndex] = useState(0)
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const [copiedKey, setCopiedKey] = useState(false)
@@ -67,9 +69,9 @@ export const Flags = (): JSX.Element => {
         flagId,
         projectId: currentProject._id,
       })
-      toast.success('Flag updated successfully')
+      showSnackbar('Flag updated successfully', 'success')
     } catch (error) {
-      toast.error('Failed to update flag')
+      showSnackbar('Failed to update flag', 'error')
       console.error('Failed to toggle flag:', error)
     }
   }
