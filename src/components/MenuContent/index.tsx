@@ -1,9 +1,3 @@
-import List from '@mui/material/List'
-import ListItem from '@mui/material/ListItem'
-import ListItemButton from '@mui/material/ListItemButton'
-import ListItemIcon from '@mui/material/ListItemIcon'
-import ListItemText from '@mui/material/ListItemText'
-import Stack from '@mui/material/Stack'
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded'
 import ToggleOnOutlinedIcon from '@mui/icons-material/ToggleOnOutlined'
 import PeopleRoundedIcon from '@mui/icons-material/PeopleRounded'
@@ -13,7 +7,8 @@ import InfoRoundedIcon from '@mui/icons-material/InfoRounded'
 import HelpRoundedIcon from '@mui/icons-material/HelpRounded'
 import { NavLink, useLocation } from 'react-router-dom'
 import type { ReactNode } from 'react'
-import { styled } from '@mui/material/styles'
+
+import { styled, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Stack } from '@mui/material'
 
 type ListItemsType = {
   text: string
