@@ -2,17 +2,17 @@ import type { FormEvent } from 'react'
 import { useState } from 'react'
 import {
   Box,
-  TextField,
   Button,
   Typography,
   Card,
   CardContent,
   FormControl,
-  InputLabel,
   Select,
   MenuItem,
-  Grid,
+  Grid2 as Grid,
   Alert,
+  OutlinedInput,
+  FormHelperText,
 } from '@mui/material'
 import { useMutation } from '@tanstack/react-query'
 import api from '~/lib/axios'
@@ -63,26 +63,26 @@ export const OnboardingPage = (): JSX.Element => {
         <CardContent>
           <form onSubmit={handleSubmit}>
             <Grid container spacing={3}>
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <Typography variant="h6" gutterBottom>
                   Organization Details
                 </Typography>
               </Grid>
 
-              <Grid item xs={12}>
-                <TextField
+              <Grid size={12}>
+                <OutlinedInput
                   fullWidth
-                  label="Organization Name"
+                  placeholder="Organization Name"
                   value={formData.name}
                   onChange={(e): void => setFormData({ ...formData, name: e.target.value })}
                   required
                 />
               </Grid>
 
-              <Grid item xs={12} md={6}>
-                <TextField
+              <Grid size={{ xs: 12, md: 6 }}>
+                <OutlinedInput
                   fullWidth
-                  label="Owner Email"
+                  placeholder="Owner Email"
                   type="email"
                   value={formData.ownerEmail}
                   onChange={(e): void => setFormData({ ...formData, ownerEmail: e.target.value })}
@@ -90,22 +90,21 @@ export const OnboardingPage = (): JSX.Element => {
                 />
               </Grid>
 
-              <Grid item xs={12} md={6}>
-                <TextField
+              <Grid size={{ xs: 12, md: 6 }}>
+                <OutlinedInput
                   fullWidth
-                  label="Owner Name"
+                  placeholder="Owner Name"
                   value={formData.ownerName}
                   onChange={(e): void => setFormData({ ...formData, ownerName: e.target.value })}
                   required
                 />
               </Grid>
 
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <FormControl fullWidth>
-                  <InputLabel>Plan</InputLabel>
                   <Select
+                    label="testing"
                     value={formData.plan}
-                    label="Plan"
                     onChange={(e): void => setFormData({ ...formData, plan: e.target.value })}
                   >
                     <MenuItem value="TRIAL">Trial</MenuItem>
@@ -113,16 +112,17 @@ export const OnboardingPage = (): JSX.Element => {
                     <MenuItem value="PRO">Pro</MenuItem>
                     <MenuItem value="ENTERPRISE">Enterprise</MenuItem>
                   </Select>
+                  <FormHelperText>Choose a plan to onboard the customer</FormHelperText>
                 </FormControl>
               </Grid>
 
               {formData.plan === 'TRIAL' && (
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <Alert severity="info">Trial accounts will be automatically set to expire in 7 days</Alert>
                 </Grid>
               )}
 
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <Box display="flex" justifyContent="flex-end">
                   <Button variant="contained" color="primary" type="submit" disabled={createOrganization.isPending}>
                     {createOrganization.isPending ? 'Creating...' : 'Create Organization'}

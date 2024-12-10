@@ -1,7 +1,5 @@
-import FormControl from '@mui/material/FormControl'
-import InputAdornment from '@mui/material/InputAdornment'
-import OutlinedInput from '@mui/material/OutlinedInput'
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded'
+import { FormControl, InputAdornment, OutlinedInput } from '@mui/material'
 
 export const Search = (): JSX.Element => {
   return (
