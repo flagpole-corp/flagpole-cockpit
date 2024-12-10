@@ -18,7 +18,13 @@ export const useProjects = (): UseQueryResult<Project[], Error> => {
   return useQuery({
     queryKey: projectKeys.lists(),
     queryFn: async () => {
-      const { data } = await api.get<Project[]>('/api/projects')
+      const user = JSON.parse(localStorage.getItem('user') || 'null')
+
+      const { data } = await api.get<Project[]>('/api/projects', {
+        headers: {
+          'x-organization-id': user?.currentOrganization,
+        },
+      })
       return data
     },
   })

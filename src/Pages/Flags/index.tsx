@@ -50,6 +50,7 @@ export const Flags = (): JSX.Element => {
   const { data: projects, isLoading: projectsLoading } = useProjects()
 
   const currentProject = projects?.[currentTabIndex]
+
   const { data: flags, isLoading: flagsLoading } = useFeatureFlags(currentProject?._id ?? '', {
     enabled: !!currentProject,
   })
