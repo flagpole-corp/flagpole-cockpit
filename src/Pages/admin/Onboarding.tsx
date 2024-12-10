@@ -16,9 +16,11 @@ import {
 } from '@mui/material'
 import { useMutation } from '@tanstack/react-query'
 import api from '~/lib/axios'
-import { toast } from 'react-toastify'
+import { useSnackbar } from '~/contexts/SnackbarContext'
 
 export const OnboardingPage = (): JSX.Element => {
+  const { showSnackbar } = useSnackbar()
+
   const [formData, setFormData] = useState({
     name: '',
     ownerEmail: '',
@@ -32,7 +34,7 @@ export const OnboardingPage = (): JSX.Element => {
       return response.data
     },
     onSuccess: () => {
-      toast.success('Organization created successfully!')
+      showSnackbar('Organization created successfully!', 'success')
       setFormData({
         name: '',
         ownerEmail: '',
@@ -41,7 +43,7 @@ export const OnboardingPage = (): JSX.Element => {
       })
     },
     onError: (error) => {
-      toast.error('Failed to create organization')
+      showSnackbar('Failed to create organization', 'error')
       console.error('Error:', error)
     },
   })
