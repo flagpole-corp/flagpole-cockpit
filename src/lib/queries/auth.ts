@@ -78,7 +78,7 @@ export const useLogout = (): UseMutationResult<void, Error, void> => {
     mutationFn: async () => {
       await api.post('/api/auth/logout')
     },
-    onSuccess: () => {
+    onSettled: () => {
       localStorage.removeItem('token')
       localStorage.removeItem('user')
       delete api.defaults.headers.common['Authorization']
