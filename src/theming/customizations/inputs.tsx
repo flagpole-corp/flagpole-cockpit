@@ -362,9 +362,7 @@ export const inputsCustomizations: Components<Theme> = {
   },
   MuiInputBase: {
     styleOverrides: {
-      root: {
-        border: '1px solid red',
-      },
+      root: {},
       input: {
         '&::placeholder': {
           opacity: 0.7,

@@ -83,7 +83,7 @@ export const useLogout = (): UseMutationResult<void, Error, void> => {
       localStorage.removeItem('user')
       delete api.defaults.headers.common['Authorization']
       queryClient.setQueryData(authKeys.user, null)
-      queryClient.clear() // Clear all queries
+      queryClient.clear()
     },
   })
 }
