@@ -12,7 +12,7 @@ type HeaderProps = {
   title?: string
 }
 
-export const Header = ({ title = 'Testing' }: HeaderProps): JSX.Element => {
+export const Header = ({ title }: HeaderProps): JSX.Element => {
   return (
     <>
       <Stack

@@ -26,6 +26,7 @@ import { toast } from 'react-toastify'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import KeyIcon from '@mui/icons-material/Key'
 import { useApiKeys, useCreateApiKey } from '~/lib/queries/api-keys'
+import { useSearchParams } from 'react-router-dom'
 
 interface TabPanelProps {
   children?: ReactNode
@@ -44,29 +45,31 @@ const TabPanel = (props: TabPanelProps): JSX.Element => {
 }
 
 export const Flags = (): JSX.Element => {
-  const [currentTabIndex, setCurrentTabIndex] = useState(0)
+  const [searchParams, setSearchParams] = useSearchParams()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const [copiedKey, setCopiedKey] = useState(false)
   const { data: projects, isLoading: projectsLoading } = useProjects()
 
-  const currentProject = projects?.[currentTabIndex]
+  const currentProjectId = searchParams.get('projectId') || projects?.[0]?._id
+  const currentProject = projects?.find((p) => p._id === currentProjectId)
+  const currentTabIndex = projects?.findIndex((p) => p._id === currentProjectId) ?? 0
 
-  const { data: flags, isLoading: flagsLoading } = useFeatureFlags(currentProject?._id ?? '', {
-    enabled: !!currentProject,
+  const { data: flags, isLoading: flagsLoading } = useFeatureFlags(currentProjectId ?? '', {
+    enabled: !!currentProjectId,
   })
 
-  const { data: apiKeys, isLoading: apiKeysLoading } = useApiKeys(currentProject?._id ?? '')
+  const { data: apiKeys, isLoading: apiKeysLoading } = useApiKeys(currentProjectId ?? '')
   const createApiKey = useCreateApiKey()
 
   const toggleMutation = useToggleFeatureFlag()
 
   const handleToggleFlag = async (flagId: string): Promise<void> => {
-    if (!currentProject) return
+    if (!currentProjectId) return
 
     try {
       await toggleMutation.mutateAsync({
         flagId,
-        projectId: currentProject._id,
+        projectId: currentProjectId,
       })
       toast.success('Flag updated successfully')
     } catch (error) {
@@ -96,7 +99,7 @@ export const Flags = (): JSX.Element => {
   }
 
   const renderApiKeySection = (): ReactNode => {
-    if (apiKeysLoading) return null
+    if (apiKeysLoading || createApiKey.isPending) return null
 
     if (!apiKeys?.length) {
       return (
@@ -216,7 +219,7 @@ export const Flags = (): JSX.Element => {
         <Button
           size="small"
           onClick={(): void => {
-            /* TODO: Open edit modal */
+            /* todo */
           }}
         >
           Edit
@@ -244,7 +247,10 @@ export const Flags = (): JSX.Element => {
   }
 
   const handleTabChange = (_: SyntheticEvent, newValue: number): void => {
-    setCurrentTabIndex(newValue)
+    const projectId = projects?.[newValue]?._id
+    if (projectId) {
+      setSearchParams({ projectId })
+    }
   }
 
   return (
