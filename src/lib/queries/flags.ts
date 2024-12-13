@@ -27,6 +27,13 @@ interface ToggleFlagContext {
   previousFlags: FeatureFlag[] | undefined
 }
 
+interface CreateFeatureFlag {
+  name: string
+  description: string
+  environments: string[]
+  projectId: string
+}
+
 export const flagKeys = {
   all: ['flags'] as const,
   lists: () => [...flagKeys.all, 'list'] as const,
@@ -99,6 +106,29 @@ export const useToggleFeatureFlag = (): UseMutationResult<
     onSettled: (_, __, { projectId }) => {
       queryClient.invalidateQueries({
         queryKey: flagKeys.list(projectId),
+      })
+    },
+  })
+}
+
+export const useCreateFeatureFlag = (): UseMutationResult<FeatureFlag, Error, CreateFeatureFlag> => {
+  const queryClient = useQueryClient()
+  const user = JSON.parse(localStorage.getItem('user') || 'null')
+  const organizationId = user?.currentOrganization
+
+  return useMutation({
+    mutationFn: async (createDto: CreateFeatureFlag) => {
+      const { data } = await api.post<FeatureFlag>('/api/feature-flags', createDto, {
+        headers: {
+          'x-project-id': createDto.projectId,
+          'x-organization-id': organizationId,
+        },
+      })
+      return data
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: flagKeys.list(variables.projectId),
       })
     },
   })

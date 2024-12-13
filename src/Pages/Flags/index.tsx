@@ -19,7 +19,7 @@ import {
 import type { GridColDef } from '@mui/x-data-grid'
 import { DataGrid } from '@mui/x-data-grid'
 import AddIcon from '@mui/icons-material/Add'
-import { useFeatureFlags, useToggleFeatureFlag } from '~/lib/queries/flags'
+import { useCreateFeatureFlag, useFeatureFlags, useToggleFeatureFlag } from '~/lib/queries/flags'
 import { useProjects } from '~/lib/queries/projects'
 import { formatDistanceToNow } from 'date-fns'
 import { toast } from 'react-toastify'
@@ -27,12 +27,32 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import KeyIcon from '@mui/icons-material/Key'
 import { useApiKeys, useCreateApiKey } from '~/lib/queries/api-keys'
 import { useSearchParams } from 'react-router-dom'
+import { useDrawer } from '~/contexts/DrawerContext'
+import { Form } from '~/components/Form'
+import { FormTextField } from '~/components/FormTextField'
+import { z } from 'zod'
+import { FormSelect } from '~/components/FormSelect'
+import { FormCheckboxGroup } from '~/components/FormCheckboxGroup'
 
 interface TabPanelProps {
   children?: ReactNode
   index: number
   value: number
 }
+
+const ENVIRONMENTS = ['development', 'staging', 'production'] as const
+
+const createFeatureFlagSchema = z.object({
+  name: z
+    .string()
+    .min(3, 'Min length is 3')
+    .regex(/^[a-zA-Z0-9_-]+$/, 'Name can only contain letters, numbers, hyphens, and underscores'),
+  description: z.string().min(3, 'Description is required'),
+  projectId: z.string().min(1, 'Project is required'),
+  environments: z.array(z.enum(ENVIRONMENTS)).min(1, 'At least one environment must be selected'),
+})
+
+type CreateFeatureFlagFormData = z.infer<typeof createFeatureFlagSchema>
 
 const TabPanel = (props: TabPanelProps): JSX.Element => {
   const { children, value, index, ...other } = props
@@ -45,10 +65,12 @@ const TabPanel = (props: TabPanelProps): JSX.Element => {
 }
 
 export const Flags = (): JSX.Element => {
+  const { openDrawer } = useDrawer()
   const [searchParams, setSearchParams] = useSearchParams()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const [copiedKey, setCopiedKey] = useState(false)
   const { data: projects, isLoading: projectsLoading } = useProjects()
+  const createFlag = useCreateFeatureFlag()
 
   const currentProjectId = searchParams.get('projectId') || projects?.[0]?._id
   const currentProject = projects?.find((p) => p._id === currentProjectId)
@@ -253,19 +275,78 @@ export const Flags = (): JSX.Element => {
     }
   }
 
+  const handleOpenCreateDrawer = (): void => {
+    openDrawer(
+      <Form<CreateFeatureFlagFormData>
+        onSubmit={async (data): Promise<void> => {
+          await createFlag.mutateAsync(data)
+        }}
+        onCancel={(): void => {}}
+        schema={createFeatureFlagSchema}
+        defaultValues={{
+          projectId: currentProjectId,
+          environments: ['development', 'staging', 'production'],
+        }}
+      >
+        {(control): JSX.Element => (
+          <Stack spacing={2}>
+            <FormTextField
+              control={control}
+              name="name"
+              label="Name"
+              placeholder="my-feature-flag"
+              fullWidth
+              size="medium"
+              helperText="Only letters, numbers, hyphens, and underscores"
+            />
+
+            <FormTextField
+              control={control}
+              name="description"
+              label="Description"
+              placeholder="Describe what this feature flag controls"
+              fullWidth
+              size="medium"
+              multiline
+              rows={3}
+            />
+
+            <FormSelect
+              control={control}
+              name="projectId"
+              label="Project"
+              options={
+                projects?.map((project) => ({
+                  value: project._id,
+                  label: project.name,
+                })) ?? []
+              }
+              fullWidth
+            />
+
+            <FormCheckboxGroup
+              control={control}
+              name="environments"
+              label="Environments"
+              options={[
+                { value: 'development', label: 'Development' },
+                { value: 'staging', label: 'Staging' },
+                { value: 'production', label: 'Production' },
+              ]}
+            />
+          </Stack>
+        )}
+      </Form>
+    )
+  }
+
   return (
     <Box width="100%">
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
         <Typography variant="h5" component="h1">
           Feature Flags
         </Typography>
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={(): void => {
-            /* TODO: Open create flag modal */
-          }}
-        >
+        <Button variant="contained" startIcon={<AddIcon />} onClick={handleOpenCreateDrawer}>
           Create Flag
         </Button>
       </Box>

@@ -1,6 +1,5 @@
 import type { Theme, Components } from '@mui/material/styles'
 import { alpha } from '@mui/material/styles'
-import { outlinedInputClasses } from '@mui/material/OutlinedInput'
 import { svgIconClasses } from '@mui/material/SvgIcon'
 import { toggleButtonGroupClasses } from '@mui/material/ToggleButtonGroup'
 import { toggleButtonClasses } from '@mui/material/ToggleButton'
@@ -362,33 +361,16 @@ export const inputsCustomizations: Components<Theme> = {
   },
   MuiInputBase: {
     styleOverrides: {
-      root: {},
-      input: {
-        '&::placeholder': {
-          opacity: 0.7,
-          color: gray[500],
-        },
-      },
-    },
-  },
-  MuiOutlinedInput: {
-    styleOverrides: {
-      input: {
-        padding: 0,
-      },
+      input: {},
       root: ({ theme }) => ({
-        padding: '8px 12px',
+        padding: '0 12px',
         color: theme.palette.text.primary,
-        borderRadius: theme.shape.borderRadius,
-        border: `1px solid ${theme.palette.divider}`,
         backgroundColor: theme.palette.background.default,
         transition: 'border 120ms ease-in',
+        display: 'flex',
+        alignItems: 'center',
         '&:hover': {
           borderColor: gray[400],
-        },
-        [`&.${outlinedInputClasses.focused}`]: {
-          outline: `3px solid ${alpha(brand[500], 0.5)}`,
-          borderColor: brand[400],
         },
         ...theme.applyStyles('dark', {
           '&:hover': {
@@ -402,6 +384,7 @@ export const inputsCustomizations: Components<Theme> = {
             },
             style: {
               height: '2.25rem',
+              border: '1px solid red',
             },
           },
           {
@@ -410,13 +393,19 @@ export const inputsCustomizations: Components<Theme> = {
             },
             style: {
               height: '2.5rem',
+              '& ~ .MuiInputLabel-root': {
+                top: '-6px',
+              },
             },
           },
         ],
       }),
-      notchedOutline: {
-        border: 'none',
-      },
+    },
+  },
+  MuiOutlinedInput: {
+    styleOverrides: {
+      input: {},
+      root: () => ({}),
     },
   },
   MuiInputAdornment: {
