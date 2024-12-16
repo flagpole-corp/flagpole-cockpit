@@ -377,28 +377,6 @@ export const inputsCustomizations: Components<Theme> = {
             borderColor: gray[500],
           },
         }),
-        variants: [
-          {
-            props: {
-              size: 'small',
-            },
-            style: {
-              height: '2.25rem',
-              border: '1px solid red',
-            },
-          },
-          {
-            props: {
-              size: 'medium',
-            },
-            style: {
-              height: '2.5rem',
-              '& ~ .MuiInputLabel-root': {
-                top: '-6px',
-              },
-            },
-          },
-        ],
       }),
     },
   },
@@ -422,7 +400,6 @@ export const inputsCustomizations: Components<Theme> = {
     styleOverrides: {
       root: ({ theme }) => ({
         typography: theme.typography.caption,
-        marginBottom: 8,
       }),
     },
   },

@@ -65,7 +65,7 @@ const TabPanel = (props: TabPanelProps): JSX.Element => {
 }
 
 export const Flags = (): JSX.Element => {
-  const { openDrawer } = useDrawer()
+  const { openDrawer, closeDrawer } = useDrawer()
   const [searchParams, setSearchParams] = useSearchParams()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const [copiedKey, setCopiedKey] = useState(false)
@@ -276,68 +276,67 @@ export const Flags = (): JSX.Element => {
   }
 
   const handleOpenCreateDrawer = (): void => {
-    openDrawer(
-      <Form<CreateFeatureFlagFormData>
-        onSubmit={async (data): Promise<void> => {
-          await createFlag.mutateAsync(data)
-        }}
-        onCancel={(): void => {}}
-        schema={createFeatureFlagSchema}
-        defaultValues={{
-          projectId: currentProjectId,
-          environments: ['development', 'staging', 'production'],
-        }}
-      >
-        {(control): JSX.Element => (
-          <Stack spacing={2}>
-            <FormTextField
-              control={control}
-              name="name"
-              label="Name"
-              placeholder="my-feature-flag"
-              fullWidth
-              size="medium"
-              helperText="Only letters, numbers, hyphens, and underscores"
-            />
+    openDrawer({
+      content: (
+        <Form<CreateFeatureFlagFormData>
+          onSubmit={async (data): Promise<void> => {
+            await createFlag.mutateAsync(data)
+          }}
+          onCancel={closeDrawer}
+          schema={createFeatureFlagSchema}
+          defaultValues={{
+            projectId: currentProjectId,
+            environments: ['development', 'staging', 'production'],
+          }}
+        >
+          {(control): JSX.Element => (
+            <Stack spacing={2}>
+              <FormTextField
+                control={control}
+                name="name"
+                label="Name"
+                placeholder="my-feature-flag"
+                fullWidth
+                helperText="Only letters, numbers, hyphens, and underscores"
+              />
 
-            <FormTextField
-              control={control}
-              name="description"
-              label="Description"
-              placeholder="Describe what this feature flag controls"
-              fullWidth
-              size="medium"
-              multiline
-              rows={3}
-            />
+              <FormTextField
+                control={control}
+                name="description"
+                label="Description"
+                placeholder="Describe what this feature flag controls"
+                fullWidth
+              />
 
-            <FormSelect
-              control={control}
-              name="projectId"
-              label="Project"
-              options={
-                projects?.map((project) => ({
-                  value: project._id,
-                  label: project.name,
-                })) ?? []
-              }
-              fullWidth
-            />
+              <FormSelect
+                control={control}
+                name="projectId"
+                label="Project"
+                options={
+                  projects?.map((project) => ({
+                    value: project._id,
+                    label: project.name,
+                  })) ?? []
+                }
+                fullWidth
+              />
 
-            <FormCheckboxGroup
-              control={control}
-              name="environments"
-              label="Environments"
-              options={[
-                { value: 'development', label: 'Development' },
-                { value: 'staging', label: 'Staging' },
-                { value: 'production', label: 'Production' },
-              ]}
-            />
-          </Stack>
-        )}
-      </Form>
-    )
+              <FormCheckboxGroup
+                control={control}
+                name="environments"
+                label="Environments"
+                options={[
+                  { value: 'development', label: 'Development' },
+                  { value: 'staging', label: 'Staging' },
+                  { value: 'production', label: 'Production' },
+                ]}
+              />
+            </Stack>
+          )}
+        </Form>
+      ),
+      title: 'Create Feature Flag',
+    })
   }
 
   return (

@@ -1,5 +1,7 @@
 import type { UseMutationResult, UseQueryResult } from '@tanstack/react-query'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { toast } from 'react-toastify'
+import { useDrawer } from '~/contexts/DrawerContext'
 import api from '~/lib/axios'
 
 export interface FeatureFlag {
@@ -115,21 +117,31 @@ export const useCreateFeatureFlag = (): UseMutationResult<FeatureFlag, Error, Cr
   const queryClient = useQueryClient()
   const user = JSON.parse(localStorage.getItem('user') || 'null')
   const organizationId = user?.currentOrganization
+  const { closeDrawer } = useDrawer()
 
   return useMutation({
-    mutationFn: async (createDto: CreateFeatureFlag) => {
-      const { data } = await api.post<FeatureFlag>('/api/feature-flags', createDto, {
-        headers: {
-          'x-project-id': createDto.projectId,
-          'x-organization-id': organizationId,
+    mutationFn: async (createFlagData) => {
+      const { data } = await api.post<FeatureFlag>(
+        '/api/feature-flags',
+        {
+          ...createFlagData,
+          organizationId,
         },
-      })
+        {
+          headers: {
+            'x-project-id': createFlagData.projectId,
+            'x-organization-id': organizationId,
+          },
+        }
+      )
       return data
     },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
         queryKey: flagKeys.list(variables.projectId),
       })
+      closeDrawer()
+      toast.success('Feature flag created successfully')
     },
   })
 }

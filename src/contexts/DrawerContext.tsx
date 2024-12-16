@@ -1,11 +1,26 @@
 // src/contexts/DrawerContext.tsx
 import type { ReactNode } from 'react'
 import { createContext, useContext, useState, useCallback } from 'react'
-import { Drawer, Box } from '@mui/material'
+import { Drawer, Box, Stack, Typography } from '@mui/material'
+
+type DrawerSizes = 'small' | 'medium' | 'large' | 'fullWidth'
+
+interface DrawerOptions {
+  content: ReactNode
+  size?: DrawerSizes
+  title?: string
+}
 
 interface DrawerContextType {
-  openDrawer: (content: ReactNode) => void
+  openDrawer: (options: DrawerOptions) => void
   closeDrawer: () => void
+}
+
+const DRAWER_SIZES: Record<DrawerSizes, string | number> = {
+  small: 300,
+  medium: 500,
+  large: 700,
+  fullWidth: '100%',
 }
 
 const DrawerContext = createContext<DrawerContextType | undefined>(undefined)
@@ -13,11 +28,14 @@ const DrawerContext = createContext<DrawerContextType | undefined>(undefined)
 export const DrawerProvider = ({ children }: { children: ReactNode }): JSX.Element => {
   const [isOpen, setIsOpen] = useState(false)
   const [drawerContent, setDrawerContent] = useState<ReactNode | null>(null)
+  const [size, setSize] = useState<DrawerSizes>('medium')
+  const [drawerTitle, setDrawerTitle] = useState<string | undefined>(undefined)
 
-  const openDrawer = useCallback((content: ReactNode): void => {
+  const openDrawer = useCallback(({ content, size = 'medium', title }: DrawerOptions): void => {
     setDrawerContent(content)
-
+    setSize(size)
     setIsOpen(true)
+    setDrawerTitle(title)
   }, [])
 
   const closeDrawer = useCallback((): void => {
@@ -29,7 +47,18 @@ export const DrawerProvider = ({ children }: { children: ReactNode }): JSX.Eleme
     <DrawerContext.Provider value={{ openDrawer, closeDrawer }}>
       {children}
       <Drawer anchor="right" open={isOpen} onClose={closeDrawer}>
-        <Box sx={{ width: 400, p: 3 }}>{drawerContent}</Box>
+        <Box
+          sx={{
+            p: 3,
+            width: DRAWER_SIZES[size],
+            maxWidth: size === 'fullWidth' ? '100%' : '80vw',
+          }}
+        >
+          <Stack spacing={2} direction={'column'}>
+            <Typography variant="h5">{drawerTitle}</Typography>
+            {drawerContent}
+          </Stack>
+        </Box>
       </Drawer>
     </DrawerContext.Provider>
   )
