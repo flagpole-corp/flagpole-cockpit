@@ -36,6 +36,16 @@ interface CreateFeatureFlag {
   projectId: string
 }
 
+interface UpdateFeatureFlagVariables {
+  id: string
+  data: Partial<CreateFeatureFlag>
+}
+
+interface DeleteFeatureFlagVariables {
+  id: string
+  projectId: string
+}
+
 export const flagKeys = {
   all: ['flags'] as const,
   lists: () => [...flagKeys.all, 'list'] as const,
@@ -142,6 +152,58 @@ export const useCreateFeatureFlag = (): UseMutationResult<FeatureFlag, Error, Cr
       })
       closeDrawer()
       toast.success('Feature flag created successfully')
+    },
+  })
+}
+
+export const useUpdateFeatureFlag = (): UseMutationResult<FeatureFlag, Error, UpdateFeatureFlagVariables> => {
+  const queryClient = useQueryClient()
+  const user = JSON.parse(localStorage.getItem('user') || 'null')
+  const organizationId = user?.currentOrganization
+  const { closeDrawer } = useDrawer()
+
+  return useMutation({
+    mutationFn: async ({ id, data }) => {
+      const { data: response } = await api.patch<FeatureFlag>(`/api/feature-flags/${id}`, data, {
+        headers: {
+          'x-project-id': data.projectId,
+          'x-organization-id': organizationId,
+        },
+      })
+      return response
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: flagKeys.list(variables.data.projectId!),
+      })
+      closeDrawer()
+      toast.success('Feature flag updated successfully')
+    },
+  })
+}
+
+export const useDeleteFeatureFlag = (): UseMutationResult<void, Error, DeleteFeatureFlagVariables> => {
+  const queryClient = useQueryClient()
+  const user = JSON.parse(localStorage.getItem('user') || 'null')
+  const organizationId = user?.currentOrganization
+
+  return useMutation({
+    mutationFn: async ({ id, projectId }) => {
+      await api.delete(`/api/feature-flags/${id}`, {
+        headers: {
+          'x-project-id': projectId,
+          'x-organization-id': organizationId,
+        },
+      })
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: flagKeys.list(variables.projectId),
+      })
+      toast.success('Feature flag deleted successfully')
+    },
+    onError: () => {
+      toast.error('Failed to delete feature flag')
     },
   })
 }

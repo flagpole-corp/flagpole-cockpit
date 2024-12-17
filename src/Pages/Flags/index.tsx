@@ -19,7 +19,16 @@ import {
 import type { GridColDef } from '@mui/x-data-grid'
 import { DataGrid } from '@mui/x-data-grid'
 import AddIcon from '@mui/icons-material/Add'
-import { useCreateFeatureFlag, useFeatureFlags, useToggleFeatureFlag } from '~/lib/queries/flags'
+import EditIcon from '@mui/icons-material/Edit'
+import DeleteIcon from '@mui/icons-material/Delete'
+import type { FeatureFlag } from '~/lib/queries/flags'
+import {
+  useCreateFeatureFlag,
+  useDeleteFeatureFlag,
+  useFeatureFlags,
+  useToggleFeatureFlag,
+  useUpdateFeatureFlag,
+} from '~/lib/queries/flags'
 import { useProjects } from '~/lib/queries/projects'
 import { formatDistanceToNow } from 'date-fns'
 import { toast } from 'react-toastify'
@@ -33,6 +42,7 @@ import { FormTextField } from '~/components/FormTextField'
 import { z } from 'zod'
 import { FormSelect } from '~/components/FormSelect'
 import { FormCheckboxGroup } from '~/components/FormCheckboxGroup'
+import { DeleteConfirmationDialog } from '~/components/DeleteConfirmationDialog.tsx'
 
 interface TabPanelProps {
   children?: ReactNode
@@ -69,7 +79,10 @@ export const Flags = (): JSX.Element => {
   const [searchParams, setSearchParams] = useSearchParams()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const [copiedKey, setCopiedKey] = useState(false)
+  const [flagToDelete, setFlagToDelete] = useState<{ id: string; name: string } | null>(null)
   const { data: projects, isLoading: projectsLoading } = useProjects()
+  const deleteFlag = useDeleteFeatureFlag()
+  const updateFlag = useUpdateFeatureFlag()
   const createFlag = useCreateFeatureFlag()
 
   const currentProjectId = searchParams.get('projectId') || projects?.[0]?._id
@@ -118,6 +131,83 @@ export const Flags = (): JSX.Element => {
     navigator.clipboard.writeText(key)
     setCopiedKey(true)
     setTimeout(() => setCopiedKey(false), 2000)
+  }
+
+  const handleEdit = (flag: FeatureFlag): void => {
+    openDrawer({
+      content: (
+        <Form<CreateFeatureFlagFormData>
+          onSubmit={async (data): Promise<void> => {
+            await updateFlag.mutateAsync({ id: flag._id, data })
+          }}
+          onCancel={closeDrawer}
+          schema={createFeatureFlagSchema}
+          defaultValues={{
+            name: flag.name,
+            description: flag.description,
+            projectId: flag.project.toString(),
+            environments: flag.environments as Array<(typeof ENVIRONMENTS)[number]>,
+          }}
+        >
+          {(control): JSX.Element => (
+            <Stack spacing={2}>
+              <FormTextField
+                control={control}
+                name="name"
+                label="Name"
+                placeholder="my-feature-flag"
+                fullWidth
+                helperText="Only letters, numbers, hyphens, and underscores"
+              />
+
+              <FormTextField
+                control={control}
+                name="description"
+                label="Description"
+                placeholder="Describe what this feature flag controls"
+                fullWidth
+              />
+
+              <FormSelect
+                control={control}
+                name="projectId"
+                label="Project"
+                options={
+                  projects?.map((project) => ({
+                    value: project._id,
+                    label: project.name,
+                  })) ?? []
+                }
+                fullWidth
+              />
+
+              <FormCheckboxGroup
+                control={control}
+                name="environments"
+                label="Environments"
+                options={[
+                  { value: 'development', label: 'Development' },
+                  { value: 'staging', label: 'Staging' },
+                  { value: 'production', label: 'Production' },
+                ]}
+              />
+
+              <Button
+                color="error"
+                variant="contained"
+                onClick={(): void => {
+                  closeDrawer()
+                  setFlagToDelete({ id: flag._id, name: flag.name })
+                }}
+              >
+                Delete Feature Flag
+              </Button>
+            </Stack>
+          )}
+        </Form>
+      ),
+      size: 'medium',
+    })
   }
 
   const renderApiKeySection = (): ReactNode => {
@@ -237,15 +327,23 @@ export const Flags = (): JSX.Element => {
       headerName: 'Actions',
       width: 100,
       sortable: false,
-      renderCell: () => (
-        <Button
-          size="small"
-          onClick={(): void => {
-            /* todo */
-          }}
-        >
-          Edit
-        </Button>
+      renderCell: (params) => (
+        <Box display="flex" height="100%" alignItems="center" gap={1}>
+          <IconButton size="small" onClick={(): void => handleEdit(params.row)}>
+            <EditIcon fontSize="small" />
+          </IconButton>
+          <IconButton
+            size="small"
+            onClick={(): void =>
+              setFlagToDelete({
+                id: params.row._id,
+                name: params.row.name,
+              })
+            }
+          >
+            <DeleteIcon fontSize="small" />
+          </IconButton>
+        </Box>
       ),
     },
   ]
@@ -377,6 +475,7 @@ export const Flags = (): JSX.Element => {
               rows={flags ?? []}
               columns={columns}
               disableColumnMenu
+              disableRowSelectionOnClick
               getRowId={(row): string => row._id}
               loading={flagsLoading}
               pageSizeOptions={[5, 10, 25]}
@@ -387,6 +486,23 @@ export const Flags = (): JSX.Element => {
           </Stack>
         </TabPanel>
       ))}
+
+      <DeleteConfirmationDialog
+        open={!!flagToDelete}
+        onClose={(): void => setFlagToDelete(null)}
+        onConfirm={async (): Promise<void> => {
+          if (flagToDelete && currentProjectId) {
+            await deleteFlag.mutateAsync({
+              id: flagToDelete.id,
+              projectId: currentProjectId,
+            })
+            setFlagToDelete(null)
+          }
+        }}
+        title="Delete Feature Flag"
+        description={`Are you sure you want to delete "${flagToDelete?.name}"? This action cannot be undone.`}
+        isLoading={deleteFlag.isPending}
+      />
     </Box>
   )
 }
