@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useSearchParams, Navigate } from 'react-router-dom'
-import { Box, Paper, Typography, Button, CircularProgress, Stack } from '@mui/material'
+import { Box, Paper, Typography, Stack } from '@mui/material'
 import { useMutation } from '@tanstack/react-query'
 import { z } from 'zod'
 import { Form } from '~/components/Form'
@@ -91,10 +91,6 @@ export const AcceptInvitation = (): JSX.Element => {
                 fullWidth
                 autoComplete="new-password"
               />
-
-              <Button type="submit" variant="contained" fullWidth disabled={acceptInvitation.isPending}>
-                {acceptInvitation.isPending ? <CircularProgress size={24} color="inherit" /> : 'Set Password & Accept'}
-              </Button>
             </Stack>
           )}
         </Form>
