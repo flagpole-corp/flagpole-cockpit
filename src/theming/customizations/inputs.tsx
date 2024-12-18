@@ -111,7 +111,6 @@ export const inputsCustomizations: Components<Theme> = {
               variant: 'outlined',
             },
             style: {
-              color: theme.palette.text.primary,
               border: '1px solid',
               borderColor: gray[200],
               backgroundColor: alpha(gray[50], 0.3),
@@ -123,6 +122,7 @@ export const inputsCustomizations: Components<Theme> = {
                 backgroundColor: gray[200],
               },
               ...theme.applyStyles('dark', {
+                color: gray[50],
                 backgroundColor: gray[800],
                 borderColor: gray[700],
 
@@ -142,7 +142,7 @@ export const inputsCustomizations: Components<Theme> = {
               variant: 'outlined',
             },
             style: {
-              color: brand[700],
+              // color: brand[700],
               border: '1px solid',
               borderColor: brand[200],
               backgroundColor: brand[50],
@@ -154,7 +154,7 @@ export const inputsCustomizations: Components<Theme> = {
                 backgroundColor: alpha(brand[200], 0.7),
               },
               ...theme.applyStyles('dark', {
-                color: brand[50],
+                // color: brand[50],
                 border: '1px solid',
                 borderColor: brand[900],
                 backgroundColor: alpha(brand[900], 0.3),
@@ -173,7 +173,6 @@ export const inputsCustomizations: Components<Theme> = {
               variant: 'text',
             },
             style: {
-              color: gray[600],
               '&:hover': {
                 backgroundColor: gray[100],
               },
@@ -181,7 +180,6 @@ export const inputsCustomizations: Components<Theme> = {
                 backgroundColor: gray[200],
               },
               ...theme.applyStyles('dark', {
-                color: gray[50],
                 '&:hover': {
                   backgroundColor: gray[700],
                 },

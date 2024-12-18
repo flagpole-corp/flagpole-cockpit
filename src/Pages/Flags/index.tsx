@@ -42,7 +42,7 @@ import { FormTextField } from '~/components/FormTextField'
 import { z } from 'zod'
 import { FormSelect } from '~/components/FormSelect'
 import { FormCheckboxGroup } from '~/components/FormCheckboxGroup'
-import { DeleteConfirmationDialog } from '~/components/DeleteConfirmationDialog.tsx'
+import { DeleteConfirmationDialog } from '~/components/DeleteConfirmationDialog'
 
 interface TabPanelProps {
   children?: ReactNode
@@ -194,7 +194,7 @@ export const Flags = (): JSX.Element => {
 
               <Button
                 color="error"
-                variant="contained"
+                sx={{ marginTop: 3, display: 'contents' }}
                 onClick={(): void => {
                   closeDrawer()
                   setFlagToDelete({ id: flag._id, name: flag.name })

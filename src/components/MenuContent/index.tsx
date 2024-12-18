@@ -44,16 +44,16 @@ const StyledListItemButton = styled(ListItemButton)(({ theme }) => ({
 
 const mainListItems: ListItemsType[] = [
   { text: 'Home', icon: <HomeRoundedIcon />, url: '/dashboard' },
+  { text: 'Projects', icon: <AssignmentRoundedIcon />, url: '/projects' },
   { text: 'Flags', icon: <ToggleOnOutlinedIcon />, url: '/flags' },
-  { text: 'Clients', icon: <PeopleRoundedIcon />, url: '/' },
-  { text: 'Tasks', icon: <AssignmentRoundedIcon />, url: '/' },
+  { text: 'Users', icon: <PeopleRoundedIcon />, url: '/users' },
 ]
 
 const secondaryListItems: ListItemsType[] = [
   { text: 'Onboarding', icon: <SettingsRoundedIcon />, url: '/admin/onboarding' },
-  { text: 'Settings', icon: <SettingsRoundedIcon />, url: '/' },
-  { text: 'About', icon: <InfoRoundedIcon />, url: '/' },
-  { text: 'Feedback', icon: <HelpRoundedIcon />, url: '/' },
+  { text: 'Settings', icon: <SettingsRoundedIcon />, url: '/settings' },
+  { text: 'About', icon: <InfoRoundedIcon />, url: '/about' },
+  { text: 'Feedback', icon: <HelpRoundedIcon />, url: '/feedback' },
 ]
 
 const MenuItem = ({ item }: { item: ListItemsType }): JSX.Element => {

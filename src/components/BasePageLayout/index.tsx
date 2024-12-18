@@ -5,7 +5,7 @@ import { AppNavbar, Header, SideMenu } from '~/components'
 
 interface DashboardLayoutProps {
   children?: ReactNode
-  title?: string // Optional prop for the Header title
+  title?: string
 }
 
 export const BasePageLayout = ({ title }: DashboardLayoutProps): JSX.Element => {

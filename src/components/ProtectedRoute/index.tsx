@@ -18,7 +18,7 @@ export const ProtectedRoute = ({ children, guestOnly = false }: ProtectedRoutePr
   }
 
   if (guestOnly && isAuthenticated) {
-    return <Navigate to={APP_ROUTES.DASHBOARD.path} replace />
+    return <Navigate to={'/dashboard'} replace />
   }
 
   if (!guestOnly && !isAuthenticated) {
