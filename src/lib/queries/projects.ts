@@ -1,4 +1,3 @@
-// lib/queries/projects.ts
 import type { UseQueryResult, UseMutationResult } from '@tanstack/react-query'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import api from '~/lib/axios'
