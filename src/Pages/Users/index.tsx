@@ -3,6 +3,8 @@ import type { GridColDef } from '@mui/x-data-grid'
 import { DataGrid } from '@mui/x-data-grid'
 import AddIcon from '@mui/icons-material/Add'
 import EditIcon from '@mui/icons-material/Edit'
+import DeleteIcon from '@mui/icons-material/Delete'
+import EmailIcon from '@mui/icons-material/Email'
 import { toast } from 'react-toastify'
 import { useDrawer } from '~/contexts/DrawerContext'
 import { Form } from '~/components/Form'
@@ -11,9 +13,18 @@ import { FormSelect } from '~/components/FormSelect'
 import { FormCheckboxGroup } from '~/components/FormCheckboxGroup'
 import { z } from 'zod'
 import type { User, OrganizationRole } from '~/lib/queries/users'
-import { useUsers, useInviteUser, useUpdateUserRole, useUpdateUserProjects } from '~/lib/queries/users'
+import {
+  useUsers,
+  useInviteUser,
+  useUpdateUserRole,
+  useUpdateUserProjects,
+  useDeleteUser,
+  useResendInvitation,
+} from '~/lib/queries/users'
 import type { Project } from '~/lib/queries/projects'
 import { useProjects } from '~/lib/queries/projects'
+import { useState } from 'react'
+import { DeleteConfirmationDialog } from '~/components/DeleteConfirmationDialog'
 
 const inviteUserSchema = z.object({
   email: z.string().email('Invalid email address'),
@@ -29,8 +40,22 @@ export const Users = (): JSX.Element => {
   const { openDrawer, closeDrawer } = useDrawer()
   const { data: users, isLoading } = useUsers()
   const { data: projects } = useProjects()
+  const [userToDelete, setUserToDelete] = useState<{ id: string; email: string } | null>(null)
   const inviteUser = useInviteUser()
   const updateRole = useUpdateUserRole()
+  const deleteUser = useDeleteUser()
+  const resendInvitation = useResendInvitation()
+
+  const handleResendInvitation = async (userId: string): Promise<void> => {
+    try {
+      await resendInvitation.mutateAsync(userId)
+      toast.success('Invitation resent successfully')
+      // eslint-disable-next-line
+    } catch (error) {
+      toast.error('Failed to resend invitation')
+    }
+  }
+
   const updateProjects = useUpdateUserProjects()
 
   const handleEdit = (user: User): void => {
@@ -187,11 +212,38 @@ export const Users = (): JSX.Element => {
       headerName: 'Actions',
       width: 100,
       sortable: false,
-      renderCell: (params) => (
-        <IconButton size="small" onClick={(): void => handleEdit(params.row)}>
-          <EditIcon fontSize="small" />
-        </IconButton>
-      ),
+      renderCell: (params): JSX.Element => {
+        const userStatus = params.row.status
+
+        return (
+          <Box display="flex" height="100%" alignItems="center" gap={1}>
+            <IconButton size="small" title="Update user" onClick={(): void => handleEdit(params.row)}>
+              <EditIcon fontSize="small" />
+            </IconButton>
+
+            {userStatus === 'pending' ? (
+              <IconButton
+                size="small"
+                onClick={(): Promise<void> => handleResendInvitation(params.row._id)}
+                color="primary"
+                disabled={resendInvitation.isPending}
+                title="Resend invitation"
+              >
+                <EmailIcon fontSize="small" />
+              </IconButton>
+            ) : (
+              <IconButton
+                size="small"
+                onClick={(): void => setUserToDelete({ id: params.row._id, email: params.row.email })}
+                disabled={userStatus === 'inactive'}
+                title={userStatus === 'inactive' ? 'User already inactive' : 'Remove user'}
+              >
+                <DeleteIcon fontSize="small" />
+              </IconButton>
+            )}
+          </Box>
+        )
+      },
     },
   ]
 
@@ -231,6 +283,20 @@ export const Users = (): JSX.Element => {
           />
         )}
       </Stack>
+      <DeleteConfirmationDialog
+        open={!!userToDelete}
+        onClose={(): void => setUserToDelete(null)}
+        onConfirm={async (): Promise<void> => {
+          if (userToDelete) {
+            await deleteUser.mutateAsync(userToDelete.id)
+            setUserToDelete(null)
+            toast.success('User removed from organization')
+          }
+        }}
+        title="Remove User"
+        description={`Are you sure you want to remove "${userToDelete?.email}" from this organization?`}
+        isLoading={deleteUser.isPending}
+      />
     </Box>
   )
 }

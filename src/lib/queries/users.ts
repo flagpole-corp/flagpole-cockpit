@@ -84,3 +84,24 @@ export const useUpdateUserProjects = (): UseMutationResult<User, Error, { id: st
     },
   })
 }
+
+export const useDeleteUser = (): UseMutationResult<void, Error, string> => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async (userId: string) => {
+      await api.delete(`/api/users/${userId}`)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: userKeys.lists() })
+    },
+  })
+}
+
+export const useResendInvitation = (): UseMutationResult<void, Error, string> => {
+  return useMutation({
+    mutationFn: async (userId: string) => {
+      await api.post(`/api/users/${userId}/resend-invitation`)
+    },
+  })
+}
