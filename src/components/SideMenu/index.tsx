@@ -9,6 +9,7 @@ import { SelectContent } from '../SelectContent'
 import { MenuContent } from '../MenuContent'
 import { CardAlert } from '../CardAlert'
 import { OptionsMenu } from '../OptionsMenu'
+import { useAuth } from '~/contexts/AuthContext'
 
 const drawerWidth = 240
 
@@ -24,6 +25,7 @@ const Drawer = styled(MuiDrawer)({
 })
 
 export const SideMenu = (): JSX.Element => {
+  const { user } = useAuth()
   return (
     <Drawer
       variant="permanent"
@@ -56,13 +58,18 @@ export const SideMenu = (): JSX.Element => {
           borderColor: 'divider',
         }}
       >
-        <Avatar sizes="small" alt="Riley Carter" src="/static/images/avatar/7.jpg" sx={{ width: 36, height: 36 }} />
+        <Avatar
+          sizes="small"
+          alt={`${user?.firstName} ${user?.lastName}`}
+          src="/static/images/avatar/7.jpg"
+          sx={{ width: 36, height: 36 }}
+        />
         <Box sx={{ mr: 'auto' }}>
           <Typography variant="body2" sx={{ fontWeight: 500, lineHeight: '16px' }}>
-            Riley Carter
+            {user?.firstName} {user?.lastName}
           </Typography>
           <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-            riley@email.com
+            {user?.email}
           </Typography>
         </Box>
         <OptionsMenu />

@@ -7,6 +7,7 @@ import InfoRoundedIcon from '@mui/icons-material/InfoRounded'
 import HelpRoundedIcon from '@mui/icons-material/HelpRounded'
 import { NavLink, useLocation } from 'react-router-dom'
 import type { ReactNode } from 'react'
+import RocketLaunchIcon from '@mui/icons-material/RocketLaunch'
 
 import { styled, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Stack } from '@mui/material'
 
@@ -50,7 +51,7 @@ const mainListItems: ListItemsType[] = [
 ]
 
 const secondaryListItems: ListItemsType[] = [
-  { text: 'Onboarding', icon: <SettingsRoundedIcon />, url: '/admin/onboarding' },
+  { text: 'Onboarding', icon: <RocketLaunchIcon />, url: '/admin/onboarding' },
   { text: 'Settings', icon: <SettingsRoundedIcon />, url: '/settings' },
   { text: 'About', icon: <InfoRoundedIcon />, url: '/about' },
   { text: 'Feedback', icon: <HelpRoundedIcon />, url: '/feedback' },

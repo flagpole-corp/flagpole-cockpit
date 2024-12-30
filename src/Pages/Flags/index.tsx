@@ -43,6 +43,7 @@ import { z } from 'zod'
 import { FormSelect } from '~/components/FormSelect'
 import { FormCheckboxGroup } from '~/components/FormCheckboxGroup'
 import { DeleteConfirmationDialog } from '~/components/DeleteConfirmationDialog'
+import { FeatureFlagConditions } from '~/components/FeatureFlagConditions'
 
 interface TabPanelProps {
   children?: ReactNode
@@ -60,6 +61,12 @@ const createFeatureFlagSchema = z.object({
   description: z.string().min(3, 'Description is required'),
   projectId: z.string().min(1, 'Project is required'),
   environments: z.array(z.enum(ENVIRONMENTS)).min(1, 'At least one environment must be selected'),
+  conditions: z
+    .object({
+      operator: z.enum(['AND', 'OR']).default('AND'),
+      conditions: z.array(z.any()).default([]),
+    })
+    .optional(),
 })
 
 type CreateFeatureFlagFormData = z.infer<typeof createFeatureFlagSchema>
@@ -75,6 +82,7 @@ const TabPanel = (props: TabPanelProps): JSX.Element => {
 }
 
 export const Flags = (): JSX.Element => {
+  const [toggledFlags, setToggledFlags] = useState<Set<string>>(new Set())
   const { openDrawer, closeDrawer } = useDrawer()
   const [searchParams, setSearchParams] = useSearchParams()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
@@ -101,6 +109,8 @@ export const Flags = (): JSX.Element => {
   const handleToggleFlag = async (flagId: string): Promise<void> => {
     if (!currentProjectId) return
 
+    setToggledFlags((prev) => new Set(prev).add(flagId))
+
     try {
       await toggleMutation.mutateAsync({
         flagId,
@@ -110,6 +120,12 @@ export const Flags = (): JSX.Element => {
     } catch (error) {
       toast.error('Failed to update flag')
       console.error('Failed to toggle flag:', error)
+    } finally {
+      setToggledFlags((prev) => {
+        const updated = new Set(prev)
+        updated.delete(flagId)
+        return updated
+      })
     }
   }
 
@@ -139,6 +155,8 @@ export const Flags = (): JSX.Element => {
         <Form<CreateFeatureFlagFormData>
           onSubmit={async (data): Promise<void> => {
             await updateFlag.mutateAsync({ id: flag._id, data })
+            closeDrawer()
+            toast.success('Feature flag updated successfully')
           }}
           onCancel={closeDrawer}
           schema={createFeatureFlagSchema}
@@ -147,6 +165,10 @@ export const Flags = (): JSX.Element => {
             description: flag.description,
             projectId: flag.project.toString(),
             environments: flag.environments as Array<(typeof ENVIRONMENTS)[number]>,
+            conditions: flag.conditions || {
+              operator: 'AND',
+              conditions: [],
+            },
           }}
         >
           {(control): JSX.Element => (
@@ -192,9 +214,16 @@ export const Flags = (): JSX.Element => {
                 ]}
               />
 
+              <Box>
+                <Typography variant="subtitle1" gutterBottom>
+                  Conditions
+                </Typography>
+                <FeatureFlagConditions control={control} name="conditions" />
+              </Box>
+
               <Button
                 color="error"
-                sx={{ marginTop: 3, display: 'contents' }}
+                sx={{ '&&': { marginTop: 2, width: 'fit-content' } }}
                 onClick={(): void => {
                   closeDrawer()
                   setFlagToDelete({ id: flag._id, name: flag.name })
@@ -207,6 +236,7 @@ export const Flags = (): JSX.Element => {
         </Form>
       ),
       size: 'medium',
+      title: 'Update Feature Flag',
     })
   }
 
@@ -298,7 +328,7 @@ export const Flags = (): JSX.Element => {
         <Switch
           checked={params.value}
           onChange={(): Promise<void> => handleToggleFlag(params.row._id)}
-          disabled={toggleMutation.isPending}
+          disabled={toggledFlags.has(params.row._id)}
         />
       ),
     },
@@ -379,12 +409,18 @@ export const Flags = (): JSX.Element => {
         <Form<CreateFeatureFlagFormData>
           onSubmit={async (data): Promise<void> => {
             await createFlag.mutateAsync(data)
+            closeDrawer()
+            toast.success('Feature flag created successfully')
           }}
           onCancel={closeDrawer}
           schema={createFeatureFlagSchema}
           defaultValues={{
             projectId: currentProjectId,
             environments: ['development', 'staging', 'production'],
+            conditions: {
+              operator: 'AND',
+              conditions: [],
+            },
           }}
         >
           {(control): JSX.Element => (
@@ -429,6 +465,13 @@ export const Flags = (): JSX.Element => {
                   { value: 'production', label: 'Production' },
                 ]}
               />
+
+              <Box>
+                <Typography variant="subtitle1" gutterBottom>
+                  Conditions
+                </Typography>
+                <FeatureFlagConditions control={control} name="conditions" />
+              </Box>
             </Stack>
           )}
         </Form>
