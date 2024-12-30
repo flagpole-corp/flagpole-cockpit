@@ -1,5 +1,6 @@
 import type { UseMutationResult, UseQueryResult } from '@tanstack/react-query'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { toast } from 'react-toastify'
 import api from '~/lib/axios'
 
 export interface ApiKey {
@@ -62,6 +63,10 @@ export const useCreateApiKey = (): UseMutationResult<ApiKey, Error, CreateApiKey
         if (!old) return [newApiKey]
         return [...old, newApiKey]
       })
+      toast.success('API key created successfully')
+    },
+    onError: () => {
+      toast.error('Failed to create API key')
     },
   })
 }

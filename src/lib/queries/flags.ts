@@ -110,10 +110,14 @@ export const useToggleFeatureFlag = (): UseMutationResult<
 
       return { previousFlags }
     },
+    onSuccess: () => {
+      toast.success('Feature flag updated successfully')
+    },
     onError: (_, variables, context) => {
       if (context?.previousFlags) {
         queryClient.setQueryData(flagKeys.list(variables.projectId), context.previousFlags)
       }
+      toast.error('Failed to update flag')
     },
     onSettled: (_, __, { projectId }) => {
       queryClient.invalidateQueries({

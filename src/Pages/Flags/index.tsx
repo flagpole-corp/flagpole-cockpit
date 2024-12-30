@@ -31,7 +31,6 @@ import {
 } from '~/lib/queries/flags'
 import { useProjects } from '~/lib/queries/projects'
 import { formatDistanceToNow } from 'date-fns'
-import { toast } from 'react-toastify'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import KeyIcon from '@mui/icons-material/Key'
 import { useApiKeys, useCreateApiKey } from '~/lib/queries/api-keys'
@@ -116,10 +115,6 @@ export const Flags = (): JSX.Element => {
         flagId,
         projectId: currentProjectId,
       })
-      toast.success('Flag updated successfully')
-    } catch (error) {
-      toast.error('Failed to update flag')
-      console.error('Failed to toggle flag:', error)
     } finally {
       setToggledFlags((prev) => {
         const updated = new Set(prev)
@@ -131,16 +126,11 @@ export const Flags = (): JSX.Element => {
 
   const handleCreateApiKey = async (): Promise<void> => {
     if (!currentProject) return
-    try {
-      await createApiKey.mutateAsync({
-        name: `API Key for ${currentProject.name}`,
-        projectId: currentProject._id,
-      })
-      toast.success('API key created successfully')
-      // eslint-disable-next-line
-    } catch (error) {
-      toast.error('Failed to create API key')
-    }
+
+    await createApiKey.mutateAsync({
+      name: `API Key for ${currentProject.name}`,
+      projectId: currentProject._id,
+    })
   }
 
   const handleCopyKey = (key: string): void => {
@@ -156,7 +146,6 @@ export const Flags = (): JSX.Element => {
           onSubmit={async (data): Promise<void> => {
             await updateFlag.mutateAsync({ id: flag._id, data })
             closeDrawer()
-            toast.success('Feature flag updated successfully')
           }}
           onCancel={closeDrawer}
           schema={createFeatureFlagSchema}
@@ -410,7 +399,6 @@ export const Flags = (): JSX.Element => {
           onSubmit={async (data): Promise<void> => {
             await createFlag.mutateAsync(data)
             closeDrawer()
-            toast.success('Feature flag created successfully')
           }}
           onCancel={closeDrawer}
           schema={createFeatureFlagSchema}
