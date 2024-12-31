@@ -1,12 +1,10 @@
 import { useState } from 'react'
 import { useSearchParams, Navigate } from 'react-router-dom'
 import { Box, Paper, Typography, Stack } from '@mui/material'
-import { useMutation } from '@tanstack/react-query'
 import { z } from 'zod'
 import { Form } from '~/components/Form'
 import { FormTextField } from '~/components/FormTextField'
-import api from '~/lib/axios'
-import { toast } from 'react-toastify'
+import { useAcceptInvitation } from '~/lib/queries/accept-invitation'
 
 const acceptInvitationSchema = z
   .object({
@@ -25,23 +23,7 @@ export const AcceptInvitation = (): JSX.Element => {
   const [isSuccess, setIsSuccess] = useState(false)
   const token = searchParams.get('token')
 
-  const acceptInvitation = useMutation({
-    mutationFn: async (data: { password: string }) => {
-      const response = await api.post('/api/users/accept-invitation', {
-        token,
-        password: data.password,
-      })
-      return response.data
-    },
-    onSuccess: () => {
-      toast.success('Account setup complete! You can now sign in.')
-      setIsSuccess(true)
-    },
-    // eslint-disable-next-line
-    onError: (error) => {
-      toast.error('Failed to accept invitation. The link may be expired or invalid.')
-    },
-  })
+  const acceptInvitation = useAcceptInvitation()
 
   if (!token) {
     return <Navigate to="/signin" replace />
@@ -67,7 +49,12 @@ export const AcceptInvitation = (): JSX.Element => {
 
         <Form<AcceptInvitationFormData>
           onSubmit={async (data): Promise<void> => {
-            await acceptInvitation.mutateAsync({ password: data.password })
+            await acceptInvitation.mutateAsync({
+              token,
+              password: data.password,
+            })
+
+            setIsSuccess(true)
           }}
           onCancel={(): void => {}}
           schema={acceptInvitationSchema}

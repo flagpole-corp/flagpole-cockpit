@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import type { UseFormProps, FieldValues, Control } from 'react-hook-form'
+import type { UseFormProps, FieldValues, Control, DefaultValues } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Box, Button, Stack } from '@mui/material'
@@ -7,7 +7,7 @@ import type { ZodSchema } from 'zod'
 
 interface FormProps<TFormData extends FieldValues> {
   onSubmit: (data: TFormData) => void | Promise<void>
-  onCancel: () => void
+  onCancel: (reset: (defaultValues?: DefaultValues<TFormData>) => void) => void
   schema: ZodSchema
   defaultValues?: UseFormProps<TFormData>['defaultValues']
   children: (control: Control<TFormData>) => ReactNode
@@ -24,18 +24,27 @@ export function Form<TFormData extends FieldValues>({
     handleSubmit,
     control,
     formState: { isSubmitting },
+    reset,
   } = useForm<TFormData>({
     resolver: zodResolver(schema),
     defaultValues,
   })
 
-  return (
-    <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate autoComplete="off">
-      <Stack spacing={3}>
-        {typeof children === 'function' ? children(control) : children}
+  const handleFormSubmit = async (data: TFormData): Promise<void> => {
+    try {
+      await onSubmit(data)
+      reset(defaultValues as DefaultValues<TFormData>)
+    } catch (error) {
+      console.error('Form submission error:', error)
+    }
+  }
 
+  return (
+    <Box component="form" onSubmit={handleSubmit(handleFormSubmit)} noValidate autoComplete="off">
+      <Stack spacing={3}>
+        {children(control)}
         <Stack direction="row" spacing={2} justifyContent="flex-end">
-          <Button onClick={onCancel}>Cancel</Button>
+          <Button onClick={(): void => onCancel(reset)}>Cancel</Button>
           <Button type="submit" variant="contained" disabled={isSubmitting}>
             {isSubmitting ? 'Saving...' : 'Save'}
           </Button>

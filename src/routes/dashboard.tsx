@@ -1,3 +1,4 @@
+import { Feedback } from '~/pages/Feedback'
 import type { NonIndexRouteConfig } from './config'
 import { Dashboard } from '~/pages/Dashboard'
 import { Flags } from '~/pages/Flags'
@@ -24,5 +25,10 @@ export const DASHBOARD_ROUTES: NonIndexRouteConfig[] = [
     path: '/users',
     element: <Users />,
     title: 'Users',
+  },
+  {
+    path: '/feedback',
+    element: <Feedback />,
+    title: 'Feedback',
   },
 ]
