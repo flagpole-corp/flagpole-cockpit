@@ -1,15 +1,9 @@
-import { styled } from '@mui/material/styles'
-import Avatar from '@mui/material/Avatar'
-import MuiDrawer, { drawerClasses } from '@mui/material/Drawer'
-import Box from '@mui/material/Box'
-import Divider from '@mui/material/Divider'
-import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
-import { SelectContent } from '../SelectContent'
+import { styled, Avatar, Drawer as MuiDrawer, drawerClasses, Box, Typography, Stack } from '@mui/material'
 import { MenuContent } from '../MenuContent'
 import { CardAlert } from '../CardAlert'
 import { OptionsMenu } from '../OptionsMenu'
 import { useAuth } from '~/contexts/AuthContext'
+import { Logo } from '~/components'
 
 const drawerWidth = 240
 
@@ -36,16 +30,9 @@ export const SideMenu = (): JSX.Element => {
         },
       }}
     >
-      <Box
-        sx={{
-          display: 'flex',
-          mt: 'calc(var(--template-frame-height, 0px) + 4px)',
-          p: 1.5,
-        }}
-      >
-        <SelectContent />
+      <Box sx={{ p: 3 }}>
+        <Logo />
       </Box>
-      <Divider />
       <MenuContent />
       <CardAlert />
       <Stack

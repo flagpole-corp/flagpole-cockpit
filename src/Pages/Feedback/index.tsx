@@ -29,7 +29,7 @@ export const Feedback = (): JSX.Element => {
   return (
     <Box width="100%">
       <Typography variant="h5" component="h1">
-        Feature Flags
+        Feedback
       </Typography>
 
       <Typography paragraph color="text.secondary" sx={{ mb: 4 }}>

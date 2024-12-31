@@ -45,6 +45,7 @@ export const OptionsMenu = (): JSX.Element => {
             padding: '4px',
           },
           [`& .${paperClasses.root}`]: {
+            minWidth: 180,
             padding: 0,
           },
           [`& .${dividerClasses.root}`]: {
@@ -53,10 +54,8 @@ export const OptionsMenu = (): JSX.Element => {
         }}
       >
         <MenuItem onClick={handleClose}>Profile</MenuItem>
-        <MenuItem onClick={handleClose}>My account</MenuItem>
         <Divider />
-        <MenuItem onClick={handleClose}>Add another account</MenuItem>
-        <MenuItem onClick={handleClose}>Settings</MenuItem>
+        <MenuItem onClick={handleClose}>Billing</MenuItem>
         <Divider />
         <MenuItem
           onClick={logout}

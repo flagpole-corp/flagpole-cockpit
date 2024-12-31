@@ -2,8 +2,6 @@ import HomeRoundedIcon from '@mui/icons-material/HomeRounded'
 import ToggleOnOutlinedIcon from '@mui/icons-material/ToggleOnOutlined'
 import PeopleRoundedIcon from '@mui/icons-material/PeopleRounded'
 import AssignmentRoundedIcon from '@mui/icons-material/AssignmentRounded'
-import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded'
-import InfoRoundedIcon from '@mui/icons-material/InfoRounded'
 import HelpRoundedIcon from '@mui/icons-material/HelpRounded'
 import { NavLink, useLocation } from 'react-router-dom'
 import type { ReactNode } from 'react'
@@ -52,8 +50,6 @@ const mainListItems: ListItemsType[] = [
 
 const secondaryListItems: ListItemsType[] = [
   { text: 'Onboarding', icon: <RocketLaunchIcon />, url: '/admin/onboarding' },
-  { text: 'Settings', icon: <SettingsRoundedIcon />, url: '/settings' },
-  { text: 'About', icon: <InfoRoundedIcon />, url: '/about' },
   { text: 'Feedback', icon: <HelpRoundedIcon />, url: '/feedback' },
 ]
 
