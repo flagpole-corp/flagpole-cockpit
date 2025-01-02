@@ -16,7 +16,7 @@ import {
   Typography,
 } from '@mui/material'
 import { styled } from '@mui/material/styles'
-import { GoogleIcon, FacebookIcon } from './CustomIcons'
+import { GoogleIcon } from './CustomIcons'
 import { ForgotPasswordInput } from '~/components'
 import { useAuth } from '~/contexts/AuthContext'
 import { loginSchema, type LoginFormData } from '~/lib/schemas/auth.schema'
@@ -60,7 +60,7 @@ const SignInCard = (): JSX.Element => {
     try {
       await login(data.email, data.password)
       // eslint-disable-next-line
-      const from = (location.state as any)?.from?.pathname || '/dashboard'
+      const from = location.state?.from?.pathname || '/dashboard'
       navigate(from, { replace: true })
     } catch (err) {
       console.error('Login failed:', err)
@@ -168,8 +168,8 @@ const SignInCard = (): JSX.Element => {
 
         <Typography sx={{ textAlign: 'center' }}>
           Don&apos;t have an account?{' '}
-          <Link href="/signup" variant="body2" sx={{ alignSelf: 'center' }}>
-            Sign up
+          <Link href="/demo-request" variant="body2" sx={{ alignSelf: 'center' }}>
+            Request a demo
           </Link>
         </Typography>
       </Box>
@@ -180,20 +180,12 @@ const SignInCard = (): JSX.Element => {
         <Button
           fullWidth
           variant="outlined"
+          sx={{ color: 'black' }}
           onClick={(): Promise<void> => loginWithGoogle()}
           startIcon={<GoogleIcon />}
           disabled={isLoading}
         >
           Sign in with Google
-        </Button>
-        <Button
-          fullWidth
-          variant="outlined"
-          onClick={(): void => alert('Sign in with Facebook')}
-          startIcon={<FacebookIcon />}
-          disabled={isLoading}
-        >
-          Sign in with Facebook
         </Button>
       </Box>
     </Card>
