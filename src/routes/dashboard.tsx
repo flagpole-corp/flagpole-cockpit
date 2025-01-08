@@ -4,6 +4,9 @@ import { Dashboard } from '~/pages/Dashboard'
 import { Flags } from '~/pages/Flags'
 import { Projects } from '~/pages/Projects'
 import { Users } from '~/pages/Users'
+import PaymentSuccess from '~/pages/PaymentSuccess'
+import PaymentCancel from '~/pages/PaymentCancel'
+import { Pricing } from '~/pages/Pricing'
 
 export const DASHBOARD_ROUTES: NonIndexRouteConfig[] = [
   {
@@ -27,8 +30,24 @@ export const DASHBOARD_ROUTES: NonIndexRouteConfig[] = [
     title: 'Users',
   },
   {
+    path: '/pricing',
+    element: <Pricing />,
+    title: 'Pricing',
+  },
+  {
     path: '/feedback',
     element: <Feedback />,
     title: 'Feedback',
+  },
+  {
+    path: '/payment/success',
+    element: <PaymentSuccess />,
+    title: 'Payment Success',
+  },
+
+  {
+    path: '/payment/cancel',
+    element: <PaymentCancel />,
+    title: 'Payment Cancel',
   },
 ]
