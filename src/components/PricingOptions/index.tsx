@@ -33,20 +33,18 @@ interface ProfessionalTierFeatures extends BaseTierFeatures {
   subheader: string
 }
 
-// type TierFeatures = StandardTierFeatures | ProfessionalTierFeatures
-
-interface Tier {
+interface BaseTier {
   title: string
   price: string
   priceId: string
   interval: 'month' | 'year'
-  description: string[]
-  buttonText: string
-  buttonVariant: 'outlined' | 'contained'
-  buttonColor: 'primary' | 'secondary'
-  subheader?: string
+  displayInterval: 'month' | 'year'
   numericPrice: number
 }
+
+export type TierFeatures = StandardTierFeatures | ProfessionalTierFeatures
+
+export type Tier = BaseTier & (StandardTierFeatures | ProfessionalTierFeatures)
 
 const tierFeatures: Record<string, StandardTierFeatures | ProfessionalTierFeatures> = {
   // Basic
@@ -127,16 +125,22 @@ export const PricingOptions = (): JSX.Element => {
               return null
             }
 
+            const displayAmount = billingInterval === 'year' ? price.unit_amount / 1200 : price.unit_amount / 100
+
             return {
               title: product.name,
-              price: (price.unit_amount / 100).toString(),
+              price: new Intl.NumberFormat('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              }).format(displayAmount),
               priceId: price.id,
               interval: billingInterval,
+              displayInterval: 'month',
               numericPrice: price.unit_amount / 100,
               ...tierFeature,
-            } satisfies Tier
+            }
           })
-          .filter((tier): tier is Tier => tier !== null)
+          .filter((tier): tier is NonNullable<typeof tier> => tier !== null)
       })
       .sort((a, b) => a.numericPrice - b.numericPrice) || []
 
@@ -240,7 +244,7 @@ export const PricingOptions = (): JSX.Element => {
                         ${tier.price}
                       </Typography>
                       <Typography component="h3" variant="h6">
-                        &nbsp; per {tier.interval}
+                        &nbsp; per {tier.displayInterval}
                       </Typography>
                     </Box>
                     <Divider sx={{ my: 2, opacity: 0.8, borderColor: 'divider' }} />
