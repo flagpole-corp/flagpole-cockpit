@@ -18,8 +18,8 @@ import {
 import { styled } from '@mui/material/styles'
 import { GoogleIcon } from './CustomIcons'
 import { ForgotPasswordInput } from '~/components'
-import { useAuth } from '~/contexts/AuthContext'
 import { loginSchema, type LoginFormData } from '~/lib/schemas/auth.schema'
+import { useAuthStore } from '~/stores/auth.store'
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -40,7 +40,7 @@ const Card = styled(MuiCard)(({ theme }) => ({
 const SignInCard = (): JSX.Element => {
   const navigate = useNavigate()
   const location = useLocation()
-  const { login, loginWithGoogle, error: authError, isLoading } = useAuth()
+  const { login, loginWithGoogle, error: authError, isLoading } = useAuthStore()
   const [open, setOpen] = useState(false)
 
   const {

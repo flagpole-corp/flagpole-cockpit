@@ -2,6 +2,7 @@ import type { UseMutationResult, UseQueryResult } from '@tanstack/react-query'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
 import { useDrawer } from '~/contexts/DrawerContext'
+import { useAuthStore } from '~/stores/auth.store'
 import api from '~/lib/axios'
 
 export interface FeatureFlag {
@@ -129,7 +130,7 @@ export const useToggleFeatureFlag = (): UseMutationResult<
 
 export const useCreateFeatureFlag = (): UseMutationResult<FeatureFlag, Error, CreateFeatureFlag> => {
   const queryClient = useQueryClient()
-  const user = JSON.parse(localStorage.getItem('user') || 'null')
+  const { user } = useAuthStore()
   const organizationId = user?.currentOrganization
   const { closeDrawer } = useDrawer()
 
@@ -162,7 +163,7 @@ export const useCreateFeatureFlag = (): UseMutationResult<FeatureFlag, Error, Cr
 
 export const useUpdateFeatureFlag = (): UseMutationResult<FeatureFlag, Error, UpdateFeatureFlagVariables> => {
   const queryClient = useQueryClient()
-  const user = JSON.parse(localStorage.getItem('user') || 'null')
+  const { user } = useAuthStore()
   const organizationId = user?.currentOrganization
   const { closeDrawer } = useDrawer()
 
@@ -188,7 +189,7 @@ export const useUpdateFeatureFlag = (): UseMutationResult<FeatureFlag, Error, Up
 
 export const useDeleteFeatureFlag = (): UseMutationResult<void, Error, DeleteFeatureFlagVariables> => {
   const queryClient = useQueryClient()
-  const user = JSON.parse(localStorage.getItem('user') || 'null')
+  const { user } = useAuthStore()
   const organizationId = user?.currentOrganization
 
   return useMutation({

@@ -3,6 +3,7 @@ import { QueryClient, QueryCache } from '@tanstack/react-query'
 import { createApiError } from './errors/apiError'
 import { isAuthError, isNetworkError, getErrorMessage } from './errors/utils'
 import { authKeys } from './queries/auth'
+import { useAuthStore } from '~/stores/auth.store'
 
 let showSnackbarRef: ((message: string, severity: 'error' | 'success' | 'info' | 'warning') => void) | null = null
 
@@ -23,7 +24,9 @@ const queryCacheOnError = (error: Error, query: Query<unknown, unknown, unknown,
   const errorMessage = getErrorMessage(apiError)
 
   if (isAuthError(apiError)) {
-    localStorage.removeItem('token')
+    const { setToken, setUser } = useAuthStore.getState()
+    setToken(null)
+    setUser(null)
     showSnackbarRef?.(errorMessage, 'error')
     window.location.href = '/signin'
     return
@@ -34,7 +37,6 @@ const queryCacheOnError = (error: Error, query: Query<unknown, unknown, unknown,
     return
   }
 
-  // Since QueryKey is readonly, we need to safely access the first element
   const queryKey = Array.isArray(query.queryKey) && query.queryKey[0]
   const handleError = (queryKey && ERROR_HANDLERS[queryKey]) || handleDefaultError
   handleError(errorMessage)

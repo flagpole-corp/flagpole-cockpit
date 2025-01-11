@@ -7,6 +7,7 @@ import { Users } from '~/pages/Users'
 import PaymentSuccess from '~/pages/PaymentSuccess'
 import PaymentCancel from '~/pages/PaymentCancel'
 import { Pricing } from '~/pages/Pricing'
+import Profile from '~/pages/Profile'
 
 export const DASHBOARD_ROUTES: NonIndexRouteConfig[] = [
   {
@@ -44,10 +45,14 @@ export const DASHBOARD_ROUTES: NonIndexRouteConfig[] = [
     element: <PaymentSuccess />,
     title: 'Payment Success',
   },
-
   {
     path: '/payment/cancel',
     element: <PaymentCancel />,
     title: 'Payment Cancel',
+  },
+  {
+    path: '/profile',
+    element: <Profile />,
+    title: 'Profile',
   },
 ]

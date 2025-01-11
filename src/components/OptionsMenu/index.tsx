@@ -11,14 +11,16 @@ import MoreVertRoundedIcon from '@mui/icons-material/MoreVertRounded'
 import { MenuButton } from '../MenuButton'
 import type { MouseEvent } from 'react'
 import { useState, Fragment } from 'react'
-import { useAuth } from '~/contexts/AuthContext'
+import { useNavigate } from 'react-router-dom'
+import { useAuthStore } from '~/stores/auth.store'
 
 const MenuItem = styled(MuiMenuItem)({
   margin: '2px 0',
 })
 
 export const OptionsMenu = (): JSX.Element => {
-  const { logout } = useAuth()
+  const { logout } = useAuthStore()
+  const navigate = useNavigate()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
   const handleClick = (event: MouseEvent<HTMLElement>): void => {
@@ -53,7 +55,7 @@ export const OptionsMenu = (): JSX.Element => {
           },
         }}
       >
-        <MenuItem onClick={handleClose}>Profile</MenuItem>
+        <MenuItem onClick={(): void => navigate('/profile')}>Profile</MenuItem>
         <Divider />
         <MenuItem onClick={handleClose}>Billing</MenuItem>
         <Divider />

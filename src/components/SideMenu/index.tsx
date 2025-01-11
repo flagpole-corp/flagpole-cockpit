@@ -2,8 +2,8 @@ import { styled, Avatar, Drawer as MuiDrawer, drawerClasses, Box, Typography, St
 import { MenuContent } from '../MenuContent'
 import { CardAlert } from '../CardAlert'
 import { OptionsMenu } from '../OptionsMenu'
-import { useAuth } from '~/contexts/AuthContext'
 import { Logo } from '~/components'
+import { useAuthStore } from '~/stores/auth.store'
 
 const drawerWidth = 240
 
@@ -19,7 +19,7 @@ const Drawer = styled(MuiDrawer)({
 })
 
 export const SideMenu = (): JSX.Element => {
-  const { user } = useAuth()
+  const { user } = useAuthStore()
   return (
     <Drawer
       variant="permanent"

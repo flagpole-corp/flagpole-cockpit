@@ -1,10 +1,6 @@
-import {
-  useMutation,
-  useQuery,
-  useQueryClient,
-  type UseMutationResult,
-  type UseQueryResult,
-} from '@tanstack/react-query'
+import type { UseQueryResult, UseMutationResult } from '@tanstack/react-query'
+import { useQuery, useMutation } from '@tanstack/react-query'
+import { useAuthStore } from '~/stores/auth.store'
 import api from '~/lib/axios'
 
 export interface LoginCredentials {
@@ -13,7 +9,7 @@ export interface LoginCredentials {
 }
 
 export interface User {
-  id: string
+  _id: string
   email: string
   firstName?: string
   lastName?: string
@@ -35,27 +31,23 @@ export const authKeys = {
 }
 
 export const useUser = (): UseQueryResult<User, Error> => {
-  const token = localStorage.getItem('token')
+  const { token, user, setUser } = useAuthStore()
 
   return useQuery({
     queryKey: authKeys.user,
     queryFn: async () => {
       const { data } = await api.get<User>('/api/auth/me')
-      // Store updated user data
-      localStorage.setItem('user', JSON.stringify(data))
+      setUser(data)
       return data
     },
-    // Initialize with stored data
-    initialData: token ? JSON.parse(localStorage.getItem('user') || 'null') : null,
-    // retry: false,
-    // staleTime: 5 * 60 * 1000,
-    // gcTime: 10 * 60 * 1000,
+    initialData: user,
     enabled: !!token,
+    staleTime: 5 * 60 * 1000, // 5 min
   })
 }
 
 export const useLogin = (): UseMutationResult<AuthResponse, Error, LoginCredentials> => {
-  const queryClient = useQueryClient()
+  const { setUser, setToken } = useAuthStore()
 
   return useMutation<AuthResponse, Error, LoginCredentials>({
     mutationFn: async (credentials) => {
@@ -63,27 +55,22 @@ export const useLogin = (): UseMutationResult<AuthResponse, Error, LoginCredenti
       return data
     },
     onSuccess: (data) => {
-      localStorage.setItem('token', data.access_token)
-      localStorage.setItem('user', JSON.stringify(data.user))
-      api.defaults.headers.common['Authorization'] = `Bearer ${data.access_token}`
-      queryClient.setQueryData(authKeys.user, data.user)
+      setToken(data.access_token)
+      setUser(data.user)
     },
   })
 }
 
 export const useLogout = (): UseMutationResult<void, Error, void> => {
-  const queryClient = useQueryClient()
+  const { setUser, setToken } = useAuthStore()
 
   return useMutation({
     mutationFn: async () => {
       await api.post('/api/auth/logout')
     },
     onSettled: () => {
-      localStorage.removeItem('token')
-      localStorage.removeItem('user')
-      delete api.defaults.headers.common['Authorization']
-      queryClient.setQueryData(authKeys.user, null)
-      queryClient.clear()
+      setToken(null)
+      setUser(null)
     },
   })
 }

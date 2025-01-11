@@ -1,6 +1,7 @@
 import type { UseMutationResult, UseQueryResult } from '@tanstack/react-query'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
+import { useAuthStore } from '~/stores/auth.store'
 import api from '~/lib/axios'
 
 export interface ApiKey {
@@ -25,7 +26,7 @@ export const apiKeyKeys = {
 }
 
 export const useApiKeys = (projectId: string): UseQueryResult<ApiKey[], Error> => {
-  const user = JSON.parse(localStorage.getItem('user') || 'null')
+  const { user } = useAuthStore()
   const organizationId = user?.currentOrganization
 
   return useQuery({
@@ -44,7 +45,7 @@ export const useApiKeys = (projectId: string): UseQueryResult<ApiKey[], Error> =
 }
 
 export const useCreateApiKey = (): UseMutationResult<ApiKey, Error, CreateApiKeyDto> => {
-  const user = JSON.parse(localStorage.getItem('user') || 'null')
+  const { user } = useAuthStore()
   const organizationId = user?.currentOrganization
   const queryClient = useQueryClient()
 

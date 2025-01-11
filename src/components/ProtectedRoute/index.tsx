@@ -1,7 +1,8 @@
 import type { ReactNode } from 'react'
 import { Navigate, useLocation } from 'react-router-dom'
-import { useAuth } from '~/contexts/AuthContext'
+import { useAuthStore } from '~/stores/auth.store'
 import { APP_ROUTES } from '~/routes'
+import { Box, CircularProgress } from '@mui/material'
 
 interface ProtectedRouteProps {
   children: ReactNode
@@ -9,13 +10,18 @@ interface ProtectedRouteProps {
 }
 
 export const ProtectedRoute = ({ children, guestOnly = false }: ProtectedRouteProps): JSX.Element => {
-  const { isAuthenticated, isLoading } = useAuth()
+  const { user, token, isLoading } = useAuthStore()
   const location = useLocation()
-  const token = localStorage.getItem('token')
 
   if (token && isLoading) {
-    return <div>Loading...</div>
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
+        <CircularProgress />
+      </Box>
+    )
   }
+
+  const isAuthenticated = !!user
 
   if (guestOnly && isAuthenticated) {
     return <Navigate to={'/dashboard'} replace />

@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import { createContext, useContext } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import api from '~/lib/axios'
-import { useAuth } from './AuthContext'
+import { useAuthStore } from '~/stores/auth.store'
 
 interface Project {
   id: string
@@ -26,11 +26,11 @@ export const projectKeys = {
 }
 
 export const ProjectProvider = ({ children }: { children: ReactNode }): JSX.Element => {
-  const { user } = useAuth()
+  const { user } = useAuthStore()
   const organizationId = user?.currentOrganization
 
   const { data: projects, isLoading } = useQuery({
-    queryKey: projectKeys.list(organizationId || ''), // Always provide a string
+    queryKey: projectKeys.list(organizationId || ''),
     queryFn: async () => {
       if (!organizationId) {
         throw new Error('No organization selected')
@@ -43,7 +43,7 @@ export const ProjectProvider = ({ children }: { children: ReactNode }): JSX.Elem
       })
       return data
     },
-    enabled: !!organizationId, // Only run query when we have an organizationId
+    enabled: !!organizationId,
   })
 
   const currentProject = projects?.[0] ?? null
