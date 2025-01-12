@@ -59,7 +59,6 @@ const getBreadcrumbItems = (pathname: string): BreadcrumbItem[] => {
     }
   }
 
-  // Add subsequent items
   paths.forEach((path, index) => {
     currentPath += `/${path}`
     const route = allRoutes.find((r) => r.path === currentPath)
@@ -84,7 +83,6 @@ export const NavbarBreadcrumbs = (): JSX.Element => {
     setBreadcrumbs(items)
   }, [location])
 
-  // Don't render breadcrumbs for auth pages or if there's only one item
   if (
     location.pathname === APP_ROUTES.SIGNIN.path ||
     location.pathname === APP_ROUTES.SIGNUP.path ||

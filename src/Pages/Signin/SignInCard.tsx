@@ -59,7 +59,6 @@ const SignInCard = (): JSX.Element => {
   const onSubmit = async (data: LoginFormData): Promise<void> => {
     try {
       await login(data.email, data.password)
-      // eslint-disable-next-line
       const from = location.state?.from?.pathname || '/dashboard'
       navigate(from, { replace: true })
     } catch (err) {

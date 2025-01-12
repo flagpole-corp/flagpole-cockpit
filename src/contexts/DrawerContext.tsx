@@ -1,4 +1,3 @@
-// src/contexts/DrawerContext.tsx
 import type { ReactNode } from 'react'
 import { createContext, useContext, useState, useCallback } from 'react'
 import { Drawer, Box, Stack, Typography } from '@mui/material'

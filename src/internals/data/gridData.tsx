@@ -84,8 +84,8 @@ export const columns: GridColDef[] = [
     headerName: 'Status',
     flex: 0.5,
     minWidth: 80,
-    // eslint-disable-next-line
-    renderCell: (params) => renderStatus(params.value as any),
+
+    renderCell: (params) => renderStatus(params.value as 'Online' | 'Offline'),
   },
   {
     field: 'users',

@@ -1,4 +1,3 @@
-// lib/axios.ts
 import axios from 'axios'
 import { useAuthStore } from '~/stores/auth.store'
 
@@ -10,7 +9,6 @@ const api = axios.create({
   withCredentials: true,
 })
 
-// Add token to requests if it exists
 api.interceptors.request.use((config) => {
   const token = useAuthStore.getState().token
   const user = useAuthStore.getState().user
@@ -26,7 +24,6 @@ api.interceptors.request.use((config) => {
   return config
 })
 
-// Handle 401 responses
 api.interceptors.response.use(
   (response) => response,
   (error) => {

@@ -89,7 +89,7 @@ export const StatCard = ({ title, value, interval, trend, data }: StatCardProps)
               showTooltip
               xAxis={{
                 scaleType: 'band',
-                data: daysInWeek, // Use the correct property 'data' for xAxis
+                data: daysInWeek,
               }}
               sx={{
                 [`& .${areaElementClasses.root}`]: {
