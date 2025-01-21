@@ -4,7 +4,7 @@ import { AcceptInvitation } from '~/pages'
 import { createRoute } from '../factories/createRoute'
 import { BasePageLayout } from '~/components'
 import { DASHBOARD_ROUTES } from './dashboard'
-import { SignIn } from '../pages/SignIn'
+// import { SignIn } from '../pages/SignIn'
 
 export const APP_ROUTES = {
   HOME: createRoute({ path: '/' }),
@@ -22,14 +22,14 @@ export const router = createBrowserRouter([
       </ProtectedRoute>
     ),
   },
-  {
-    path: APP_ROUTES.SIGNIN.path,
-    element: (
-      <ProtectedRoute guestOnly>
-        <SignIn />
-      </ProtectedRoute>
-    ),
-  },
+  // {
+  //   path: APP_ROUTES.SIGNIN.path,
+  //   element: (
+  //     <ProtectedRoute guestOnly>
+  //       <SignIn />
+  //     </ProtectedRoute>
+  //   ),
+  // },
   {
     path: APP_ROUTES.ACCEPT_INVITE.path,
     element: (
