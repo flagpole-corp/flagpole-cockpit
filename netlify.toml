@@ -1,7 +1,8 @@
 [build]
   command = """
-    ls -la src/pages && 
-    ls -la src/pages/index.ts && 
+    pwd &&
+    ls -la &&
+    ls -la src &&
     npm run build
   """
   publish = "dist"
