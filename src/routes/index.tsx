@@ -1,10 +1,10 @@
 import { createBrowserRouter, Navigate, RouterProvider, type RouteObject } from 'react-router-dom'
 import { ProtectedRoute } from '../components/ProtectedRoute'
-import { SignIn } from '../pages/SignIn'
 import { AcceptInvitation } from '~/pages'
 import { createRoute } from '../factories/createRoute'
 import { BasePageLayout } from '~/components'
 import { DASHBOARD_ROUTES } from './dashboard'
+import { SignIn } from '../pages/SignIn'
 
 export const APP_ROUTES = {
   HOME: createRoute({ path: '/' }),
