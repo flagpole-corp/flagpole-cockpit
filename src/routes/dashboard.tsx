@@ -1,5 +1,5 @@
 import type { NonIndexRouteConfig } from './config'
-import { Feedback, Dashboard, Flags, Projects, Users, PaymentCancel, PaymentSuccess, Pricing, Profile } from '../pages'
+import { Feedback, Dashboard, Flags, Projects, Users, PaymentCancel, PaymentSuccess, Pricing, Profile } from '~/pages'
 
 export const DASHBOARD_ROUTES: NonIndexRouteConfig[] = [
   {
