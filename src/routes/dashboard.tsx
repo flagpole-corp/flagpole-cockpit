@@ -1,50 +1,94 @@
+import { Suspense } from 'react'
 import type { NonIndexRouteConfig } from './config'
 import { Feedback, Dashboard, Flags, Projects, Users, PaymentCancel, PaymentSuccess, Pricing, Profile } from '~/pages'
 
 export const DASHBOARD_ROUTES: NonIndexRouteConfig[] = [
   {
     path: '/dashboard',
-    element: <Dashboard />,
+    element: (
+      <Suspense fallback={<>Loading...</>}>
+        <Dashboard />
+      </Suspense>
+    ),
     title: 'Overview',
   },
   {
     path: '/flags',
-    element: <Flags />,
+    element: (
+      <Suspense fallback={<>Loading...</>}>
+        {' '}
+        <Flags />
+      </Suspense>
+    ),
     title: 'Feature Flags',
   },
   {
     path: '/projects',
-    element: <Projects />,
+    element: (
+      <Suspense fallback={<>Loading...</>}>
+        {' '}
+        <Projects />
+      </Suspense>
+    ),
     title: 'Projects',
   },
   {
     path: '/users',
-    element: <Users />,
+    element: (
+      <Suspense fallback={<>Loading...</>}>
+        {' '}
+        <Users />
+      </Suspense>
+    ),
     title: 'Users',
   },
   {
     path: '/pricing',
-    element: <Pricing />,
+    element: (
+      <Suspense fallback={<>Loading...</>}>
+        {' '}
+        <Pricing />
+      </Suspense>
+    ),
     title: 'Pricing',
   },
   {
     path: '/feedback',
-    element: <Feedback />,
+    element: (
+      <Suspense fallback={<>Loading...</>}>
+        {' '}
+        <Feedback />
+      </Suspense>
+    ),
     title: 'Feedback',
   },
   {
     path: '/payment/success',
-    element: <PaymentSuccess />,
+    element: (
+      <Suspense fallback={<>Loading...</>}>
+        {' '}
+        <PaymentSuccess />
+      </Suspense>
+    ),
     title: 'Payment Success',
   },
   {
     path: '/payment/cancel',
-    element: <PaymentCancel />,
+    element: (
+      <Suspense fallback={<>Loading...</>}>
+        {' '}
+        <PaymentCancel />
+      </Suspense>
+    ),
     title: 'Payment Cancel',
   },
   {
     path: '/profile',
-    element: <Profile />,
+    element: (
+      <Suspense fallback={<>Loading...</>}>
+        <Profile />
+      </Suspense>
+    ),
     title: 'Profile',
   },
 ]
