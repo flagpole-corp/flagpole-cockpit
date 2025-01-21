@@ -36,7 +36,7 @@ const inviteUserSchema = z.object({
 
 type InviteUserFormData = z.infer<typeof inviteUserSchema>
 
-export const Users = (): JSX.Element => {
+const Users = (): JSX.Element => {
   const { openDrawer, closeDrawer } = useDrawer()
   const { data: users, isLoading } = useUsers()
   const { data: projects } = useProjects()
@@ -300,3 +300,5 @@ export const Users = (): JSX.Element => {
     </Box>
   )
 }
+
+export default Users

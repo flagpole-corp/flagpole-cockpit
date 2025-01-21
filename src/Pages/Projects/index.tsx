@@ -22,7 +22,7 @@ const createProjectSchema = z.object({
 
 type CreateProjectFormData = z.infer<typeof createProjectSchema>
 
-export const Projects = (): JSX.Element => {
+const Projects = (): JSX.Element => {
   const { openDrawer, closeDrawer } = useDrawer()
   const [projectToDelete, setProjectToDelete] = useState<{ id: string; name: string } | null>(null)
 
@@ -225,3 +225,5 @@ export const Projects = (): JSX.Element => {
     </Box>
   )
 }
+
+export default Projects

@@ -1,7 +1,7 @@
 import { Alert, Button, Box, Typography } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 
-export const PaymentCancel = (): JSX.Element => {
+const PaymentCancel = (): JSX.Element => {
   const navigate = useNavigate()
 
   return (

@@ -6,7 +6,7 @@ import { profileSchema } from '~/lib/schemas/profile.schema'
 import type { ProfileFormData } from '~/lib/schemas/profile.schema'
 import { useUpdateProfile } from '~/lib/queries/user-profile'
 
-export const Profile = (): JSX.Element => {
+const Profile = (): JSX.Element => {
   const { user, isLoading, getCurrentOrgRole } = useAuthStore()
   const updateProfile = useUpdateProfile()
 
@@ -72,3 +72,5 @@ export const Profile = (): JSX.Element => {
     </Box>
   )
 }
+
+export default Profile

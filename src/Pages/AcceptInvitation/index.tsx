@@ -18,7 +18,7 @@ const acceptInvitationSchema = z
 
 type AcceptInvitationFormData = z.infer<typeof acceptInvitationSchema>
 
-export const AcceptInvitation = (): JSX.Element => {
+const AcceptInvitation = (): JSX.Element => {
   const [searchParams] = useSearchParams()
   const [isSuccess, setIsSuccess] = useState(false)
   const token = searchParams.get('token')
@@ -85,3 +85,5 @@ export const AcceptInvitation = (): JSX.Element => {
     </Box>
   )
 }
+
+export default AcceptInvitation

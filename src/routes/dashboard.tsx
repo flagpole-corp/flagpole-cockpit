@@ -1,6 +1,15 @@
-import { Suspense } from 'react'
+import { lazy, Suspense } from 'react'
 import type { NonIndexRouteConfig } from './config'
-import { Feedback, Dashboard, Flags, Projects, Users, PaymentCancel, PaymentSuccess, Pricing, Profile } from '~/pages'
+
+const Dashboard = lazy(() => import('~/pages/Dashboard'))
+const Flags = lazy(() => import('~/pages/Flags'))
+const Projects = lazy(() => import('~/pages/Projects'))
+const Users = lazy(() => import('~/pages/Users'))
+const PaymentSuccess = lazy(() => import('~/pages/PaymentSuccess'))
+const PaymentCancel = lazy(() => import('~/pages/PaymentCancel'))
+const Pricing = lazy(() => import('~/pages/Pricing'))
+const Profile = lazy(() => import('~/pages/Profile'))
+const Feedback = lazy(() => import('~/pages/Feedback'))
 
 export const DASHBOARD_ROUTES: NonIndexRouteConfig[] = [
   {

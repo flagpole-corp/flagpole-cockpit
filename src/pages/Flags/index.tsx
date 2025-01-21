@@ -80,7 +80,7 @@ const TabPanel = (props: TabPanelProps): JSX.Element => {
   )
 }
 
-export const Flags = (): JSX.Element => {
+const Flags = (): JSX.Element => {
   const [toggledFlags, setToggledFlags] = useState<Set<string>>(new Set())
   const { openDrawer, closeDrawer } = useDrawer()
   const [searchParams, setSearchParams] = useSearchParams()
@@ -537,3 +537,5 @@ export const Flags = (): JSX.Element => {
     </Box>
   )
 }
+
+export default Flags

@@ -2,7 +2,7 @@ import Stack from '@mui/material/Stack'
 import Content from './Content'
 import SignInCard from './SignInCard'
 
-export const SignIn = (): JSX.Element => {
+const SignIn = (): JSX.Element => {
   return (
     <Stack
       direction="column"
@@ -56,3 +56,5 @@ export const SignIn = (): JSX.Element => {
     </Stack>
   )
 }
+
+export default SignIn

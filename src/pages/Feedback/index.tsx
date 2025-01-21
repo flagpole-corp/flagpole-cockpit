@@ -19,7 +19,7 @@ const typeOptions = [
   { value: 'other', label: 'Other' },
 ]
 
-export const Feedback = (): JSX.Element => {
+const Feedback = (): JSX.Element => {
   const { mutateAsync } = useSendFeedback()
 
   const handleSubmit = async (data: FeedbackForm): Promise<void> => {
@@ -49,3 +49,5 @@ export const Feedback = (): JSX.Element => {
     </Box>
   )
 }
+
+export default Feedback

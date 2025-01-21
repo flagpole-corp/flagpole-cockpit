@@ -1,7 +1,7 @@
 import { Alert, Button, Box, Typography } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 
-export const PaymentSuccess = (): JSX.Element => {
+const PaymentSuccess = (): JSX.Element => {
   const navigate = useNavigate()
 
   return (
@@ -26,3 +26,5 @@ export const PaymentSuccess = (): JSX.Element => {
     </Box>
   )
 }
+
+export default PaymentSuccess
