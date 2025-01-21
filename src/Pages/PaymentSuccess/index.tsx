@@ -1,8 +1,7 @@
-import React from 'react'
 import { Alert, Button, Box, Typography } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 
-const PaymentSuccess: React.FC = () => {
+export const PaymentSuccess = (): JSX.Element => {
   const navigate = useNavigate()
 
   return (
@@ -27,5 +26,3 @@ const PaymentSuccess: React.FC = () => {
     </Box>
   )
 }
-
-export default PaymentSuccess
