@@ -1,5 +1,9 @@
 [build]
-  command = "npm run build"
+  command = """
+    ls -la src/pages && 
+    ls -la src/pages/index.ts && 
+    npm run build
+  """
   publish = "dist"
 
 [[redirects]]
