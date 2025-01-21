@@ -19,7 +19,7 @@ import CheckoutButton from '../CheckoutButton'
 import { useStripeProducts } from '~/lib/queries/stripe'
 
 interface BaseTierFeatures {
-  description: string[]
+  description: readonly string[]
   buttonText: string
   buttonVariant: 'outlined' | 'contained'
   buttonColor: 'primary' | 'secondary'
