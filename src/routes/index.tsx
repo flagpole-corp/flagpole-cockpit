@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider, type RouteObject } from 'react-router-dom'
+import { createBrowserRouter, Navigate, RouterProvider, type RouteObject } from 'react-router-dom'
 import { ProtectedRoute } from '../components/ProtectedRoute'
 import { SignIn } from '~/pages/SignIn'
 import { createRoute } from '../factories/createRoute'
@@ -14,6 +14,14 @@ export const APP_ROUTES = {
 } as const
 
 export const router = createBrowserRouter([
+  {
+    path: APP_ROUTES.HOME.path,
+    element: (
+      <ProtectedRoute guestOnly>
+        <Navigate to={'/dashboard'} replace />
+      </ProtectedRoute>
+    ),
+  },
   {
     path: APP_ROUTES.SIGNIN.path,
     element: (
