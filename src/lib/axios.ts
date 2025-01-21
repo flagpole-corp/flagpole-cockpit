@@ -20,7 +20,8 @@ api.interceptors.request.use((config) => {
   if (user?.currentOrganization) {
     config.headers['x-organization-id'] = user.currentOrganization
   }
-
+  // eslint-disable-next-line
+  console.log('Request Headers:', config.headers)
   return config
 })
 
