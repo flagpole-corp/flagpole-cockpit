@@ -49,7 +49,7 @@ const mainListItems: ListItemsType[] = [
 ]
 
 const secondaryListItems: ListItemsType[] = [
-  { text: 'Onboarding', icon: <RocketLaunchIcon />, url: '/admin/onboarding' },
+  { text: 'Onboarding', icon: <RocketLaunchIcon />, url: '/onboarding' },
   { text: 'Feedback', icon: <HelpRoundedIcon />, url: '/feedback' },
 ]
 
@@ -90,7 +90,7 @@ export const MenuContent = (): JSX.Element => {
         flexGrow: 1,
         p: 1,
         justifyContent: 'space-between',
-        height: '100%',
+        // height: '100%',
       }}
     >
       <List>

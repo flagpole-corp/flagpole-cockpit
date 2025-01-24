@@ -10,6 +10,7 @@ import NotificationsRoundedIcon from '@mui/icons-material/NotificationsRounded'
 import { MenuButton } from '../MenuButton'
 import { MenuContent } from '../MenuContent'
 import { CardAlert } from '../CardAlert'
+import { useAuthStore } from '~/stores/auth.store'
 
 interface SideMenuMobileProps {
   open: boolean | undefined
@@ -17,6 +18,8 @@ interface SideMenuMobileProps {
 }
 
 export const SideMenuMobile = ({ open, toggleDrawer }: SideMenuMobileProps): JSX.Element => {
+  const { user } = useAuthStore()
+  const fullName = `${user?.firstName} ${user?.lastName}`
   return (
     <Drawer
       anchor="right"
@@ -38,9 +41,9 @@ export const SideMenuMobile = ({ open, toggleDrawer }: SideMenuMobileProps): JSX
       >
         <Stack direction="row" sx={{ p: 2, pb: 0, gap: 1 }}>
           <Stack direction="row" sx={{ gap: 1, alignItems: 'center', flexGrow: 1, p: 1 }}>
-            <Avatar sizes="small" alt="Riley Carter" src="/static/images/avatar/7.jpg" sx={{ width: 24, height: 24 }} />
+            <Avatar sizes="small" alt={fullName} src="/static/images/avatar/7.jpg" sx={{ width: 24, height: 24 }} />
             <Typography component="p" variant="h6">
-              Riley Carter
+              {fullName}
             </Typography>
           </Stack>
           <MenuButton showBadge>
@@ -52,7 +55,15 @@ export const SideMenuMobile = ({ open, toggleDrawer }: SideMenuMobileProps): JSX
           <MenuContent />
           <Divider />
         </Stack>
-        <CardAlert />
+        <CardAlert
+          title="Plan about to expire"
+          text=" Enjoy 10% off when renewing your plan today."
+          action={
+            <Button variant="contained" size="small" fullWidth>
+              Renew Plan
+            </Button>
+          }
+        />
         <Stack sx={{ p: 2 }}>
           <Button variant="outlined" fullWidth startIcon={<LogoutRoundedIcon />}>
             Logout

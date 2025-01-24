@@ -27,10 +27,10 @@ const Profile = (): JSX.Element => {
   }
 
   return (
-    <Box sx={{ maxWidth: 800, mx: 'auto', p: 3 }}>
+    <Box sx={{ width: '100%', p: 2 }}>
       <Card>
         <CardContent>
-          <Typography variant="h5" gutterBottom>
+          <Typography variant="h5" gutterBottom mb={2}>
             Profile Settings
           </Typography>
 

@@ -1,4 +1,4 @@
-import { styled, Avatar, Drawer as MuiDrawer, drawerClasses, Box, Typography, Stack } from '@mui/material'
+import { styled, Avatar, Drawer as MuiDrawer, drawerClasses, Box, Typography, Stack, Button } from '@mui/material'
 import { MenuContent } from '../MenuContent'
 import { CardAlert } from '../CardAlert'
 import { OptionsMenu } from '../OptionsMenu'
@@ -34,7 +34,15 @@ export const SideMenu = (): JSX.Element => {
         <Logo />
       </Box>
       <MenuContent />
-      <CardAlert />
+      <CardAlert
+        title="Plan about to expire"
+        text=" Enjoy 10% off when renewing your plan today."
+        action={
+          <Button variant="contained" size="small" fullWidth>
+            Renew Plan
+          </Button>
+        }
+      />
       <Stack
         direction="row"
         sx={{

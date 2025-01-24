@@ -80,7 +80,7 @@ export const StatCard = ({ title, value, interval, trend, data }: StatCardProps)
               {interval}
             </Typography>
           </Stack>
-          <Box sx={{ width: '100%', height: 50 }}>
+          <Box sx={{ maxWidth: '200px', height: 50, border: '1px solid red' }}>
             <SparkLineChart
               colors={[chartColor]}
               data={data}
@@ -92,6 +92,7 @@ export const StatCard = ({ title, value, interval, trend, data }: StatCardProps)
                 data: daysInWeek,
               }}
               sx={{
+                border: '1px solid orange',
                 [`& .${areaElementClasses.root}`]: {
                   fill: `url(#area-gradient-${value})`,
                 },

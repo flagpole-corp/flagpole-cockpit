@@ -10,6 +10,7 @@ const PaymentCancel = lazy(() => import('~/pages/PaymentCancel'))
 const Pricing = lazy(() => import('~/pages/Pricing'))
 const Profile = lazy(() => import('~/pages/Profile'))
 const Feedback = lazy(() => import('~/pages/Feedback'))
+const Onboarding = lazy(() => import('~/pages/Onboarding'))
 
 export const DASHBOARD_ROUTES: NonIndexRouteConfig[] = [
   {
@@ -99,5 +100,14 @@ export const DASHBOARD_ROUTES: NonIndexRouteConfig[] = [
       </Suspense>
     ),
     title: 'Profile',
+  },
+  {
+    path: '/onboarding',
+    element: (
+      <Suspense fallback={<>Loading...</>}>
+        <Onboarding />
+      </Suspense>
+    ),
+    title: 'Onboarding',
   },
 ]
