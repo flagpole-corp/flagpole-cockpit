@@ -1,5 +1,6 @@
 import type { UseQueryResult, UseMutationResult } from '@tanstack/react-query'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { toast } from 'react-toastify'
 import api from '~/lib/axios'
 
 export interface Project {
@@ -38,6 +39,10 @@ export const useCreateProject = (): UseMutationResult<Project, Error, { name: st
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: projectKeys.lists() })
+      toast.success('Project created successfully')
+    },
+    onError: () => {
+      toast.error('Oh! Something went wrong :(')
     },
   })
 }

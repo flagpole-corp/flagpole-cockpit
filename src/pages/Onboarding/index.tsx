@@ -1,17 +1,23 @@
-import * as React from 'react'
-import Box from '@mui/material/Box'
-import Stepper from '@mui/material/Stepper'
-import Step from '@mui/material/Step'
-import StepLabel from '@mui/material/StepLabel'
-import StepContent from '@mui/material/StepContent'
-import Button from '@mui/material/Button'
-import Paper from '@mui/material/Paper'
-import Typography from '@mui/material/Typography'
+import LoadingButton from '@mui/lab/LoadingButton'
 import Prism from 'prismjs'
 import 'prismjs/themes/prism-tomorrow.css'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import CheckIcon from '@mui/icons-material/Check'
+import { toast } from 'react-toastify'
+import { useCreateProject, type Project } from '~/lib/queries/projects'
+import { useCreateApiKey, type ApiKey } from '~/lib/queries/api-keys'
+import { useEffect, useState } from 'react'
+import { Box, Step, StepLabel, StepContent, Button, Paper, Typography, Stepper } from '@mui/material'
+import type { FeatureFlag } from '~/lib/queries/flags'
+import { useCreateFeatureFlag } from '~/lib/queries/flags'
+import ReactConfetti from 'react-confetti'
+import { useWindowSize } from '~/hooks/useWindowSize'
+
+interface CodeBlockProps {
+  code: string
+  language?: string
+}
 
 interface StepType {
   label: string
@@ -20,54 +26,27 @@ interface StepType {
     install: string
     usage: string
   }
+  action?: () => Promise<Project | ApiKey | FeatureFlag>
+  validation?: boolean
 }
 
-const steps: StepType[] = [
-  {
-    label: 'Create a Project',
+type StepKey = 'project' | 'apiKey' | 'flag'
+const stepKeys: StepKey[] = ['project', 'apiKey', 'flag']
 
-    // eslint-disable-next-line
-    description: `First, create a project to organize your feature flags. Each project represents a different application or service in your ecosystem.`,
-  },
-  {
-    label: 'Generate API Key',
-    // eslint-disable-next-line
-    description: `Generate and securely store an API key for your project. You'll need this to connect your application.`,
-  },
-  {
-    label: 'Implement the SDK',
-    description: 'Install and configure our SDK in your application:',
-    code: {
-      install: `npm install @flagpole/react  # for React
-yarn add @flagpole/react    # or using yarn`,
-      usage: `import { useFlagpole } from '@flagpole/react';
+const generateProjectName = (): string => {
+  const randomStr = Math.random().toString(36).substring(2, 6)
+  return `demo-project-${randomStr}`
+}
 
-const App = () => {
-  const { isEnabled } = useFlagpole('my-feature-flag');
-  
-  return (
-    <div>
-      {isEnabled ? (
-        <NewFeature />
-      ) : (
-        <OldFeature />
-      )}
-    </div>
-  );
-};`,
-    },
-  },
-]
-
-interface CodeBlockProps {
-  code: string
-  language?: string
+const generateFlagName = (): string => {
+  const timestamp = Date.now().toString(36)
+  return `flag-${timestamp}`
 }
 
 const CodeBlock = ({ code, language = 'javascript' }: CodeBlockProps): JSX.Element => {
-  const [copied, setCopied] = React.useState(false)
+  const [copied, setCopied] = useState(false)
 
-  React.useEffect(() => {
+  useEffect(() => {
     Prism.highlightAll()
   }, [code])
 
@@ -101,10 +80,124 @@ const CodeBlock = ({ code, language = 'javascript' }: CodeBlockProps): JSX.Eleme
 }
 
 const Onboarding = (): JSX.Element => {
-  const [activeStep, setActiveStep] = React.useState(0)
+  const [activeStep, setActiveStep] = useState(0)
+  const [createdProject, setCreatedProject] = useState<Project | null>(null)
+  const [createdApiKey, setCreatedApiKey] = useState<ApiKey | null>(null)
+  const [createdFlag, setCreatedFlag] = useState<FeatureFlag | null>(null)
+  const [showConfetti, setShowConfetti] = useState(false)
+  const { width, height } = useWindowSize()
 
-  const handleNext = (): void => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1)
+  const createProject = useCreateProject()
+  const createApiKey = useCreateApiKey()
+  const createFeatureFlag = useCreateFeatureFlag()
+
+  const [stepsCompleted, setStepsCompleted] = useState({
+    project: false,
+    apiKey: false,
+    flag: false,
+  })
+
+  const steps: StepType[] = [
+    {
+      label: 'Create a Project',
+      // eslint-disable-next-line
+      description: `First, create a project to organize your feature flags. We'll create a default project for you to get started.`,
+      action: async (): Promise<Project> => {
+        const project = await createProject.mutateAsync({
+          name: generateProjectName(),
+          description: 'Created during onboarding',
+        })
+        setCreatedProject(project)
+        setStepsCompleted((prev) => ({ ...prev, project: true }))
+        return project
+      },
+    },
+    {
+      label: 'Generate API Key',
+      // eslint-disable-next-line
+      description: "We'll generate an API key for your project that you'll use to connect your application.",
+      action: async (): Promise<ApiKey> => {
+        if (!createdProject) throw new Error('No project created')
+        const apiKey = await createApiKey.mutateAsync({
+          name: 'Default API Key',
+          projectId: createdProject._id,
+        })
+        setCreatedApiKey(apiKey)
+        setStepsCompleted((prev) => ({ ...prev, apiKey: true }))
+        return apiKey
+      },
+      validation: stepsCompleted.project,
+    },
+    {
+      label: 'Create Your First Feature Flag',
+      // eslint-disable-next-line
+      description: "Let's create your first feature flag to get you started. We'll create a simple toggle flag.",
+      action: async (): Promise<FeatureFlag> => {
+        if (!createdProject) throw new Error('No project created')
+        const flag = await createFeatureFlag.mutateAsync({
+          name: generateFlagName(),
+          description: 'My first feature flag created during onboarding',
+          environments: ['development'],
+          projectId: createdProject._id,
+        })
+        setCreatedFlag(flag)
+        setStepsCompleted((prev) => ({ ...prev, flag: true }))
+        return flag
+      },
+      validation: stepsCompleted.apiKey,
+    },
+    {
+      label: 'Implement the SDK',
+      // eslint-disable-next-line
+      description: "Now that everything is set up, here's how to implement the SDK in your application:",
+      code: {
+        install: `npm install @flagpole/react  # for React
+yarn add @flagpole/react    # or using yarn`,
+        usage: `import { FeatureFlagProvider, useFlagPole } from "@flagpole/client-react-sdk"';
+
+const App = () => {
+ return (
+  <FeatureFlagProvider api-key={${createdApiKey?.key || 'YOUR_API_KEY'}}>
+    <App />
+  </FeatureFlagProvider>
+ );
+};
+
+const ChildComponent = () => {
+  const { isEnabled } = useFlagpole('${createdFlag?.name}');
+
+  return (
+    <>
+      {isEnabled ? 'Its enabled' : 'Not enabled'}
+    </>
+  )
+}
+`,
+      },
+    },
+  ]
+
+  const handleNext = async (): Promise<void> => {
+    const currentStep = steps[activeStep]
+    const isLastStep = activeStep === steps.length - 1
+
+    if (currentStep.action) {
+      try {
+        await currentStep.action()
+        setActiveStep((prev) => prev + 1)
+      } catch {
+        toast.error('Failed to complete step')
+        return
+      }
+    } else {
+      setActiveStep((prev) => prev + 1)
+    }
+
+    // Show confetti only when moving to completion state
+    if (isLastStep) {
+      setShowConfetti(true)
+      setTimeout(() => setShowConfetti(false), 5000)
+    }
   }
 
   const handleBack = (): void => {
@@ -116,7 +209,10 @@ const Onboarding = (): JSX.Element => {
   }
 
   return (
-    <Box sx={{ '&&': { mr: 'auto' } }}>
+    <Box sx={{ width: '100%', p: 3 }}>
+      {showConfetti && (
+        <ReactConfetti width={width} height={height} recycle={false} numberOfPieces={300} gravity={0.3} />
+      )}
       <Typography variant="h3" gutterBottom>
         Create your first feature flag!
       </Typography>
@@ -143,9 +239,15 @@ const Onboarding = (): JSX.Element => {
                 </>
               )}
               <Box sx={{ mb: 2 }}>
-                <Button variant="contained" onClick={handleNext} sx={{ mt: 1, mr: 1 }}>
+                <LoadingButton
+                  loading={createProject.isPending || createApiKey.isPending}
+                  variant="contained"
+                  onClick={handleNext}
+                  sx={{ mt: 1, mr: 1 }}
+                  disabled={activeStep > 0 && !stepsCompleted[stepKeys[activeStep - 1]]}
+                >
                   {index === steps.length - 1 ? 'Finish' : 'Continue'}
-                </Button>
+                </LoadingButton>
                 <Button disabled={index === 0} onClick={handleBack} sx={{ mt: 1, mr: 1 }}>
                   Back
                 </Button>
@@ -156,7 +258,7 @@ const Onboarding = (): JSX.Element => {
       </Stepper>
       {activeStep === steps.length && (
         <Paper square elevation={0} sx={{ p: 3 }}>
-          <Typography>All steps completed - you&apos;re ready to use feature flags!</Typography>
+          <Typography>All steps completed - you're ready to use feature flags!</Typography>
           <Button onClick={handleReset} sx={{ mt: 1, mr: 1 }}>
             Reset
           </Button>
