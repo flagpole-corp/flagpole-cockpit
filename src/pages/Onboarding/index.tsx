@@ -149,11 +149,11 @@ const Onboarding = (): JSX.Element => {
     {
       label: 'Implement the SDK',
       // eslint-disable-next-line
-      description: "Now that everything is set up, here's how to implement the SDK in your application:",
+      description: "Now that everything is set up, here's how to implement the SDK in your application",
       code: {
-        install: `npm install @flagpole/react  # for React
-yarn add @flagpole/react    # or using yarn`,
-        usage: `import { FeatureFlagProvider, useFlagPole } from "@flagpole/client-react-sdk"';
+        install: `npm install @flagpole/client-react  # for React
+yarn add @flagpole/client-react    # or using yarn`,
+        usage: `import { FeatureFlagProvider, useFlagPole } from "@flagpole/client-react"';
 
 const App = () => {
  return (
