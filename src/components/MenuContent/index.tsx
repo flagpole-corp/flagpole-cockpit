@@ -2,10 +2,8 @@ import HomeRoundedIcon from '@mui/icons-material/HomeRounded'
 import ToggleOnOutlinedIcon from '@mui/icons-material/ToggleOnOutlined'
 import PeopleRoundedIcon from '@mui/icons-material/PeopleRounded'
 import AssignmentRoundedIcon from '@mui/icons-material/AssignmentRounded'
-import HelpRoundedIcon from '@mui/icons-material/HelpRounded'
 import { NavLink, useLocation } from 'react-router-dom'
 import type { ReactNode } from 'react'
-import RocketLaunchIcon from '@mui/icons-material/RocketLaunch'
 
 import { styled, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Stack } from '@mui/material'
 
@@ -48,10 +46,7 @@ const mainListItems: ListItemsType[] = [
   { text: 'Users', icon: <PeopleRoundedIcon />, url: '/users' },
 ]
 
-const secondaryListItems: ListItemsType[] = [
-  { text: 'Onboarding', icon: <RocketLaunchIcon />, url: '/onboarding' },
-  { text: 'Feedback', icon: <HelpRoundedIcon />, url: '/feedback' },
-]
+const secondaryListItems: ListItemsType[] = []
 
 const MenuItem = ({ item }: { item: ListItemsType }): JSX.Element => {
   const location = useLocation()

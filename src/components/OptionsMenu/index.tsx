@@ -1,78 +1,107 @@
 import { styled } from '@mui/material/styles'
-import Divider, { dividerClasses } from '@mui/material/Divider'
-import Menu from '@mui/material/Menu'
-import MuiMenuItem from '@mui/material/MenuItem'
-import { paperClasses } from '@mui/material/Paper'
-import { listClasses } from '@mui/material/List'
-import ListItemText from '@mui/material/ListItemText'
-import ListItemIcon, { listItemIconClasses } from '@mui/material/ListItemIcon'
-import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded'
-import MoreVertRoundedIcon from '@mui/icons-material/MoreVertRounded'
+import {
+  Divider,
+  Menu,
+  MenuItem as MuiMenuItem,
+  ListItemText,
+  ListItemIcon,
+  dividerClasses,
+  paperClasses,
+  listClasses,
+  listItemIconClasses,
+  Stack,
+  Typography,
+} from '@mui/material'
+import {
+  MoreVertRounded,
+  LogoutRounded,
+  Person,
+  Receipt,
+  RocketLaunch,
+  LibraryBooks,
+  HelpRounded,
+  OpenInNew,
+} from '@mui/icons-material'
 import { MenuButton } from '../MenuButton'
-import type { MouseEvent } from 'react'
 import { useState, Fragment } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '~/stores/auth.store'
 
-const MenuItem = styled(MuiMenuItem)({
-  margin: '2px 0',
-})
+const MenuItem = styled(MuiMenuItem)({ margin: '2px 0' })
+
+const menuItemIconStyle = {
+  [`& .${listItemIconClasses.root}`]: {
+    ml: 'auto',
+    minWidth: 0,
+  },
+}
+
+const menuStyles = {
+  [`& .${listClasses.root}`]: { padding: '4px' },
+  [`& .${paperClasses.root}`]: {
+    minWidth: 180,
+    padding: 0,
+  },
+  [`& .${dividerClasses.root}`]: { margin: '4px -4px' },
+}
 
 export const OptionsMenu = (): JSX.Element => {
   const { logout } = useAuthStore()
   const navigate = useNavigate()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-  const open = Boolean(anchorEl)
-  const handleClick = (event: MouseEvent<HTMLElement>): void => {
-    setAnchorEl(event.currentTarget)
-  }
-  const handleClose = (): void => {
-    setAnchorEl(null)
-  }
+
+  const menuItems = [
+    { text: 'Profile', icon: <Person />, onClick: () => navigate('/profile') },
+    { text: 'Billing', icon: <Receipt />, onClick: () => setAnchorEl(null) },
+    null, // Divider
+    { text: 'Onboarding', icon: <RocketLaunch />, onClick: () => navigate('/profile') },
+    {
+      text: (
+        <Stack direction={'row'} spacing={0.5} alignItems={'center'}>
+          <Typography>Docs</Typography> <OpenInNew sx={{ fontSize: 15, pt: '1px' }} />{' '}
+        </Stack>
+      ),
+      icon: <LibraryBooks />,
+      onClick: () => window.open('https://docs.useflagpole.dev', '_blank', 'noopener,noreferrer'),
+    },
+    {
+      text: 'Feedback',
+      icon: <HelpRounded />,
+      onclick: () => navigate('/feedback'),
+    },
+    null, // Divider
+    { text: 'Logout', icon: <LogoutRounded fontSize="small" />, onClick: logout },
+  ]
+
   return (
     <Fragment>
-      <MenuButton aria-label="Open menu" onClick={handleClick} sx={{ borderColor: 'transparent' }}>
-        <MoreVertRoundedIcon />
+      <MenuButton
+        aria-label="Open menu"
+        onClick={(e): void => setAnchorEl(e.currentTarget)}
+        sx={{ borderColor: 'transparent' }}
+      >
+        <MoreVertRounded />
       </MenuButton>
+
       <Menu
         anchorEl={anchorEl}
-        id="menu"
-        open={open}
-        onClose={handleClose}
-        onClick={handleClose}
+        open={Boolean(anchorEl)}
+        onClose={(): void => setAnchorEl(null)}
+        onClick={(): void => setAnchorEl(null)}
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-        sx={{
-          [`& .${listClasses.root}`]: {
-            padding: '4px',
-          },
-          [`& .${paperClasses.root}`]: {
-            minWidth: 180,
-            padding: 0,
-          },
-          [`& .${dividerClasses.root}`]: {
-            margin: '4px -4px',
-          },
-        }}
+        sx={menuStyles}
       >
-        <MenuItem onClick={(): void => navigate('/profile')}>Profile</MenuItem>
-        <Divider />
-        <MenuItem onClick={handleClose}>Billing</MenuItem>
-        <Divider />
-        <MenuItem
-          onClick={logout}
-          sx={{
-            [`& .${listItemIconClasses.root}`]: {
-              ml: 'auto',
-              minWidth: 0,
-            },
-          }}
-        >
-          <ListItemText>Logout</ListItemText>
-          <ListItemIcon>
-            <LogoutRoundedIcon fontSize="small" />
-          </ListItemIcon>
-        </MenuItem>
+        {menuItems.map((item, index) =>
+          item ? (
+            <MenuItem key={String(item.text)} onClick={item.onClick} sx={menuItemIconStyle}>
+              <ListItemText>{item.text}</ListItemText>
+              <ListItemIcon>{item.icon}</ListItemIcon>
+            </MenuItem>
+          ) : (
+            <Divider key={`divider-${index}`} />
+          )
+        )}
       </Menu>
     </Fragment>
   )
