@@ -167,7 +167,7 @@ const SignInCard = (): JSX.Element => {
 
         <Typography sx={{ textAlign: 'center' }}>
           Don&apos;t have an account?{' '}
-          <Link href="/demo-request" variant="body2" sx={{ alignSelf: 'center' }}>
+          <Link href="/request-demo" variant="body2" sx={{ alignSelf: 'center' }}>
             Request a demo
           </Link>
         </Typography>

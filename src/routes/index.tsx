@@ -5,12 +5,14 @@ import AcceptInvitation from '~/pages/AcceptInvitation'
 import { createRoute } from '../factories/createRoute'
 import { BasePageLayout } from '~/components'
 import { DASHBOARD_ROUTES } from './dashboard'
+import RequestDemo from '~/pages/RequestDemo'
 
 export const APP_ROUTES = {
   HOME: createRoute({ path: '/' }),
   SIGNIN: createRoute({ path: '/signin', guestOnly: true }),
   SIGNUP: createRoute({ path: '/signup', guestOnly: true }),
   ACCEPT_INVITE: createRoute({ path: '/accept-invite', guestOnly: true }),
+  DEMO_REQUEST: createRoute({ path: '/request-demo', guestOnly: true }),
 } as const
 
 export const router = createBrowserRouter([
@@ -35,6 +37,14 @@ export const router = createBrowserRouter([
     element: (
       <ProtectedRoute guestOnly>
         <AcceptInvitation />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: APP_ROUTES.DEMO_REQUEST.path,
+    element: (
+      <ProtectedRoute guestOnly>
+        <RequestDemo />
       </ProtectedRoute>
     ),
   },
