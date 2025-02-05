@@ -4,8 +4,8 @@ import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import DialogContentText from '@mui/material/DialogContentText'
 import DialogTitle from '@mui/material/DialogTitle'
-import OutlinedInput from '@mui/material/OutlinedInput'
 import type { FormEvent } from 'react'
+import { TextField } from '@mui/material'
 
 interface ForgotPasswordProps {
   open: boolean
@@ -31,15 +31,13 @@ export const ForgotPasswordInput = ({ open, handleClose }: ForgotPasswordProps):
         <DialogContentText>
           Enter your account&apos;s email address, and we&apos;ll send you a link to reset your password.
         </DialogContentText>
-        <OutlinedInput
+        <TextField
           autoFocus
-          required
           margin="dense"
           id="email"
           name="email"
           label="Email address"
           placeholder="Email address"
-          type="email"
           fullWidth
         />
       </DialogContent>
