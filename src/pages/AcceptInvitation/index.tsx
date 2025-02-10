@@ -1,14 +1,21 @@
 import { useState } from 'react'
 import { useSearchParams, Navigate } from 'react-router-dom'
-import { Box, Paper, Typography, Stack } from '@mui/material'
+import { Box, Paper, Typography, Stack, Button } from '@mui/material'
 import { z } from 'zod'
-import { Form } from '~/components/Form'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { FormTextField } from '~/components/FormTextField'
-import { useAcceptInvitation } from '~/lib/queries/accept-invitation'
+import { useAcceptInvitation } from '~/lib/queries/auth'
 
 const acceptInvitationSchema = z
   .object({
-    password: z.string().min(8, 'Password must be at least 8 characters'),
+    password: z
+      .string()
+      .min(8, 'Password must be at least 8 characters')
+      .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
+      .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
+      .regex(/[0-9]/, 'Password must contain at least one number')
+      .regex(/[^A-Za-z0-9]/, 'Password must contain at least one special character'),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -25,12 +32,38 @@ const AcceptInvitation = (): JSX.Element => {
 
   const acceptInvitation = useAcceptInvitation()
 
+  const {
+    control,
+    handleSubmit,
+    formState: { isSubmitting, errors },
+    reset,
+  } = useForm<AcceptInvitationFormData>({
+    resolver: zodResolver(acceptInvitationSchema),
+    defaultValues: {
+      password: '',
+      confirmPassword: '',
+    },
+  })
+
   if (!token) {
     return <Navigate to="/signin" replace />
   }
 
   if (isSuccess) {
     return <Navigate to="/signin" replace />
+  }
+
+  const onSubmit = async (data: AcceptInvitationFormData): Promise<void> => {
+    try {
+      await acceptInvitation.mutateAsync({
+        token,
+        password: data.password,
+      })
+      reset()
+      setIsSuccess(true)
+    } catch (error) {
+      console.error('Failed to accept invitation:', error)
+    }
   }
 
   return (
@@ -47,40 +80,45 @@ const AcceptInvitation = (): JSX.Element => {
           Accept Invitation
         </Typography>
 
-        <Form<AcceptInvitationFormData>
-          onSubmit={async (data): Promise<void> => {
-            await acceptInvitation.mutateAsync({
-              token,
-              password: data.password,
-            })
-
-            setIsSuccess(true)
+        <Box
+          component="form"
+          onSubmit={(e): void => {
+            e.preventDefault()
+            handleSubmit(onSubmit)(e)
           }}
-          onCancel={(): void => {}}
-          schema={acceptInvitationSchema}
+          noValidate
+          autoComplete="off"
         >
-          {(control): JSX.Element => (
-            <Stack spacing={3}>
-              <FormTextField
-                control={control}
-                name="password"
-                label="Password"
-                type="password"
-                fullWidth
-                autoComplete="new-password"
-              />
+          <Stack spacing={3}>
+            <FormTextField
+              control={control}
+              name="password"
+              label="Password"
+              type="password"
+              fullWidth
+              autoComplete="new-password"
+              error={!!errors.password}
+              helperText={errors.password?.message}
+            />
 
-              <FormTextField
-                control={control}
-                name="confirmPassword"
-                label="Confirm Password"
-                type="password"
-                fullWidth
-                autoComplete="new-password"
-              />
+            <FormTextField
+              control={control}
+              name="confirmPassword"
+              label="Confirm Password"
+              type="password"
+              fullWidth
+              autoComplete="new-password"
+              error={!!errors.confirmPassword}
+              helperText={errors.confirmPassword?.message}
+            />
+
+            <Stack direction="row" spacing={2} justifyContent="flex-end">
+              <Button type="submit" variant="contained" disabled={isSubmitting}>
+                {isSubmitting ? 'Setting up...' : 'Set Password'}
+              </Button>
             </Stack>
-          )}
-        </Form>
+          </Stack>
+        </Box>
       </Paper>
     </Box>
   )

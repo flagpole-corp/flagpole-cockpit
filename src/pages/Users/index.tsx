@@ -27,6 +27,8 @@ import { useState } from 'react'
 import { DeleteConfirmationDialog } from '~/components/DeleteConfirmationDialog'
 
 const inviteUserSchema = z.object({
+  firstName: z.string().min(3, 'First name must be at least 3 characters'),
+  lastName: z.string().optional(),
   email: z.string().email('Invalid email address'),
   role: z.enum(['owner', 'admin', 'member'], {
     errorMap: () => ({ message: 'Please select a role' }),
@@ -34,7 +36,14 @@ const inviteUserSchema = z.object({
   projects: z.array(z.string()).optional(),
 })
 
+const editUserSchema = inviteUserSchema.pick({
+  role: true,
+  projects: true,
+  email: true,
+})
+
 type InviteUserFormData = z.infer<typeof inviteUserSchema>
+type EditUserFormData = z.infer<typeof editUserSchema>
 
 const Users = (): JSX.Element => {
   const { openDrawer, closeDrawer } = useDrawer()
@@ -61,7 +70,7 @@ const Users = (): JSX.Element => {
   const handleEdit = (user: User): void => {
     openDrawer({
       content: (
-        <Form<InviteUserFormData>
+        <Form<EditUserFormData>
           onSubmit={async (data): Promise<void> => {
             await updateRole.mutateAsync({ id: user._id, role: data.role as OrganizationRole })
             if (data.projects) {
@@ -71,7 +80,7 @@ const Users = (): JSX.Element => {
             toast.success('User updated successfully')
           }}
           onCancel={closeDrawer}
-          schema={inviteUserSchema}
+          schema={editUserSchema}
           defaultValues={{
             email: user.email,
             role: user.organizations[0].role as OrganizationRole,
@@ -134,6 +143,8 @@ const Users = (): JSX.Element => {
         >
           {(control): JSX.Element => (
             <Stack spacing={2}>
+              <FormTextField control={control} name="firstName" label="First Name" placeholder="John" fullWidth />
+              <FormTextField control={control} name="lastName" label="Last Name" placeholder="Doe" fullWidth />
               <FormTextField control={control} name="email" label="Email" placeholder="user@example.com" fullWidth />
 
               <FormSelect

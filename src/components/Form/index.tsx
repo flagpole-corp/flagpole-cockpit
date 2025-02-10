@@ -40,7 +40,15 @@ export function Form<TFormData extends FieldValues>({
   }
 
   return (
-    <Box component="form" onSubmit={handleSubmit(handleFormSubmit)} noValidate autoComplete="off">
+    <Box
+      component="form"
+      onSubmit={(e): void => {
+        e.preventDefault()
+        handleSubmit(handleFormSubmit)(e)
+      }}
+      noValidate
+      autoComplete="off"
+    >
       <Stack spacing={3}>
         {children(control)}
         <Stack direction="row" spacing={2} justifyContent="flex-end">

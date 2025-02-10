@@ -6,6 +6,7 @@ import { createRoute } from '../factories/createRoute'
 import { BasePageLayout } from '~/components'
 import { DASHBOARD_ROUTES } from './dashboard'
 import RequestDemo from '~/pages/RequestDemo'
+import ResetPassword from '~/pages/ResetPassword'
 
 export const APP_ROUTES = {
   HOME: createRoute({ path: '/' }),
@@ -13,6 +14,7 @@ export const APP_ROUTES = {
   SIGNUP: createRoute({ path: '/signup', guestOnly: true }),
   ACCEPT_INVITE: createRoute({ path: '/accept-invite', guestOnly: true }),
   DEMO_REQUEST: createRoute({ path: '/request-demo', guestOnly: true }),
+  RESET_PASSWORD: createRoute({ path: '/reset-password', guestOnly: true }),
 } as const
 
 export const router = createBrowserRouter([
@@ -45,6 +47,14 @@ export const router = createBrowserRouter([
     element: (
       <ProtectedRoute guestOnly>
         <RequestDemo />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: APP_ROUTES.RESET_PASSWORD.path,
+    element: (
+      <ProtectedRoute guestOnly>
+        <ResetPassword />
       </ProtectedRoute>
     ),
   },
