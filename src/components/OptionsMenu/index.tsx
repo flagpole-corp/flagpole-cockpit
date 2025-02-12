@@ -52,9 +52,14 @@ export const OptionsMenu = (): JSX.Element => {
 
   const menuItems = [
     { text: 'Profile', icon: <Person />, onClick: () => navigate('/profile') },
-    { text: 'Billing', icon: <Receipt />, onClick: () => setAnchorEl(null) },
+    { text: 'Billing', icon: <Receipt />, onClick: () => navigate('/profile/billing') },
     null, // Divider
-    { text: 'Onboarding', icon: <RocketLaunch />, onClick: () => navigate('/profile') },
+    { text: 'Onboarding', icon: <RocketLaunch />, onClick: () => navigate('/onboarding') },
+    {
+      text: 'Feedback',
+      icon: <HelpRounded />,
+      onclick: () => navigate('/feedback'),
+    },
     {
       text: (
         <Stack direction={'row'} spacing={0.5} alignItems={'center'}>
@@ -64,11 +69,7 @@ export const OptionsMenu = (): JSX.Element => {
       icon: <LibraryBooks />,
       onClick: () => window.open('https://docs.useflagpole.dev', '_blank', 'noopener,noreferrer'),
     },
-    {
-      text: 'Feedback',
-      icon: <HelpRounded />,
-      onclick: () => navigate('/feedback'),
-    },
+
     null, // Divider
     { text: 'Logout', icon: <LogoutRounded fontSize="small" />, onClick: logout },
   ]
