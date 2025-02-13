@@ -58,7 +58,7 @@ export const OptionsMenu = (): JSX.Element => {
     {
       text: 'Feedback',
       icon: <HelpRounded />,
-      onclick: () => navigate('/feedback'),
+      onClick: () => navigate('/feedback'),
     },
     {
       text: (
@@ -69,7 +69,6 @@ export const OptionsMenu = (): JSX.Element => {
       icon: <LibraryBooks />,
       onClick: () => window.open('https://docs.useflagpole.dev', '_blank', 'noopener,noreferrer'),
     },
-
     null, // Divider
     { text: 'Logout', icon: <LogoutRounded fontSize="small" />, onClick: logout },
   ]
