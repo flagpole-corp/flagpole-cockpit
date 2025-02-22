@@ -214,6 +214,15 @@ export const inputsCustomizations: Components<Theme> = {
             },
           },
         ],
+        '& .MuiLoadingButton-loadingIndicator': {
+          color: gray[700],
+        },
+        '&.MuiButton-loading': {
+          color: 'transparent',
+        },
+        '&.Mui-disabled': {
+          color: gray[700],
+        },
       }),
     },
   },
@@ -272,6 +281,7 @@ export const inputsCustomizations: Components<Theme> = {
       }),
     },
   },
+
   MuiToggleButtonGroup: {
     styleOverrides: {
       root: ({ theme }) => ({
