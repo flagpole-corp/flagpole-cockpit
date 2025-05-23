@@ -1,55 +1,126 @@
 import type { Query, QueryKey } from '@tanstack/react-query'
-import { QueryClient, QueryCache } from '@tanstack/react-query'
+import { QueryClient, QueryCache, MutationCache } from '@tanstack/react-query'
+import { toast } from 'react-toastify'
 import { createApiError } from './errors/apiError'
 import { isAuthError, isNetworkError, getErrorMessage } from './errors/utils'
-import { authKeys } from './queries/auth'
 import { useAuthStore } from '~/stores/auth.store'
 
-let showSnackbarRef: ((message: string, severity: 'error' | 'success' | 'info' | 'warning') => void) | null = null
+const extractErrorMessage = (error: unknown): string => {
+  if (error && typeof error === 'object' && 'response' in error) {
+    // eslint-disable-next-line
+    const axiosError = error as any
+    if (axiosError.response?.data) {
+      const { message, error: errorType } = axiosError.response.data
 
-export const setSnackbarRef = (ref: typeof showSnackbarRef): void => {
-  showSnackbarRef = ref
-}
+      if (Array.isArray(message)) {
+        return message.join(', ')
+      }
 
-const ERROR_HANDLERS: Record<string, (message: string) => void> = {
-  [authKeys.user[0]]: (message) => showSnackbarRef?.(message, 'error'),
-}
+      if (typeof message === 'string') {
+        return message
+      }
 
-const handleDefaultError = (message: string): void => {
-  showSnackbarRef?.(message, 'error')
-}
+      if (typeof errorType === 'string') {
+        return errorType
+      }
+    }
 
-const queryCacheOnError = (error: Error, query: Query<unknown, unknown, unknown, QueryKey>): void => {
+    if (axiosError.message) {
+      return axiosError.message
+    }
+  }
+
+  if (error instanceof Error) {
+    return error.message
+  }
+
   const apiError = createApiError(error)
-  const errorMessage = getErrorMessage(apiError)
+  return getErrorMessage(apiError)
+}
+
+const handleQueryError = (error: Error, query: Query<unknown, unknown, unknown, QueryKey>): void => {
+  const apiError = createApiError(error)
+  const errorMessage = extractErrorMessage(error)
 
   if (isAuthError(apiError)) {
     const { setToken, setUser } = useAuthStore.getState()
     setToken(null)
     setUser(null)
-    showSnackbarRef?.(errorMessage, 'error')
+    toast.error(errorMessage)
     window.location.href = '/signin'
     return
   }
 
   if (isNetworkError(apiError)) {
-    showSnackbarRef?.(errorMessage, 'error')
+    toast.error(errorMessage)
     return
   }
 
-  const queryKey = Array.isArray(query.queryKey) && query.queryKey[0]
-  const handleError = (queryKey && ERROR_HANDLERS[queryKey]) || handleDefaultError
-  handleError(errorMessage)
+  const queryKey = Array.isArray(query.queryKey) ? query.queryKey[0] : null
+
+  const skipToastQueries: unknown[] = [
+    // Add query keys here that shouldn't show error toasts
+  ]
+
+  if (queryKey && skipToastQueries.includes(queryKey as string)) {
+    return
+  }
+
+  toast.error(errorMessage)
+}
+
+const handleMutationError = (error: Error): void => {
+  const apiError = createApiError(error)
+  const errorMessage = extractErrorMessage(error)
+
+  if (isAuthError(apiError)) {
+    const { setToken, setUser } = useAuthStore.getState()
+    setToken(null)
+    setUser(null)
+    toast.error(errorMessage)
+    window.location.href = '/signin'
+    return
+  }
+
+  if (isNetworkError(apiError)) {
+    toast.error(errorMessage)
+    return
+  }
+
+  toast.error(errorMessage)
 }
 
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      retry: false,
+      retry: (failureCount, error): boolean => {
+        // Don't retry on auth errors
+        const apiError = createApiError(error)
+        if (isAuthError(apiError)) {
+          return false
+        }
+        // Retry up to 2 times for other errors
+        return failureCount < 2
+      },
       refetchOnWindowFocus: false,
+      staleTime: 5 * 60 * 1000, // 5 minutes
+    },
+    mutations: {
+      retry: (failureCount, error): boolean => {
+        // Don't retry mutations on auth errors or client errors (4xx)
+        const apiError = createApiError(error)
+        if (isAuthError(apiError) || (apiError.statusCode >= 400 && apiError.statusCode < 500)) {
+          return false
+        }
+        // Retry once for server errors (5xx)
+        return failureCount < 1
+      },
     },
   },
   queryCache: new QueryCache({
-    onError: queryCacheOnError,
+    onError: handleQueryError,
+  }),
+  mutationCache: new MutationCache({
+    onError: handleMutationError,
   }),
 })
