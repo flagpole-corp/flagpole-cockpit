@@ -9,8 +9,8 @@ import NotificationsRoundedIcon from '@mui/icons-material/NotificationsRounded'
 
 import { MenuButton } from '../MenuButton'
 import { MenuContent } from '../MenuContent'
-import { CardAlert } from '../CardAlert'
 import { useAuthStore } from '~/stores/auth.store'
+import RenewPlanCard from '../RenewPlanCard'
 
 interface SideMenuMobileProps {
   open: boolean | undefined
@@ -55,15 +55,7 @@ export const SideMenuMobile = ({ open, toggleDrawer }: SideMenuMobileProps): JSX
           <MenuContent />
           <Divider />
         </Stack>
-        <CardAlert
-          title="Plan about to expire"
-          text=" Enjoy 10% off when renewing your plan today."
-          action={
-            <Button variant="contained" size="small" fullWidth>
-              Renew Plan
-            </Button>
-          }
-        />
+        <RenewPlanCard />
         <Stack sx={{ p: 2 }}>
           <Button variant="outlined" fullWidth startIcon={<LogoutRoundedIcon />}>
             Logout

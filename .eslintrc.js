@@ -29,7 +29,7 @@ module.exports = {
     'prettier',
     'plugin:@tanstack/eslint-plugin-query/recommended',
   ],
-  plugins: ['react', '@typescript-eslint', 'prettier'],
+  plugins: ['react', '@typescript-eslint', 'prettier', 'unused-imports'],
   rules: {
     'no-console': ['error', { allow: ['warn', 'error'] }],
     semi: ['error', 'never'],
@@ -39,6 +39,12 @@ module.exports = {
     'max-len': ['error', { code: 120, ignoreUrls: true, ignoreComments: true }],
     'eol-last': ['error', 'always'],
     'object-curly-spacing': ['error', 'always'],
+    'no-unused-vars': 'off', // or "@typescript-eslint/no-unused-vars": "off",
+    'unused-imports/no-unused-imports': 'error',
+    'unused-imports/no-unused-vars': [
+      'warn',
+      { vars: 'all', varsIgnorePattern: '^_', args: 'after-used', argsIgnorePattern: '^_' },
+    ],
     'react/no-unescaped-entities': 0,
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/no-explicit-any': 'error',
