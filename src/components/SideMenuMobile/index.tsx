@@ -55,7 +55,7 @@ export const SideMenuMobile = ({ open, toggleDrawer }: SideMenuMobileProps): JSX
           <MenuContent />
           <Divider />
         </Stack>
-        <RenewPlanCard />
+        {user?.subscriptionWarning?.showWarning && <RenewPlanCard />}
         <Stack sx={{ p: 2 }}>
           <Button variant="outlined" fullWidth startIcon={<LogoutRoundedIcon />}>
             Logout

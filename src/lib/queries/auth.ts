@@ -9,6 +9,13 @@ export interface LoginCredentials {
   password: string
 }
 
+export type SubscriptionWarning = {
+  showWarning: boolean
+  daysRemaining?: number
+  expiresAt?: string
+  message?: string
+}
+
 export interface User {
   _id: string
   email: string
@@ -20,6 +27,7 @@ export interface User {
     role: string
     joinedAt: string
   }>
+  subscriptionWarning?: SubscriptionWarning
 }
 
 export interface AuthResponse {

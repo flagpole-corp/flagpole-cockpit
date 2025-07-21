@@ -20,6 +20,7 @@ const Drawer = styled(MuiDrawer)({
 
 export const SideMenu = (): JSX.Element => {
   const { user } = useAuthStore()
+
   return (
     <Drawer
       variant="permanent"
@@ -34,7 +35,7 @@ export const SideMenu = (): JSX.Element => {
         <Logo />
       </Box>
       <MenuContent />
-      <RenewPlanCard />
+      {user?.subscriptionWarning?.showWarning && <RenewPlanCard />}
       <Stack
         direction="row"
         sx={{
