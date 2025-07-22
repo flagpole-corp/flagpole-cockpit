@@ -378,11 +378,7 @@ const Flags = (): JSX.Element => {
   }
 
   if (!projects?.length) {
-    return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
-        <Typography>No projects found</Typography>
-      </Box>
-    )
+    return <Alert severity="info">No projects found. Create your first project to get started.</Alert>
   }
 
   const handleTabChange = (_: SyntheticEvent, newValue: number): void => {
