@@ -1,55 +1,87 @@
-import React from 'react'
-import { loadStripe } from '@stripe/stripe-js'
-import type { ButtonOwnProps } from '@mui/material'
+import React, { useState } from 'react'
+import type { ButtonProps } from '@mui/material'
 import { Button, CircularProgress } from '@mui/material'
-import { useCreateCheckoutSession } from '~/lib/queries/stripe'
+import { useCreateCheckoutSessionByPlan } from '~/lib/queries/stripe'
+import { useAuthStore } from '~/stores/auth.store'
 
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY)
-
-interface CheckoutButtonProps extends ButtonOwnProps {
-  priceId: string
-  onSuccess: () => void
+interface CheckoutButtonProps extends Omit<ButtonProps, 'onClick' | 'onError'> {
+  priceId?: string
+  planType?: 'basic' | 'professional' | 'enterprise'
+  interval?: 'month' | 'year'
+  customerId?: string
+  trialPeriodDays?: number
+  metadata?: Record<string, string>
+  onSuccess?: () => void
+  onError?: (error: Error) => void
+  children: React.ReactNode
 }
 
 const CheckoutButton: React.FC<CheckoutButtonProps> = ({
   priceId,
-  variant = 'contained',
-  color = 'primary',
-  children = 'Subscribe Now',
+  planType,
+  interval = 'month',
+  customerId,
+  trialPeriodDays,
+  metadata,
   onSuccess,
-  fullWidth,
-  disabled = false,
+  onError,
+  children,
+  disabled,
+  ...buttonProps
 }) => {
-  const createCheckoutSession = useCreateCheckoutSession()
+  const [isProcessing, setIsProcessing] = useState(false)
+  const createCheckoutSession = useCreateCheckoutSessionByPlan()
+
+  // Get the current user's organization ID (same pattern as your other APIs)
+  const { user } = useAuthStore()
 
   const handleClick = async (): Promise<void> => {
+    if (!planType) {
+      onError?.(new Error('Plan type is required'))
+      return
+    }
+
+    if (!user?.currentOrganization) {
+      onError?.(new Error('No organization selected'))
+      return
+    }
+
+    setIsProcessing(true)
+
     try {
-      const stripe = await stripePromise
-      if (!stripe) {
-        throw new Error('Stripe failed to initialize')
+      const session = await createCheckoutSession.mutateAsync({
+        planType,
+        interval,
+        customerId,
+        trialPeriodDays,
+        metadata: {
+          ...metadata,
+          userId: user?._id,
+        },
+      })
+
+      if (session.url) {
+        window.location.href = session.url
+        onSuccess?.()
+      } else {
+        throw new Error('No checkout URL received')
       }
-
-      const { url } = await createCheckoutSession.mutateAsync({ priceId })
-
-      // Redirect to Stripe Checkout
-      window.location.href = url
-
-      onSuccess?.()
     } catch (error) {
-      console.error('Checkout error:', error)
+      setIsProcessing(false)
+      onError?.(error as Error)
     }
   }
 
+  const isLoading = isProcessing || createCheckoutSession.isPending
+
   return (
     <Button
-      variant={variant}
-      color={color}
-      fullWidth={fullWidth}
+      {...buttonProps}
       onClick={handleClick}
-      disabled={disabled || createCheckoutSession.isPending}
-      startIcon={createCheckoutSession.isPending ? <CircularProgress size={20} color="inherit" /> : undefined}
+      disabled={disabled || isLoading}
+      startIcon={isLoading ? <CircularProgress size={16} /> : undefined}
     >
-      {children}
+      {isLoading ? 'Processing...' : children}
     </Button>
   )
 }
