@@ -81,9 +81,31 @@ export const useAuthStore = create<AuthState>()(
           set({
             user: fullProfile,
             isLoading: false,
+            error: null, // Clear any previous errors on successful login
           })
         } catch (error) {
-          set({ error: error as Error, isLoading: false })
+          // Extract meaningful error message
+          let errorMessage = 'An error occurred during login'
+
+          if (error && typeof error === 'object' && 'response' in error) {
+            const axiosError = error as any // eslint-disable-line
+            if (axiosError.response?.data?.message) {
+              errorMessage = axiosError.response.data.message
+            } else if (axiosError.response?.status === 401) {
+              errorMessage = 'Invalid email or password'
+            } else if (axiosError.response?.status >= 500) {
+              errorMessage = 'Server error. Please try again later.'
+            } else if (axiosError.message) {
+              errorMessage = axiosError.message
+            }
+          }
+
+          set({
+            error: new Error(errorMessage),
+            isLoading: false,
+            token: null,
+            user: null,
+          })
           throw error
         }
       },
@@ -96,10 +118,17 @@ export const useAuthStore = create<AuthState>()(
         set({ isLoading: true })
         try {
           await api.post('/api/auth/logout')
-          set({ user: null, token: null, isLoading: false })
+          set({ user: null, token: null, isLoading: false, error: null })
           delete api.defaults.headers.common['Authorization']
         } catch (error) {
-          set({ error: error as Error, isLoading: false })
+          // Even if logout fails, clear local state
+          set({
+            user: null,
+            token: null,
+            isLoading: false,
+            error: error as Error,
+          })
+          delete api.defaults.headers.common['Authorization']
           throw error
         }
       },

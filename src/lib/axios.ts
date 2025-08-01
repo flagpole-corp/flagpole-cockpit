@@ -28,10 +28,19 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      const { setToken, setUser } = useAuthStore.getState()
-      setToken(null)
-      setUser(null)
-      window.location.href = '/signin'
+      // Check if this is a login request - don't redirect during login attempts
+      const isLoginRequest = error.config?.url?.includes('/auth/login')
+      const isForgotPasswordRequest = error.config?.url?.includes('/auth/forgot-password')
+      const isResetPasswordRequest = error.config?.url?.includes('/auth/reset-password')
+      const isAcceptInviteRequest = error.config?.url?.includes('/auth/accept-invitation')
+
+      // Don't redirect for authentication-related requests
+      if (!isLoginRequest && !isForgotPasswordRequest && !isResetPasswordRequest && !isAcceptInviteRequest) {
+        const { setToken, setUser } = useAuthStore.getState()
+        setToken(null)
+        setUser(null)
+        window.location.href = '/signin'
+      }
     }
     return Promise.reject(error)
   }
