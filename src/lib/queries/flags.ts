@@ -4,6 +4,7 @@ import { toast } from 'react-toastify'
 import { useDrawer } from '~/contexts/DrawerContext'
 import { useAuthStore } from '~/stores/auth.store'
 import api from '~/lib/axios'
+import type { CreateFeatureFlagDto } from '@flagpole/api-types'
 
 export interface FeatureFlag {
   _id: string
@@ -30,16 +31,9 @@ interface ToggleFlagContext {
   previousFlags: FeatureFlag[] | undefined
 }
 
-interface CreateFeatureFlag {
-  name: string
-  description: string
-  environments: string[]
-  projectId: string
-}
-
 interface UpdateFeatureFlagVariables {
   id: string
-  data: Partial<CreateFeatureFlag>
+  data: Partial<CreateFeatureFlagDto>
 }
 
 interface DeleteFeatureFlagVariables {
@@ -128,35 +122,36 @@ export const useToggleFeatureFlag = (): UseMutationResult<
   })
 }
 
-export const useCreateFeatureFlag = (): UseMutationResult<FeatureFlag, Error, CreateFeatureFlag> => {
+export const useCreateFeatureFlag = (): UseMutationResult<FeatureFlag, Error, CreateFeatureFlagDto> => {
   const queryClient = useQueryClient()
   const { user } = useAuthStore()
   const organizationId = user?.currentOrganization
   const { closeDrawer } = useDrawer()
 
   return useMutation({
-    mutationFn: async (createFlagData) => {
-      const { data } = await api.post<FeatureFlag>(
-        '/api/feature-flags',
-        {
-          ...createFlagData,
-          organizationId,
+    //eslint-disable-next-line
+    mutationFn: async (createFlagData: any) => {
+      const { projectId } = createFlagData
+
+      delete createFlagData?.projectId
+
+      const { data } = await api.post<FeatureFlag>('/api/feature-flags', createFlagData, {
+        headers: {
+          'x-project-id': projectId,
+          'x-organization-id': organizationId,
         },
-        {
-          headers: {
-            'x-project-id': createFlagData.projectId,
-            'x-organization-id': organizationId,
-          },
-        }
-      )
+      })
       return data
     },
-    onSuccess: (_, variables) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: flagKeys.list(variables.projectId),
+        queryKey: flagKeys.all,
       })
       closeDrawer()
       toast.success('Feature flag created successfully')
+    },
+    onError: () => {
+      toast.error('Failed to create feature flag')
     },
   })
 }
@@ -171,7 +166,8 @@ export const useUpdateFeatureFlag = (): UseMutationResult<FeatureFlag, Error, Up
     mutationFn: async ({ id, data }) => {
       const { data: response } = await api.patch<FeatureFlag>(`/api/feature-flags/${id}`, data, {
         headers: {
-          'x-project-id': data.projectId,
+          //eslint-disable-next-line
+          'x-project-id': (data as any).projectId,
           'x-organization-id': organizationId,
         },
       })
@@ -179,7 +175,8 @@ export const useUpdateFeatureFlag = (): UseMutationResult<FeatureFlag, Error, Up
     },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
-        queryKey: flagKeys.list(variables.data.projectId!),
+        //eslint-disable-next-line
+        queryKey: flagKeys.list((variables.data as any).projectId!),
       })
       closeDrawer()
       toast.success('Feature flag updated successfully')
