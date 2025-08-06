@@ -1,6 +1,8 @@
 import Stack from '@mui/material/Stack'
 import Content from './Content'
 import SignInCard from './SignInCard'
+import type { Theme } from '@mui/material'
+import type { SystemStyleObject } from '@mui/system'
 
 const SignIn = (): JSX.Element => {
   return (
@@ -14,8 +16,8 @@ const SignIn = (): JSX.Element => {
           marginTop: 'max(40px - var(--template-frame-height, 0px), 0px)',
           minHeight: '100%',
         },
-        // eslint-disable-next-line
-        (theme) => ({
+
+        (theme): SystemStyleObject<Theme> => ({
           '&::before': {
             content: '""',
             display: 'block',
