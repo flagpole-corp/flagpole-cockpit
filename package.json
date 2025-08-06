@@ -39,7 +39,7 @@
   "devDependencies": {
     "@babel/eslint-parser": "^7.19.1",
     "@faker-js/faker": "^8.4.1",
-    "@flagpole/api-types": "^1.0.8",
+    "@flagpole/api-types": "^1.0.11",
     "@tanstack/eslint-plugin-query": "^5.35.6",
     "@tanstack/react-query-devtools": "^5.24.0",
     "@types/lodash": "^4.14.202",

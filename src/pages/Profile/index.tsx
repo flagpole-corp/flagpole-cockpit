@@ -1,13 +1,14 @@
-import { Box, Card, CardContent, Typography, Stack, Chip, CircularProgress } from '@mui/material'
-import { useAuthStore } from '~/stores/auth.store'
-import { Form } from '~/components/Form'
-import { FormTextField } from '~/components/FormTextField'
-import { profileSchema } from '~/lib/schemas/profile.schema'
-import type { ProfileFormData } from '~/lib/schemas/profile.schema'
+import { Box, CircularProgress, Grid2 as Grid, Stack, Typography } from '@mui/material'
 import { useUpdateProfile } from '~/lib/queries/user-profile'
+import type { ProfileFormData } from '~/lib/schemas/profile.schema'
+import { useAuthStore } from '~/stores/auth.store'
+import { AccountInfo } from './AccountInfo'
+import { AccountDetailsForm } from './AccountDetailsForm'
 
 const Profile = (): JSX.Element => {
   const { user, isLoading, getCurrentOrgRole } = useAuthStore()
+  const currentOrgRole = getCurrentOrgRole()
+
   const updateProfile = useUpdateProfile()
 
   const formKey = `${user?.firstName}-${user?.lastName}`
@@ -20,56 +21,36 @@ const Profile = (): JSX.Element => {
     )
   }
 
-  const currentOrgRole = getCurrentOrgRole()
-
   const handleSubmit = async (data: ProfileFormData): Promise<void> => {
     await updateProfile.mutateAsync(data)
   }
 
   return (
-    <Box sx={{ width: '100%', p: 2 }}>
-      <Card>
-        <CardContent>
-          <Typography variant="h5" gutterBottom mb={2}>
-            Profile Settings
-          </Typography>
-
-          <Form<ProfileFormData>
-            key={formKey}
-            onSubmit={handleSubmit}
-            onCancel={(): void => {}}
-            schema={profileSchema}
-            defaultValues={{
-              firstName: user?.firstName || '',
-              lastName: user?.lastName || '',
-            }}
-          >
-            {(control): JSX.Element => (
-              <Stack spacing={3}>
-                <FormTextField control={control} name="firstName" label="First Name" fullWidth />
-                <FormTextField control={control} name="lastName" label="Last Name" fullWidth />
-
-                <Box>
-                  <Typography variant="subtitle1" gutterBottom>
-                    Email
-                  </Typography>
-                  <Typography>{user?.email}</Typography>
-                </Box>
-
-                {currentOrgRole && (
-                  <Box>
-                    <Typography variant="subtitle1" gutterBottom>
-                      Organization Role
-                    </Typography>
-                    <Chip label={currentOrgRole.toUpperCase()} color="primary" variant="outlined" />
-                  </Box>
-                )}
-              </Stack>
-            )}
-          </Form>
-        </CardContent>
-      </Card>
-    </Box>
+    <Stack spacing={3} width={'90%'}>
+      <div>
+        <Typography variant="h4">Account</Typography>
+      </div>
+      <Grid container spacing={3}>
+        <Grid
+          size={{
+            lg: 4,
+            md: 6,
+            xs: 12,
+          }}
+        >
+          <AccountInfo user={user} currentOrgRole={currentOrgRole} />
+        </Grid>
+        <Grid
+          size={{
+            lg: 8,
+            md: 6,
+            xs: 12,
+          }}
+        >
+          <AccountDetailsForm user={user} onSubmit={handleSubmit} formKey={formKey} />
+        </Grid>
+      </Grid>
+    </Stack>
   )
 }
 
