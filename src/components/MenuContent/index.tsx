@@ -24,7 +24,7 @@ const StyledNavLink = styled(NavLink)(({ theme }) => ({
       color: theme.palette.primary.main,
     },
     '& .MuiListItemText-primary': {
-      color: theme.palette.common.white,
+      color: theme.palette.mode === 'dark' ? theme.palette.common.white : theme.palette.common.black,
       fontWeight: 600,
     },
   },
@@ -54,15 +54,9 @@ const MenuItem = ({ item }: { item: ListItemsType }): JSX.Element => {
 
   return (
     <ListItem disablePadding sx={{ display: 'block' }}>
-      <StyledNavLink to={item.url} sx={{ color: isActive ? 'red' : 'inherit' }}>
+      <StyledNavLink to={item.url}>
         <StyledListItemButton selected={isActive}>
-          <ListItemIcon
-            sx={{
-              minWidth: 40,
-            }}
-          >
-            {item.icon}
-          </ListItemIcon>
+          <ListItemIcon sx={{ minWidth: 40 }}>{item.icon}</ListItemIcon>
           <ListItemText primary={item.text} />
         </StyledListItemButton>
       </StyledNavLink>
