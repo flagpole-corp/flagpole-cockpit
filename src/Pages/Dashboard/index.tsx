@@ -18,7 +18,7 @@ const Dashboard = (): JSX.Element => {
             <Button
               variant="contained"
               onClick={(): Window | null =>
-                window.open('https://docs.useflagpole.dev', '_blank', 'noopener,noreferrer')
+                window.open('https://docs.useflagpole.dev/docs', '_blank', 'noopener,noreferrer')
               }
               size="small"
               fullWidth

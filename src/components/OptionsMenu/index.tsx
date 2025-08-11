@@ -67,7 +67,7 @@ export const OptionsMenu = (): JSX.Element => {
         </Stack>
       ),
       icon: <LibraryBooks />,
-      onClick: () => window.open('https://docs.useflagpole.dev', '_blank', 'noopener,noreferrer'),
+      onClick: () => window.open('https://docs.useflagpole.dev/docs', '_blank', 'noopener,noreferrer'),
     },
     null, // Divider
     { text: 'Logout', icon: <LogoutRounded fontSize="small" />, onClick: logout },
