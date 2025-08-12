@@ -1,8 +1,15 @@
 import type { UseQueryResult, UseMutationResult } from '@tanstack/react-query'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import api from '~/lib/axios'
+import type {
+  InviteUserDto,
+  UsersControllerFindAllData,
+  UsersControllerInviteData,
+  UsersControllerUpdateUserData,
+} from '@flagpole/api-types'
 
-export type OrganizationRole = 'owner' | 'admin' | 'member'
+export type User = NonNullable<UsersControllerFindAllData>[number]
+export type OrganizationRole = InviteUserDto['role']
 
 export interface UpdateUserRequest {
   id: string
@@ -10,42 +17,6 @@ export interface UpdateUserRequest {
   projects?: string[]
   firstName?: string
   lastName?: string
-}
-
-export interface UpdateUserResponse {
-  _id: string
-  email: string
-  firstName?: string
-  lastName?: string
-  status: string
-  organizations: Array<{
-    organization: string
-    role: OrganizationRole
-    joinedAt: string
-  }>
-  projects: Array<{
-    project: string
-    addedAt: string
-  }>
-}
-
-export interface User {
-  _id: string
-  email: string
-  firstName?: string
-  lastName?: string
-  status: string
-  organizationRole: string
-  organizations: Array<{
-    organization: string
-    role: string
-    joinedAt: string
-  }>
-  projects: Array<{
-    _id: string
-    name: string
-    addedAt: string
-  }>
 }
 
 export const userKeys = {
@@ -57,69 +28,37 @@ export const userKeys = {
 export const useUsers = (): UseQueryResult<User[], Error> => {
   return useQuery({
     queryKey: userKeys.lists(),
-    queryFn: async () => {
-      const { data } = await api.get<User[]>('/api/users')
-      return data
+    queryFn: async (): Promise<User[]> => {
+      const { data } = await api.get<UsersControllerFindAllData>('/api/users')
+      return data || []
     },
   })
 }
 
-export const useInviteUser = (): UseMutationResult<
-  User,
-  Error,
-  { email: string; role?: OrganizationRole; projects?: string[] }
-> => {
+export const useInviteUser = (): UseMutationResult<UsersControllerInviteData, Error, InviteUserDto> => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async (data) => {
-      const { data: response } = await api.post<User>('/api/users/invite', data)
+    mutationFn: async (data: InviteUserDto): Promise<UsersControllerInviteData> => {
+      const { data: response } = await api.post<UsersControllerInviteData>('/api/users/invite', data)
       return response
     },
-    onSuccess: () => {
+    onSuccess: (): void => {
       queryClient.invalidateQueries({ queryKey: userKeys.lists() })
     },
   })
 }
 
-export const useUpdateUser = (): UseMutationResult<UpdateUserResponse, Error, UpdateUserRequest> => {
+export const useUpdateUser = (): UseMutationResult<UsersControllerUpdateUserData, Error, UpdateUserRequest> => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async (data) => {
+    mutationFn: async (data: UpdateUserRequest): Promise<UsersControllerUpdateUserData> => {
       const { id, ...updateData } = data
-      const { data: response } = await api.patch(`/api/users/${id}`, updateData)
+      const { data: response } = await api.patch<UsersControllerUpdateUserData>(`/api/users/${id}`, updateData)
       return response
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: userKeys.lists() })
-    },
-  })
-}
-
-export const useUpdateUserRole = (): UseMutationResult<User, Error, { id: string; role: OrganizationRole }> => {
-  const queryClient = useQueryClient()
-
-  return useMutation({
-    mutationFn: async ({ id, role }) => {
-      const { data } = await api.patch<User>(`/api/users/${id}/role`, { role })
-      return data
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: userKeys.lists() })
-    },
-  })
-}
-
-export const useUpdateUserProjects = (): UseMutationResult<User, Error, { id: string; projects: string[] }> => {
-  const queryClient = useQueryClient()
-
-  return useMutation({
-    mutationFn: async ({ id, projects }) => {
-      const { data } = await api.patch<User>(`/api/users/${id}/projects`, { projects })
-      return data
-    },
-    onSuccess: () => {
+    onSuccess: (): void => {
       queryClient.invalidateQueries({ queryKey: userKeys.lists() })
     },
   })
@@ -129,10 +68,10 @@ export const useDeleteUser = (): UseMutationResult<void, Error, string> => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async (userId: string) => {
+    mutationFn: async (userId: string): Promise<void> => {
       await api.delete(`/api/users/${userId}`)
     },
-    onSuccess: () => {
+    onSuccess: (): void => {
       queryClient.invalidateQueries({ queryKey: userKeys.lists() })
     },
   })
@@ -140,7 +79,7 @@ export const useDeleteUser = (): UseMutationResult<void, Error, string> => {
 
 export const useResendInvitation = (): UseMutationResult<void, Error, string> => {
   return useMutation({
-    mutationFn: async (userId: string) => {
+    mutationFn: async (userId: string): Promise<void> => {
       await api.post(`/api/users/${userId}/resend-invitation`)
     },
   })
