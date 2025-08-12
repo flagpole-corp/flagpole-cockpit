@@ -4,6 +4,31 @@ import api from '~/lib/axios'
 
 export type OrganizationRole = 'owner' | 'admin' | 'member'
 
+export interface UpdateUserRequest {
+  id: string
+  role?: OrganizationRole
+  projects?: string[]
+  firstName?: string
+  lastName?: string
+}
+
+export interface UpdateUserResponse {
+  _id: string
+  email: string
+  firstName?: string
+  lastName?: string
+  status: string
+  organizations: Array<{
+    organization: string
+    role: OrganizationRole
+    joinedAt: string
+  }>
+  projects: Array<{
+    project: string
+    addedAt: string
+  }>
+}
+
 export interface User {
   _id: string
   email: string
@@ -49,6 +74,21 @@ export const useInviteUser = (): UseMutationResult<
   return useMutation({
     mutationFn: async (data) => {
       const { data: response } = await api.post<User>('/api/users/invite', data)
+      return response
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: userKeys.lists() })
+    },
+  })
+}
+
+export const useUpdateUser = (): UseMutationResult<UpdateUserResponse, Error, UpdateUserRequest> => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async (data) => {
+      const { id, ...updateData } = data
+      const { data: response } = await api.patch(`/api/users/${id}`, updateData)
       return response
     },
     onSuccess: () => {

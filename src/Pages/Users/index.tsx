@@ -13,14 +13,7 @@ import { FormSelect } from '~/components/FormSelect'
 import { FormCheckboxGroup } from '~/components/FormCheckboxGroup'
 import { z } from 'zod'
 import type { User, OrganizationRole } from '~/lib/queries/users'
-import {
-  useUsers,
-  useInviteUser,
-  useUpdateUserRole,
-  useUpdateUserProjects,
-  useDeleteUser,
-  useResendInvitation,
-} from '~/lib/queries/users'
+import { useUsers, useInviteUser, useDeleteUser, useResendInvitation, useUpdateUser } from '~/lib/queries/users'
 import type { Project } from '~/lib/queries/projects'
 import { useProjects } from '~/lib/queries/projects'
 import { useState } from 'react'
@@ -51,7 +44,7 @@ const Users = (): JSX.Element => {
   const { data: projects } = useProjects()
   const [userToDelete, setUserToDelete] = useState<{ id: string; email: string } | null>(null)
   const inviteUser = useInviteUser()
-  const updateRole = useUpdateUserRole()
+  const updateUser = useUpdateUser()
   const deleteUser = useDeleteUser()
   const resendInvitation = useResendInvitation()
 
@@ -65,17 +58,16 @@ const Users = (): JSX.Element => {
     }
   }
 
-  const updateProjects = useUpdateUserProjects()
-
   const handleEdit = (user: User): void => {
     openDrawer({
       content: (
         <Form<EditUserFormData>
           onSubmit={async (data): Promise<void> => {
-            await updateRole.mutateAsync({ id: user._id, role: data.role as OrganizationRole })
-            if (data.projects) {
-              await updateProjects.mutateAsync({ id: user._id, projects: data.projects })
-            }
+            await updateUser.mutateAsync({
+              id: user._id,
+              role: data.role as OrganizationRole,
+              projects: data.projects,
+            })
             closeDrawer()
             toast.success('User updated successfully')
           }}
