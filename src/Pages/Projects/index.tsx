@@ -138,7 +138,6 @@ const Projects = (): JSX.Element => {
           onSubmit={async (data): Promise<void> => {
             await createProject.mutateAsync(data)
             closeDrawer()
-            toast.success('Project created successfully')
           }}
           onCancel={closeDrawer}
           schema={createProjectSchema}
