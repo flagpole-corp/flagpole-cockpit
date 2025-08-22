@@ -32,7 +32,7 @@ api.interceptors.response.use(
       const isLoginRequest = error.config?.url?.includes('/auth/login')
       const isForgotPasswordRequest = error.config?.url?.includes('/auth/forgot-password')
       const isResetPasswordRequest = error.config?.url?.includes('/auth/reset-password')
-      const isAcceptInviteRequest = error.config?.url?.includes('/auth/accept-invitation')
+      const isAcceptInviteRequest = error.config?.url?.includes('/onboarding/accept-invitation')
 
       // Don't redirect for authentication-related requests
       if (!isLoginRequest && !isForgotPasswordRequest && !isResetPasswordRequest && !isAcceptInviteRequest) {

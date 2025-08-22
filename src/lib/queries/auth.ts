@@ -43,10 +43,6 @@ interface ResetPasswordResponse {
   message: string
 }
 
-export interface AcceptInvitationResponse {
-  success: boolean
-}
-
 export const authKeys = {
   user: ['auth', 'user'] as const,
 }
@@ -100,28 +96,6 @@ export const useGoogleLogin = (): UseMutationResult<void, Error, void> => {
   return useMutation<void, Error, void>({
     mutationFn: async (): Promise<void> => {
       window.location.href = '/api/auth/google'
-    },
-  })
-}
-
-export const useAcceptInvitation = (): UseMutationResult<
-  AcceptInvitationResponse,
-  Error,
-  { token: string; password: string }
-> => {
-  return useMutation({
-    mutationFn: async ({ token, password }) => {
-      const { data } = await api.post<AcceptInvitationResponse>('/api/auth/accept-invitation', {
-        token,
-        password,
-      })
-      return data
-    },
-    onSuccess: () => {
-      toast.success('Account setup complete! You can now sign in.')
-    },
-    onError: () => {
-      toast.error('Failed to accept invitation. The link may be expired or invalid.')
     },
   })
 }

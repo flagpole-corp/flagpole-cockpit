@@ -5,7 +5,7 @@ import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { FormTextField } from '~/components/FormTextField'
-import { useAcceptInvitation } from '~/lib/queries/auth'
+import { useAcceptInvitation } from '~/lib/queries/onboarding'
 
 const acceptInvitationSchema = z
   .object({
