@@ -17,7 +17,7 @@ export const useAcceptInvitation = (): UseMutationResult<
 
   return useMutation({
     mutationFn: async ({ token, password }) => {
-      const { data } = await api.post<AcceptInvitationResponse>('/api/auth/accept-invitation', {
+      const { data } = await api.post<AcceptInvitationResponse>('/api/onboarding/accept-invitation', {
         token,
         password,
       })
