@@ -1,3 +1,4 @@
+import type { LoginDto } from '@flagpole/api-types'
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import api from '~/lib/axios'
@@ -15,7 +16,7 @@ interface AuthState {
   setLoading: (isLoading: boolean) => void
   setRememberMe: (rememberMe: boolean) => void
   getCurrentOrgRole: () => string | undefined
-  login: (email: string, password: string, remember?: boolean) => Promise<void>
+  login: ({ email, password, remember }: LoginDto) => Promise<void>
   loginWithGoogle: () => Promise<void>
   logout: () => Promise<void>
 }
@@ -67,7 +68,7 @@ export const useAuthStore = create<AuthState>()(
         return currentOrg?.role
       },
 
-      login: async (email: string, password: string, remember: boolean = false): Promise<void> => {
+      login: async ({ email, password, remember = false }: LoginDto): Promise<void> => {
         set({ isLoading: true, error: null, rememberMe: remember })
         try {
           const { data } = await api.post<AuthResponse>('/api/auth/login', {

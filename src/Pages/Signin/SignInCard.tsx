@@ -58,7 +58,11 @@ const SignInCard = (): JSX.Element => {
 
   const onSubmit = async (data: LoginFormData): Promise<void> => {
     try {
-      await login(data.email, data.password)
+      await login({
+        email: data.email,
+        password: data.password,
+        remember: data.remember,
+      })
       const from = location.state?.from?.pathname || '/dashboard'
       navigate(from, { replace: true })
     } catch (err) {
