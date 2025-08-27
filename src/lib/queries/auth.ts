@@ -7,6 +7,7 @@ import { toast } from 'react-toastify'
 export interface LoginCredentials {
   email: string
   password: string
+  remember?: boolean
 }
 
 export type SubscriptionWarning = {
@@ -64,16 +65,17 @@ export const useUser = (): UseQueryResult<User, Error> => {
 }
 
 export const useLogin = (): UseMutationResult<AuthResponse, Error, LoginCredentials> => {
-  const { setUser, setToken } = useAuthStore()
+  const { setUser, setToken, setRememberMe } = useAuthStore()
 
   return useMutation<AuthResponse, Error, LoginCredentials>({
     mutationFn: async (credentials) => {
       const { data } = await api.post<AuthResponse>('/api/auth/login', credentials)
       return data
     },
-    onSuccess: (data) => {
+    onSuccess: (data, variables) => {
       setToken(data.access_token)
       setUser(data.user)
+      setRememberMe(variables.remember || false)
     },
   })
 }

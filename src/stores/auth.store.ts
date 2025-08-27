@@ -8,12 +8,14 @@ interface AuthState {
   token: string | null
   isLoading: boolean
   error: Error | null
+  rememberMe: boolean
   setUser: (user: User | null) => void
   setToken: (token: string | null) => void
   setError: (error: Error | null) => void
   setLoading: (isLoading: boolean) => void
+  setRememberMe: (rememberMe: boolean) => void
   getCurrentOrgRole: () => string | undefined
-  login: (email: string, password: string) => Promise<void>
+  login: (email: string, password: string, remember?: boolean) => Promise<void>
   loginWithGoogle: () => Promise<void>
   logout: () => Promise<void>
 }
@@ -44,7 +46,7 @@ export const useAuthStore = create<AuthState>()(
       token: null,
       isLoading: false,
       error: null,
-
+      rememberMe: false,
       setUser: (user): void => set({ user: user ? cleanUser(user) : null }),
       setToken: (token): void => {
         set({ token })
@@ -56,7 +58,7 @@ export const useAuthStore = create<AuthState>()(
       },
       setError: (error): void => set({ error }),
       setLoading: (isLoading): void => set({ isLoading }),
-
+      setRememberMe: (rememberMe): void => set({ rememberMe }),
       getCurrentOrgRole: (): string | undefined => {
         const { user } = get()
         if (!user?.currentOrganization || !user?.organizations) return undefined
@@ -65,12 +67,13 @@ export const useAuthStore = create<AuthState>()(
         return currentOrg?.role
       },
 
-      login: async (email: string, password: string): Promise<void> => {
-        set({ isLoading: true, error: null })
+      login: async (email: string, password: string, remember: boolean = false): Promise<void> => {
+        set({ isLoading: true, error: null, rememberMe: remember })
         try {
           const { data } = await api.post<AuthResponse>('/api/auth/login', {
             email,
             password,
+            remember,
           })
 
           set({ token: data.access_token })
@@ -105,6 +108,7 @@ export const useAuthStore = create<AuthState>()(
             isLoading: false,
             token: null,
             user: null,
+            rememberMe: false,
           })
           throw error
         }
@@ -127,6 +131,7 @@ export const useAuthStore = create<AuthState>()(
             token: null,
             isLoading: false,
             error: error as Error,
+            rememberMe: false,
           })
           delete api.defaults.headers.common['Authorization']
           throw error
@@ -138,6 +143,7 @@ export const useAuthStore = create<AuthState>()(
       partialize: (state) => ({
         user: state.user,
         token: state.token,
+        rememberMe: state.rememberMe,
       }),
     }
   )
