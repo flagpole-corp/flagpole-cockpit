@@ -7,11 +7,13 @@ import { BasePageLayout } from '~/components'
 import { DASHBOARD_ROUTES } from './dashboard'
 import RequestDemo from '~/pages/RequestDemo'
 import ResetPassword from '~/pages/ResetPassword'
+import AuthCallback from '~/pages/Auth/Callback'
 
 export const APP_ROUTES = {
   HOME: createRoute({ path: '/' }),
   SIGNIN: createRoute({ path: '/signin', guestOnly: true }),
   SIGNUP: createRoute({ path: '/signup', guestOnly: true }),
+  GOOOGLE_CALLBACK: createRoute({ path: '/auth/callback', guestOnly: true }),
   ACCEPT_INVITE: createRoute({ path: '/accept-invite', guestOnly: true }),
   DEMO_REQUEST: createRoute({ path: '/request-demo', guestOnly: true }),
   RESET_PASSWORD: createRoute({ path: '/reset-password', guestOnly: true }),
@@ -31,6 +33,14 @@ export const router = createBrowserRouter([
     element: (
       <ProtectedRoute guestOnly>
         <SignIn />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: APP_ROUTES.GOOOGLE_CALLBACK.path,
+    element: (
+      <ProtectedRoute guestOnly>
+        <AuthCallback />
       </ProtectedRoute>
     ),
   },

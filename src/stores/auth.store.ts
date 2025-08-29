@@ -18,6 +18,7 @@ interface AuthState {
   getCurrentOrgRole: () => string | undefined
   login: ({ email, password, remember }: LoginDto) => Promise<void>
   loginWithGoogle: () => Promise<void>
+  handleGoogleCallback: (token: string) => Promise<void>
   logout: () => Promise<void>
 }
 
@@ -116,7 +117,59 @@ export const useAuthStore = create<AuthState>()(
       },
 
       loginWithGoogle: async (): Promise<void> => {
-        window.location.href = '/api/auth/google'
+        try {
+          set({ isLoading: true, error: null })
+
+          // Get the API URL from your axios config or environment
+          const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000'
+
+          // Redirect to Google OAuth endpoint
+          window.location.href = `${apiUrl}/api/auth/google`
+        } catch (error) {
+          console.error('Error initiating Google login:', error)
+          set({
+            error: new Error('Failed to initiate Google login'),
+            isLoading: false,
+          })
+          throw error
+        }
+      },
+
+      handleGoogleCallback: async (token: string): Promise<void> => {
+        try {
+          set({ isLoading: true, error: null })
+
+          // Set the token
+          set({ token })
+          api.defaults.headers.common['Authorization'] = `Bearer ${token}`
+
+          // Fetch user profile
+          const { data: fullProfile } = await api.get<User>('/api/auth/me')
+
+          set({
+            user: fullProfile,
+            isLoading: false,
+            error: null,
+          })
+        } catch (error) {
+          console.error('Error handling Google callback:', error)
+          let errorMessage = 'Failed to complete Google authentication'
+
+          if (error && typeof error === 'object' && 'response' in error) {
+            const axiosError = error as any // eslint-disable-line
+            if (axiosError.response?.data?.message) {
+              errorMessage = axiosError.response.data.message
+            }
+          }
+
+          set({
+            error: new Error(errorMessage),
+            isLoading: false,
+            token: null,
+            user: null,
+          })
+          throw error
+        }
       },
 
       logout: async (): Promise<void> => {

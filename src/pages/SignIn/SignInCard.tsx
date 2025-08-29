@@ -42,6 +42,7 @@ const SignInCard = (): JSX.Element => {
   const location = useLocation()
   const { login, loginWithGoogle, error: authError, isLoading } = useAuthStore()
   const [open, setOpen] = useState(false)
+  const [googleLoading, setGoogleLoading] = useState(false)
 
   const {
     control,
@@ -70,6 +71,16 @@ const SignInCard = (): JSX.Element => {
     }
   }
 
+  const handleGoogleLogin = async (): Promise<void> => {
+    try {
+      setGoogleLoading(true)
+      await loginWithGoogle()
+    } catch (err) {
+      console.error('Google login failed:', err)
+      setGoogleLoading(false)
+    }
+  }
+
   const handleClickOpen = (): void => {
     setOpen(true)
   }
@@ -77,6 +88,8 @@ const SignInCard = (): JSX.Element => {
   const handleClose = (): void => {
     setOpen(false)
   }
+
+  const isButtonLoading = isLoading || googleLoading
 
   return (
     <Card variant="outlined">
@@ -114,6 +127,7 @@ const SignInCard = (): JSX.Element => {
                 variant="outlined"
                 error={!!errors.email}
                 helperText={errors.email?.message}
+                disabled={isButtonLoading}
               />
             </FormControl>
           )}
@@ -132,6 +146,7 @@ const SignInCard = (): JSX.Element => {
                   onClick={handleClickOpen}
                   variant="body2"
                   sx={{ alignSelf: 'baseline' }}
+                  disabled={isButtonLoading}
                 >
                   Forgot your password?
                 </Link>
@@ -147,6 +162,7 @@ const SignInCard = (): JSX.Element => {
                 variant="outlined"
                 error={!!errors.password}
                 helperText={errors.password?.message}
+                disabled={isButtonLoading}
               />
             </FormControl>
           )}
@@ -157,7 +173,7 @@ const SignInCard = (): JSX.Element => {
           control={control}
           render={({ field: { onChange, value, ...field } }): JSX.Element => (
             <FormControlLabel
-              control={<Checkbox checked={value} onChange={onChange} {...field} />}
+              control={<Checkbox checked={value} onChange={onChange} disabled={isButtonLoading} {...field} />}
               label="Remember me"
             />
           )}
@@ -165,7 +181,7 @@ const SignInCard = (): JSX.Element => {
 
         <ForgotPasswordInput open={open} handleClose={handleClose} />
 
-        <Button type="submit" fullWidth variant="contained" disabled={isLoading}>
+        <Button type="submit" fullWidth variant="contained" disabled={isButtonLoading}>
           {isLoading ? 'Signing in...' : 'Sign in'}
         </Button>
 
@@ -183,12 +199,11 @@ const SignInCard = (): JSX.Element => {
         <Button
           fullWidth
           variant="outlined"
-          sx={{ color: 'black' }}
-          onClick={(): Promise<void> => loginWithGoogle()}
+          onClick={handleGoogleLogin}
           startIcon={<GoogleIcon />}
-          disabled={isLoading}
+          disabled={isButtonLoading}
         >
-          Sign in with Google
+          {googleLoading ? 'Redirecting...' : 'Sign in with Google'}
         </Button>
       </Box>
     </Card>
