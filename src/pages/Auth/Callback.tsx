@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { Box, CircularProgress, Typography, Alert, Card, CardContent } from '@mui/material'
+import { Box, CircularProgress, Typography, Alert, Card, CardContent, Button } from '@mui/material'
 import { useAuthStore } from '~/stores/auth.store'
 
 const AuthCallback = (): JSX.Element => {
@@ -16,70 +16,137 @@ const AuthCallback = (): JSX.Element => {
         const token = searchParams.get('token')
         const error = searchParams.get('error')
         const success = searchParams.get('success')
+        const code = searchParams.get('code') // Sometimes Google adds this
 
         if (error) {
-          // Handle error from backend
           const decodedError = decodeURIComponent(error)
-          console.error('Google authentication error:', decodedError)
+          console.error('❌ Google authentication error:', decodedError)
           setStatus('error')
           setErrorMessage(decodedError)
           setError(new Error(decodedError))
 
-          // Redirect to signin after showing error
           setTimeout(() => {
-            navigate('/signin', { replace: true, state: { authError: decodedError } })
+            navigate('/signin', {
+              replace: true,
+              state: {
+                authError: decodedError,
+                from: 'google-callback',
+              },
+            })
           }, 4000)
           return
         }
 
         if (token && success === 'true') {
           try {
-            // Handle successful authentication
-            setStatus('loading') // Keep loading while processing token
+            setStatus('loading')
 
-            // Process the token through our auth store
             await handleGoogleCallback(token)
 
             setStatus('success')
 
-            // Small delay to show success message, then redirect
             setTimeout(() => {
-              navigate('/dashboard', { replace: true })
+              navigate('/dashboard', {
+                replace: true,
+                state: { from: 'google-auth-success' },
+              })
             }, 1500)
-            // eslint-disable-next-line
+            //eslint-disable-next-line
           } catch (err: any) {
-            console.error('Error processing token:', err)
+            console.error('💥 Error processing token:', err)
+            const errorMsg = err instanceof Error ? err.message : 'Failed to process authentication token'
             setStatus('error')
-            setErrorMessage(err instanceof Error ? err.message : 'Failed to process authentication token')
+            setErrorMessage(errorMsg)
 
             setTimeout(() => {
-              navigate('/signin', { replace: true, state: { authError: err?.message } })
+              navigate('/signin', {
+                replace: true,
+                state: {
+                  authError: errorMsg,
+                  from: 'token-processing-error',
+                },
+              })
             }, 4000)
           }
           return
         }
 
-        // Invalid callback parameters
-        console.error('Invalid auth callback parameters:', { token, success })
+        // Check if we have a token but no success parameter
+        if (token && !success) {
+          console.warn('⚠️ Token present but success parameter missing, attempting to process anyway')
+          try {
+            setStatus('loading')
+
+            await handleGoogleCallback(token)
+
+            setStatus('success')
+
+            setTimeout(() => {
+              navigate('/dashboard', { replace: true })
+            }, 1500)
+            return
+          } catch (err) {
+            console.error('Failed to process token without success parameter:', err)
+            // Continue to error handling below
+          }
+        }
+
+        // Handle Google OAuth code (if present but not handled)
+        if (code) {
+          setStatus('error')
+          setErrorMessage('Unexpected authentication flow detected')
+
+          setTimeout(() => {
+            navigate('/signin', {
+              replace: true,
+              state: { authError: 'Authentication flow error' },
+            })
+          }, 3000)
+          return
+        }
+
+        // Invalid callback parameters - no error, no token, no code
+        console.error('❌ Invalid auth callback parameters:', {
+          token: token ? 'PRESENT' : 'MISSING',
+          error: error ? 'PRESENT' : 'MISSING',
+          success: success ? 'PRESENT' : 'MISSING',
+          code: code ? 'PRESENT' : 'MISSING',
+        })
+
         setStatus('error')
         setErrorMessage('Invalid authentication response. Please try again.')
 
         setTimeout(() => {
-          navigate('/signin', { replace: true })
+          navigate('/signin', {
+            replace: true,
+            state: { authError: 'Invalid authentication response' },
+          })
         }, 3000)
       } catch (err) {
-        console.error('Unexpected error in auth callback:', err)
+        console.error('💥 Unexpected error in auth callback:', err)
+        const errorMsg = err instanceof Error ? err.message : 'An unexpected error occurred'
         setStatus('error')
-        setErrorMessage(err instanceof Error ? err.message : 'An unexpected error occurred during authentication')
+        setErrorMessage(errorMsg)
 
         setTimeout(() => {
-          navigate('/signin', { replace: true })
+          navigate('/signin', {
+            replace: true,
+            state: { authError: errorMsg },
+          })
         }, 4000)
       }
     }
 
     processCallback()
   }, [searchParams, navigate, handleGoogleCallback, setError])
+
+  const handleRetry = (): void => {
+    navigate('/signin', { replace: true })
+  }
+
+  const handleManualRedirect = (): void => {
+    navigate('/dashboard', { replace: true })
+  }
 
   return (
     <Box
@@ -125,9 +192,12 @@ const AuthCallback = (): JSX.Element => {
               <Typography variant="h5" gutterBottom color="success.main">
                 Authentication Successful!
               </Typography>
-              <Typography variant="body1" color="text.secondary">
+              <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
                 Redirecting you to the dashboard...
               </Typography>
+              <Button variant="outlined" onClick={handleManualRedirect} size="small">
+                Go to Dashboard Now
+              </Button>
             </>
           )}
 
@@ -139,9 +209,12 @@ const AuthCallback = (): JSX.Element => {
                 </Typography>
                 <Typography variant="body2">{errorMessage}</Typography>
               </Alert>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                 Redirecting you back to the sign-in page...
               </Typography>
+              <Button variant="contained" onClick={handleRetry} size="small" sx={{ mr: 1 }}>
+                Try Again
+              </Button>
             </>
           )}
         </CardContent>
