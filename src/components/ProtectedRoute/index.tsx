@@ -10,10 +10,10 @@ interface ProtectedRouteProps {
 }
 
 export const ProtectedRoute = ({ children, guestOnly = false }: ProtectedRouteProps): JSX.Element => {
-  const { user, token, isLoading } = useAuthStore()
+  const { user, isLoading } = useAuthStore()
   const location = useLocation()
 
-  if (token && isLoading) {
+  if (isLoading) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
         <CircularProgress />
@@ -24,7 +24,12 @@ export const ProtectedRoute = ({ children, guestOnly = false }: ProtectedRoutePr
   const isAuthenticated = !!user
   const isAuthCallback = location.pathname === APP_ROUTES.GOOGLE_CALLBACK.path
 
-  if (guestOnly && isAuthenticated && !isAuthCallback) {
+  // Special handling for auth callback - allow it to proceed regardless of auth state
+  if (isAuthCallback) {
+    return <>{children}</>
+  }
+
+  if (guestOnly && isAuthenticated) {
     return <Navigate to={'/dashboard'} replace />
   }
 

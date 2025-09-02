@@ -39,9 +39,9 @@ export const router = createBrowserRouter([
   {
     path: APP_ROUTES.GOOGLE_CALLBACK.path,
     element: (
-      <ProtectedRoute guestOnly>
-        <AuthCallback />
-      </ProtectedRoute>
+      // <ProtectedRoute guestOnly>
+      <AuthCallback />
+      // </ProtectedRoute>
     ),
   },
   {
