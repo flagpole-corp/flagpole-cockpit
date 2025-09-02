@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -40,9 +40,16 @@ const Card = styled(MuiCard)(({ theme }) => ({
 const SignInCard = (): JSX.Element => {
   const navigate = useNavigate()
   const location = useLocation()
-  const { login, loginWithGoogle, error: authError, isLoading } = useAuthStore()
+  const { login, loginWithGoogle, error: authError, isLoading, setError } = useAuthStore()
   const [open, setOpen] = useState(false)
   const [googleLoading, setGoogleLoading] = useState(false)
+
+  useEffect(() => {
+    if (location.state?.authError) {
+      setError(new Error(location.state.authError))
+      window.history.replaceState({}, document.title)
+    }
+  }, [location.state, setError])
 
   const {
     control,

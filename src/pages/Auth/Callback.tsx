@@ -19,34 +19,48 @@ const AuthCallback = (): JSX.Element => {
 
         if (error) {
           // Handle error from backend
-          console.error('Google authentication error:', error)
+          const decodedError = decodeURIComponent(error)
+          console.error('Google authentication error:', decodedError)
           setStatus('error')
-          setErrorMessage(error)
-          setError(new Error(error))
+          setErrorMessage(decodedError)
+          setError(new Error(decodedError))
 
           // Redirect to signin after showing error
           setTimeout(() => {
-            navigate('/signin', { replace: true })
+            navigate('/signin', { replace: true, state: { authError: decodedError } })
           }, 4000)
           return
         }
 
         if (token && success === 'true') {
-          // Handle successful authentication
-          setStatus('success')
+          try {
+            // Handle successful authentication
+            setStatus('loading') // Keep loading while processing token
 
-          // Process the token through our auth store
-          await handleGoogleCallback(token)
+            // Process the token through our auth store
+            await handleGoogleCallback(token)
 
-          // Small delay to show success message, then redirect
-          setTimeout(() => {
-            navigate('/dashboard', { replace: true })
-          }, 1500)
+            setStatus('success')
+
+            // Small delay to show success message, then redirect
+            setTimeout(() => {
+              navigate('/dashboard', { replace: true })
+            }, 1500)
+            // eslint-disable-next-line
+          } catch (err: any) {
+            console.error('Error processing token:', err)
+            setStatus('error')
+            setErrorMessage(err instanceof Error ? err.message : 'Failed to process authentication token')
+
+            setTimeout(() => {
+              navigate('/signin', { replace: true, state: { authError: err?.message } })
+            }, 4000)
+          }
           return
         }
 
         // Invalid callback parameters
-        console.error('Invalid auth callback - missing token or success parameter')
+        console.error('Invalid auth callback parameters:', { token, success })
         setStatus('error')
         setErrorMessage('Invalid authentication response. Please try again.')
 
@@ -54,7 +68,7 @@ const AuthCallback = (): JSX.Element => {
           navigate('/signin', { replace: true })
         }, 3000)
       } catch (err) {
-        console.error('Error processing auth callback:', err)
+        console.error('Unexpected error in auth callback:', err)
         setStatus('error')
         setErrorMessage(err instanceof Error ? err.message : 'An unexpected error occurred during authentication')
 
