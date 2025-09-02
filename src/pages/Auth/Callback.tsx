@@ -25,15 +25,15 @@ const AuthCallback = (): JSX.Element => {
           setErrorMessage(decodedError)
           setError(new Error(decodedError))
 
-          setTimeout(() => {
-            navigate('/signin', {
-              replace: true,
-              state: {
-                authError: decodedError,
-                from: 'google-callback',
-              },
-            })
-          }, 4000)
+          // setTimeout(() => {
+          //   navigate('/signin', {
+          //     replace: true,
+          //     state: {
+          //       authError: decodedError,
+          //       from: 'google-callback',
+          //     },
+          //   })
+          // }, 4000)
           return
         }
 
@@ -58,15 +58,15 @@ const AuthCallback = (): JSX.Element => {
             setStatus('error')
             setErrorMessage(errorMsg)
 
-            setTimeout(() => {
-              navigate('/signin', {
-                replace: true,
-                state: {
-                  authError: errorMsg,
-                  from: 'token-processing-error',
-                },
-              })
-            }, 4000)
+            // setTimeout(() => {
+            //   navigate('/signin', {
+            //     replace: true,
+            //     state: {
+            //       authError: errorMsg,
+            //       from: 'token-processing-error',
+            //     },
+            //   })
+            // }, 4000)
           }
           return
         }
@@ -128,12 +128,12 @@ const AuthCallback = (): JSX.Element => {
         setStatus('error')
         setErrorMessage(errorMsg)
 
-        setTimeout(() => {
-          navigate('/signin', {
-            replace: true,
-            state: { authError: errorMsg },
-          })
-        }, 4000)
+        // setTimeout(() => {
+        //   navigate('/signin', {
+        //     replace: true,
+        //     state: { authError: errorMsg },
+        //   })
+        // }, 4000)
       }
     }
 
