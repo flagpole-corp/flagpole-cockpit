@@ -22,14 +22,13 @@ export const ProtectedRoute = ({ children, guestOnly = false }: ProtectedRoutePr
   }
 
   const isAuthenticated = !!user
+  const isAuthCallback = location.pathname === APP_ROUTES.GOOGLE_CALLBACK.path
 
-  if (guestOnly && isAuthenticated) {
+  if (guestOnly && isAuthenticated && !isAuthCallback) {
     return <Navigate to={'/dashboard'} replace />
   }
 
   if (!guestOnly && !isAuthenticated) {
-    // If the route is protected and user is not authenticated,
-    // redirect to signin and save the attempted location
     return <Navigate to={APP_ROUTES.SIGNIN.path} state={{ from: location }} replace />
   }
 
