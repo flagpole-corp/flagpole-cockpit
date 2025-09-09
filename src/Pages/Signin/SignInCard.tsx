@@ -17,7 +17,7 @@ import {
 } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import { GoogleIcon } from './CustomIcons'
-import { ForgotPasswordInput } from '~/components'
+import { ForgotPasswordInput, Logo } from '~/components'
 import { loginSchema, type LoginFormData } from '~/lib/schemas/auth.schema'
 import { useAuthStore } from '~/stores/auth.store'
 
@@ -100,9 +100,10 @@ const SignInCard = (): JSX.Element => {
 
   return (
     <Card variant="outlined">
-      <Typography component="h1" variant="h4" sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}>
-        Sign in
-      </Typography>
+      <Link href="/">
+        <Logo />
+      </Link>
+      <Typography variant="h5">Sign in</Typography>
 
       {authError && (
         <Typography color="error" sx={{ textAlign: 'center' }}>

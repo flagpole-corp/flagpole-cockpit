@@ -119,26 +119,28 @@ export const navigationCustomizations: Components<Theme> = {
       underline: 'none',
     },
     styleOverrides: {
-      root: ({ theme }) => ({
+      root: ({ theme, ownerState }) => ({
         color: theme.palette.text.primary,
         fontWeight: 500,
         position: 'relative',
         textDecoration: 'none',
         width: 'fit-content',
-        '&::before': {
-          content: '""',
-          position: 'absolute',
-          width: '100%',
-          height: '1px',
-          bottom: 0,
-          left: 0,
-          backgroundColor: theme.palette.text.secondary,
-          opacity: 0.3,
-          transition: 'width 0.3s ease, opacity 0.3s ease',
-        },
-        '&:hover::before': {
-          width: 0,
-        },
+        ...(ownerState.underline === 'hover' && {
+          '&::before': {
+            content: '""',
+            position: 'absolute',
+            width: '100%',
+            height: '1px',
+            bottom: 0,
+            left: 0,
+            backgroundColor: theme.palette.text.secondary,
+            opacity: 0.3,
+            transition: 'width 0.3s ease, opacity 0.3s ease',
+          },
+          '&:hover::before': {
+            width: 0,
+          },
+        }),
         '&:focus-visible': {
           outline: `3px solid ${alpha(brand[500], 0.5)}`,
           outlineOffset: '4px',
