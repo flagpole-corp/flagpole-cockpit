@@ -1,11 +1,15 @@
 import { useState } from 'react'
 import { useSearchParams, Navigate } from 'react-router-dom'
-import { Box, Paper, Typography, Stack, Button } from '@mui/material'
+import type { Theme } from '@mui/material'
+import { Box, Stack, Button, CardContent, Card, Link, Typography } from '@mui/material'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { FormTextField } from '~/components/FormTextField'
 import { useAcceptInvitation } from '~/lib/queries/onboarding'
+import Content from '../SignIn/Content'
+import type { SystemStyleObject } from '@mui/system'
+import { Logo } from '~/components'
 
 const acceptInvitationSchema = z
   .object({
@@ -67,60 +71,84 @@ const AcceptInvitation = (): JSX.Element => {
   }
 
   return (
-    <Box
-      display="flex"
-      justifyContent="center"
-      alignItems="center"
-      minHeight="100vh"
-      bgcolor="background.default"
-      p={2}
+    <Stack
+      direction={{ xs: 'column-reverse', sm: 'row' }}
+      sx={[
+        {
+          justifyContent: 'center',
+          height: 'calc((1 - var(--template-frame-height, 0)) * 100%)',
+          marginTop: 'max(40px - var(--template-frame-height, 0px), 0px)',
+          minHeight: '100%',
+          gap: { xs: 6, sm: 12 },
+        },
+
+        (theme): SystemStyleObject<Theme> => ({
+          '&::before': {
+            content: '""',
+            display: 'block',
+            position: 'absolute',
+            zIndex: -1,
+            inset: 0,
+            backgroundImage: 'radial-gradient(ellipse at 50% 50%, hsl(210, 100%, 97%), hsl(0, 0%, 100%))',
+            backgroundRepeat: 'no-repeat',
+            ...theme.applyStyles('dark', {
+              backgroundImage: 'radial-gradient(at 50% 50%, hsla(210, 100%, 16%, 0.5), hsl(220, 30%, 5%))',
+            }),
+          },
+        }),
+      ]}
     >
-      <Paper elevation={3} sx={{ p: 4, width: '100%', maxWidth: 400 }}>
-        <Typography variant="h5" component="h1" gutterBottom>
-          Accept Invitation
-        </Typography>
+      <Content />
+      <Card sx={{ height: 'fit-content', my: 'auto' }}>
+        <CardContent>
+          <Link href="/">
+            <Logo />
+          </Link>
+          <Typography variant="h5" gutterBottom>
+            Accept Invitation
+          </Typography>
+          <Box
+            component="form"
+            onSubmit={(e): void => {
+              e.preventDefault()
+              handleSubmit(onSubmit)(e)
+            }}
+            noValidate
+            autoComplete="off"
+          >
+            <Stack spacing={3}>
+              <FormTextField
+                control={control}
+                name="password"
+                label="Password"
+                type="password"
+                fullWidth
+                autoComplete="new-password"
+                error={!!errors.password}
+                helperText={errors.password?.message}
+              />
 
-        <Box
-          component="form"
-          onSubmit={(e): void => {
-            e.preventDefault()
-            handleSubmit(onSubmit)(e)
-          }}
-          noValidate
-          autoComplete="off"
-        >
-          <Stack spacing={3}>
-            <FormTextField
-              control={control}
-              name="password"
-              label="Password"
-              type="password"
-              fullWidth
-              autoComplete="new-password"
-              error={!!errors.password}
-              helperText={errors.password?.message}
-            />
+              <FormTextField
+                control={control}
+                name="confirmPassword"
+                label="Confirm Password"
+                type="password"
+                fullWidth
+                autoComplete="new-password"
+                error={!!errors.confirmPassword}
+                helperText={errors.confirmPassword?.message}
+              />
 
-            <FormTextField
-              control={control}
-              name="confirmPassword"
-              label="Confirm Password"
-              type="password"
-              fullWidth
-              autoComplete="new-password"
-              error={!!errors.confirmPassword}
-              helperText={errors.confirmPassword?.message}
-            />
-
-            <Stack direction="row" spacing={2} justifyContent="flex-end">
-              <Button type="submit" variant="contained" disabled={isSubmitting}>
+              {/* <Stack direction="row" spacing={2} justifyContent="flex-end"> */}
+              <Button fullWidth type="submit" variant="contained" disabled={isSubmitting}>
                 {isSubmitting ? 'Setting up...' : 'Set Password'}
               </Button>
+              {/* </Stack> */}
             </Stack>
-          </Stack>
-        </Box>
-      </Paper>
-    </Box>
+          </Box>
+        </CardContent>
+      </Card>
+    </Stack>
   )
 }
 
