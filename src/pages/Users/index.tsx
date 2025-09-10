@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { Box, CircularProgress } from '@mui/material'
 import { toast } from 'react-toastify'
 import { useUsers, useDeleteUser } from '~/lib/queries/users'
-import { useProjects } from '~/lib/queries/projects'
 import { DeleteConfirmationDialog } from '~/components/DeleteConfirmationDialog'
 import { UsersPageHeader } from './UsersPageHeader'
 import { UsersDataGrid } from './UsersDataGrid'
@@ -14,12 +13,9 @@ const Users = (): JSX.Element => {
   const [userToDelete, setUserToDelete] = useState<UserToDelete | null>(null)
 
   const { data: users, isLoading } = useUsers()
-  const { data: projects } = useProjects()
   const deleteUser = useDeleteUser()
 
-  const { handleInvite, handleEdit, handleResendInvitation, isResendingInvitation } = useUserActions({
-    projects: projects || [],
-  })
+  const { handleInvite, handleEdit, handleResendInvitation, isResendingInvitation } = useUserActions()
 
   const columns = useUsersTableColumns({
     onEdit: handleEdit,

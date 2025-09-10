@@ -22,6 +22,8 @@ export const inviteUserSchema = z.object({
 
 export const editUserSchema = z.object({
   email: z.string().email('Invalid email address'),
+  firstName: z.string().min(3, 'First name must be at least 3 characters'),
+  lastName: z.string().optional(),
   role: z.enum(['owner', 'admin', 'member'] as const),
   projects: z.array(z.string()).optional(),
 }) satisfies z.ZodType<Omit<BackendUpdateUserDto, 'firstName' | 'lastName'> & { email: string }>

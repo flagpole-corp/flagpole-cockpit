@@ -1,7 +1,6 @@
 import { toast } from 'react-toastify'
 import { useDrawer } from '~/contexts/DrawerContext'
 import { Form } from '~/components/Form'
-import type { Project } from '~/lib/queries/projects'
 import { useInviteUser, useUpdateUser, useResendInvitation } from '~/lib/queries/users'
 import { InviteUserForm } from '../InviteUserForm'
 import { EditUserForm } from '../EditUserForm'
@@ -16,10 +15,6 @@ import {
   type BackendInviteUserDto,
 } from '../types'
 
-interface UseUserActionsProps {
-  projects: Project[]
-}
-
 interface UseUserActionsReturn {
   handleInvite: () => void
   handleEdit: (user: BackendUser) => void
@@ -27,7 +22,7 @@ interface UseUserActionsReturn {
   isResendingInvitation: boolean
 }
 
-export const useUserActions = ({ projects }: UseUserActionsProps): UseUserActionsReturn => {
+export const useUserActions = (): UseUserActionsReturn => {
   const { openDrawer, closeDrawer } = useDrawer()
   const inviteUser = useInviteUser()
   const updateUser = useUpdateUser()
@@ -56,7 +51,7 @@ export const useUserActions = ({ projects }: UseUserActionsProps): UseUserAction
             role: 'member' as const,
           }}
         >
-          {(control): JSX.Element => <InviteUserForm control={control} projects={projects || []} />}
+          {(control): JSX.Element => <InviteUserForm control={control} />}
         </Form>
       ),
       title: 'Invite User',
@@ -64,7 +59,6 @@ export const useUserActions = ({ projects }: UseUserActionsProps): UseUserAction
   }
 
   const handleEdit = (user: BackendUser): void => {
-    // Extract role safely with type checking
     const userRole = user.organizations[0]?.role
     if (!userRole || !isValidRole(userRole)) {
       toast.error('Invalid user role detected')
@@ -92,10 +86,11 @@ export const useUserActions = ({ projects }: UseUserActionsProps): UseUserAction
           defaultValues={{
             email: user.email,
             role: userRole as NonNullable<BackendInviteUserDto['role']>,
-            projects: user.projects.map((project: Project) => project._id),
+            firstName: user.firstName,
+            lastName: user.lastName,
           }}
         >
-          {(control): JSX.Element => <EditUserForm control={control} projects={projects || []} />}
+          {(control): JSX.Element => <EditUserForm control={control} />}
         </Form>
       ),
       title: 'Edit User',
