@@ -26,6 +26,19 @@ export const useUsersTableColumns = ({
       minWidth: 200,
     },
     {
+      field: 'name',
+      headerName: 'Name',
+      renderCell: (params): JSX.Element => {
+        return (
+          <>
+            {params.row.firstName} {params.row.lastName}
+          </>
+        )
+      },
+      flex: 1,
+      minWidth: 150,
+    },
+    {
       field: 'organizationRole',
       headerName: 'Role',
       width: 120,
