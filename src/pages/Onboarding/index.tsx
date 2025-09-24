@@ -157,7 +157,7 @@ yarn add @flagpole/react    # or using yarn`,
 
 const App = () => {
  return (
-  <FeatureFlagProvider api-key={${createdApiKey?.key || 'YOUR_API_KEY'}}>
+  <FeatureFlagProvider api-key={"${createdApiKey?.key || 'YOUR_API_KEY'}"}>
     <App />
   </FeatureFlagProvider>
  );
