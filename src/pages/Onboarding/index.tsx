@@ -151,9 +151,9 @@ const Onboarding = (): JSX.Element => {
       // eslint-disable-next-line
       description: "Now that everything is set up, here's how to implement the SDK in your application",
       code: {
-        install: `npm install @flagpole/client-react  # for React
-yarn add @flagpole/client-react    # or using yarn`,
-        usage: `import { FeatureFlagProvider, useFlagPole } from "@flagpole/client-react"';
+        install: `npm install @flagpole/react  # for React
+yarn add @flagpole/react    # or using yarn`,
+        usage: `import { FeatureFlagProvider, useFeatureFlag } from "@flagpole/react"';
 
 const App = () => {
  return (
@@ -164,7 +164,7 @@ const App = () => {
 };
 
 const ChildComponent = () => {
-  const { isEnabled } = useFlagpole('${createdFlag?.name}');
+  const isEnabled = useFeatureFlag('${createdFlag?.name}');
 
   return (
     <>
