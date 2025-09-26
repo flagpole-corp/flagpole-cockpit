@@ -1,9 +1,7 @@
 import { QueryClientProvider } from '@tanstack/react-query'
 import { AppRouter } from './routes'
 import { queryClient } from './lib/queryClient'
-import { ProjectProvider } from './contexts/ProjectContext'
-import { ModalProvider } from './contexts/ModalContext'
-import { DrawerProvider } from './contexts/DrawerContext'
+import { DrawerProvider, ModalProvider, ProjectProvider } from './contexts'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 

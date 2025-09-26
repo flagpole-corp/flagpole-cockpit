@@ -1,5 +1,5 @@
 import { Avatar, Card, CardActions, CardContent, Divider, Stack, Typography, Chip, Box } from '@mui/material'
-import type { User } from '~/lib/queries/auth'
+import type { User } from '~/lib/api/auth'
 
 interface AccountInfoProps {
   user: User | null

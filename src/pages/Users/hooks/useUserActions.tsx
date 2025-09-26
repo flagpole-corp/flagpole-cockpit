@@ -1,7 +1,7 @@
 import { toast } from 'react-toastify'
 import { useDrawer } from '~/contexts/DrawerContext'
 import { Form } from '~/components/forms'
-import { useInviteUser, useUpdateUser, useResendInvitation } from '~/lib/queries/users'
+import { useInviteUser, useUpdateUser, useResendInvitation } from '~/lib/api/users'
 import { InviteUserForm } from '../InviteUserForm'
 import { EditUserForm } from '../EditUserForm'
 import type { BackendUpdateUserDto } from '../types'

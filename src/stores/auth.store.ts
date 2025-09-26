@@ -2,7 +2,7 @@ import type { LoginDto } from '@flagpole/api-types'
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import api from '~/lib/axios'
-import type { AuthResponse, User } from '~/lib/queries/auth'
+import type { AuthResponse, User } from '~/lib/api/auth'
 
 interface AuthState {
   user: User | null
@@ -120,7 +120,6 @@ export const useAuthStore = create<AuthState>()(
         try {
           set({ isLoading: true, error: null })
 
-          // Get the API URL from your axios config or environment
           const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000'
 
           // Redirect to Google OAuth endpoint

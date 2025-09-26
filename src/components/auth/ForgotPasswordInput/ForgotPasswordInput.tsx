@@ -6,7 +6,7 @@ import DialogContent from '@mui/material/DialogContent'
 import DialogContentText from '@mui/material/DialogContentText'
 import DialogTitle from '@mui/material/DialogTitle'
 import { FormTextField } from '~/components/forms/FormTextField'
-import { useForgotPassword } from '~/lib/queries/auth'
+import { useForgotPassword } from '~/lib/api/auth'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 

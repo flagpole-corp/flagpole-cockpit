@@ -1,7 +1,7 @@
 import type { ComponentProps, ReactNode } from 'react'
 import { createContext, useCallback, useContext, useState } from 'react'
-import { Modal } from '~/components/modals'
-import { useModal } from '~/hooks/useModal'
+import { Modal } from '~/components/'
+import { useModal } from '~/hooks/ui/useModal'
 
 type ModalProps = Omit<ComponentProps<typeof Modal>, 'open' | 'onClose'>
 

@@ -12,8 +12,8 @@ import { Form } from '~/components/forms'
 import { FormTextField } from '~/components/forms/FormTextField'
 import { z } from 'zod'
 import { DeleteConfirmationDialog } from '~/components/modals/DeleteConfirmationDialog'
-import type { Project } from '~/lib/queries/projects'
-import { useProjects, useUpdateProject, useCreateProject, useDeleteProject } from '~/lib/queries/projects'
+import type { Project } from '~/lib/api/projects'
+import { useProjects, useUpdateProject, useCreateProject, useDeleteProject } from '~/lib/api/projects'
 
 const createProjectSchema = z.object({
   name: z.string().min(3, 'Min length is 3').max(255, 'Max length is 256'),

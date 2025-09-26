@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Box, CircularProgress } from '@mui/material'
 import { toast } from 'react-toastify'
-import { useUsers, useDeleteUser } from '~/lib/queries/users'
+import { useUsers, useDeleteUser } from '~/lib/api/users'
 import { DeleteConfirmationDialog } from '~/components/modals/DeleteConfirmationDialog'
 import { UsersPageHeader } from './UsersPageHeader'
 import { UsersDataGrid } from './UsersDataGrid'

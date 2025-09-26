@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import type { ButtonProps } from '@mui/material'
 import { Button, CircularProgress } from '@mui/material'
-import { useCreateCheckoutSessionByPlan } from '~/lib/queries/stripe'
+import { useCreateCheckoutSessionByPlan } from '~/lib/api/stripe'
 import { useAuthStore } from '~/stores/auth.store'
 
 interface CheckoutButtonProps extends Omit<ButtonProps, 'onClick' | 'onError'> {
