@@ -21,14 +21,14 @@ import { DataGrid } from '@mui/x-data-grid'
 import AddIcon from '@mui/icons-material/Add'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
-import type { FeatureFlag } from '~/lib/api/flags'
+import type { FeatureFlag } from '~/lib/api/feature-flags'
 import {
   useCreateFeatureFlag,
   useDeleteFeatureFlag,
   useFeatureFlags,
   useToggleFeatureFlag,
   useUpdateFeatureFlag,
-} from '~/lib/api/flags'
+} from '~/lib/api/feature-flags'
 import { useProjects } from '~/lib/api/projects'
 import { formatDistanceToNow } from 'date-fns'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
