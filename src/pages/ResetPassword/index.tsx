@@ -2,8 +2,8 @@ import { useState } from 'react'
 import { useSearchParams, Navigate } from 'react-router-dom'
 import { Box, Paper, Typography, Stack } from '@mui/material'
 import { z } from 'zod'
-import { Form } from '~/components/Form'
-import { FormTextField } from '~/components/FormTextField'
+import { Form } from '~/components/forms'
+import { FormTextField } from '~/components/forms/FormTextField'
 import { useResetPassword } from '~/lib/queries/auth'
 
 const resetPasswordSchema = z

@@ -1,6 +1,6 @@
 import { toast } from 'react-toastify'
 import { useDrawer } from '~/contexts/DrawerContext'
-import { Form } from '~/components/Form'
+import { Form } from '~/components/forms'
 import { useInviteUser, useUpdateUser, useResendInvitation } from '~/lib/queries/users'
 import { InviteUserForm } from '../InviteUserForm'
 import { EditUserForm } from '../EditUserForm'

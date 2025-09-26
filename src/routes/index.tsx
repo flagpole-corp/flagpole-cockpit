@@ -1,5 +1,5 @@
 import { createBrowserRouter, Navigate, RouterProvider, type RouteObject } from 'react-router-dom'
-import { ProtectedRoute } from '../components/ProtectedRoute'
+import { ProtectedRoute } from '../components/auth/ProtectedRoute/ProtectedRoute'
 import SignIn from '~/pages/SignIn'
 import AcceptInvitation from '~/pages/AcceptInvitation'
 import { createRoute } from '../factories/createRoute'
