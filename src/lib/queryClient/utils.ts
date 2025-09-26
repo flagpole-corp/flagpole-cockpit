@@ -1,5 +1,5 @@
-import type { ApiErrorType } from './apiError'
 import { ERROR_MESSAGES } from './messages'
+import type { ApiErrorType } from './types'
 
 export const isAuthError = (error: ApiErrorType): boolean => error.code === 'AUTHENTICATION_ERROR'
 export const isNetworkError = (error: ApiErrorType): boolean => error.code === 'NETWORK_ERROR'

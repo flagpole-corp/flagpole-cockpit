@@ -1,24 +1,5 @@
 import type { AxiosError } from 'axios'
-
-export type ErrorCode =
-  | 'AUTHENTICATION_ERROR'
-  | 'SERVER_ERROR'
-  | 'NETWORK_ERROR'
-  | 'UNKNOWN_ERROR'
-  | 'FEATURE_NOT_AVAILABLE'
-
-export interface ApiErrorType {
-  message: string
-  statusCode: number
-  code: ErrorCode
-  originalError?: Error
-}
-
-interface ApiErrorResponse {
-  message: string
-  error?: string
-  statusCode?: number
-}
+import type { ApiErrorResponse, ApiErrorType, ErrorCode } from './types'
 
 const ERROR_CODE_MAP: Record<number, ErrorCode> = {
   401: 'AUTHENTICATION_ERROR',
