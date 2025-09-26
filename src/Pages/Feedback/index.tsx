@@ -1,7 +1,7 @@
 import { z } from 'zod'
-import { Form } from '~/components/Form'
-import { FormSelect } from '~/components/FormSelect'
-import { FormTextField } from '~/components/FormTextField'
+import { Form } from '~/components/forms'
+import { FormSelect } from '~/components/forms/FormSelect'
+import { FormTextField } from '~/components/forms/FormTextField'
 import { useSendFeedback } from '~/lib/queries/feedback'
 import { Box, Typography } from '@mui/material'
 

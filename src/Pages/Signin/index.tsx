@@ -1,6 +1,6 @@
 import Stack from '@mui/material/Stack'
 import Content from './Content'
-import SignInCard from './SignInCard'
+import SignInCard from '../../components/auth/SignInCard/SignInCard'
 import type { Theme } from '@mui/material'
 import type { SystemStyleObject } from '@mui/system'
 
