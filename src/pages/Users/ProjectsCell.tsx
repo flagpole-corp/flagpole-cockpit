@@ -1,5 +1,5 @@
 import { Box, Chip } from '@mui/material'
-import type { Project } from '~/lib/queries/projects'
+import type { Project } from '~/lib/api/projects'
 
 interface ProjectsCellProps {
   projects: Project[]

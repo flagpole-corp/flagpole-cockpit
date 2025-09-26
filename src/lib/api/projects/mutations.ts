@@ -1,33 +1,9 @@
-import type { UseQueryResult, UseMutationResult } from '@tanstack/react-query'
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { toast } from 'react-toastify'
+import type { UseMutationResult } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import type { Project } from './types'
+import { projectKeys } from './types'
 import api from '~/lib/axios'
-
-export interface Project {
-  _id: string
-  name: string
-  description: string
-  organization: string
-  status: string
-  updatedAt: string
-  createdAt: string
-}
-
-export const projectKeys = {
-  all: ['projects'] as const,
-  lists: () => [...projectKeys.all, 'list'] as const,
-  detail: (id: string) => [...projectKeys.all, id] as const,
-}
-
-export const useProjects = (): UseQueryResult<Project[], Error> => {
-  return useQuery({
-    queryKey: projectKeys.lists(),
-    queryFn: async () => {
-      const { data } = await api.get<Project[]>('/api/projects')
-      return data
-    },
-  })
-}
+import { toast } from 'react-toastify'
 
 export const useCreateProject = (): UseMutationResult<Project, Error, { name: string; description?: string }> => {
   const queryClient = useQueryClient()

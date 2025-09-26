@@ -1,13 +1,8 @@
 import type { UseMutationResult } from '@tanstack/react-query'
 import { useMutation } from '@tanstack/react-query'
-import { toast } from 'react-toastify'
+import type { Feedback } from './types'
 import api from '~/lib/axios'
-
-interface Feedback {
-  type: 'bug' | 'feature' | 'other'
-  title: string
-  description: string
-}
+import { toast } from 'react-toastify'
 
 export const useSendFeedback = (): UseMutationResult<void, Error, Feedback> => {
   return useMutation({

@@ -21,19 +21,19 @@ import { DataGrid } from '@mui/x-data-grid'
 import AddIcon from '@mui/icons-material/Add'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
-import type { FeatureFlag } from '~/lib/queries/flags'
+import type { FeatureFlag } from '~/lib/api/flags'
 import {
   useCreateFeatureFlag,
   useDeleteFeatureFlag,
   useFeatureFlags,
   useToggleFeatureFlag,
   useUpdateFeatureFlag,
-} from '~/lib/queries/flags'
-import { useProjects } from '~/lib/queries/projects'
+} from '~/lib/api/flags'
+import { useProjects } from '~/lib/api/projects'
 import { formatDistanceToNow } from 'date-fns'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import KeyIcon from '@mui/icons-material/Key'
-import { useApiKeys, useCreateApiKey } from '~/lib/queries/api-keys'
+import { useApiKeys, useCreateApiKey } from '~/lib/api/api-keys'
 import { useSearchParams } from 'react-router-dom'
 import { useDrawer } from '~/contexts/DrawerContext'
 import { Form } from '~/components/forms'

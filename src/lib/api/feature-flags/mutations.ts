@@ -1,69 +1,18 @@
-import type { UseMutationResult, UseQueryResult } from '@tanstack/react-query'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { toast } from 'react-toastify'
-import { useDrawer } from '~/contexts/DrawerContext'
-import { useAuthStore } from '~/stores/auth.store'
+import type { UseMutationResult } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import type {
+  DeleteFeatureFlagVariables,
+  FeatureFlag,
+  ToggleFlagContext,
+  ToggleFlagVariables,
+  UpdateFeatureFlagVariables,
+} from './types'
+import { flagKeys } from './types'
 import api from '~/lib/axios'
+import { toast } from 'react-toastify'
 import type { CreateFeatureFlagDto } from '@flagpole/api-types'
-
-export interface FeatureFlag {
-  _id: string
-  name: string
-  description: string
-  isEnabled: boolean
-  project: string
-  conditions: Record<string, unknown>
-  environments: string[]
-  createdAt: string
-  updatedAt: string
-}
-
-interface UseFeatureFlagsOptions {
-  enabled?: boolean
-}
-
-interface ToggleFlagVariables {
-  flagId: string
-  projectId: string
-}
-
-interface ToggleFlagContext {
-  previousFlags: FeatureFlag[] | undefined
-}
-
-interface UpdateFeatureFlagVariables {
-  id: string
-  data: Partial<CreateFeatureFlagDto>
-}
-
-interface DeleteFeatureFlagVariables {
-  id: string
-  projectId: string
-}
-
-export const flagKeys = {
-  all: ['flags'] as const,
-  lists: () => [...flagKeys.all, 'list'] as const,
-  list: (projectId: string) => [...flagKeys.lists(), projectId] as const,
-}
-
-export const useFeatureFlags = (
-  projectId: string,
-  options: UseFeatureFlagsOptions = {}
-): UseQueryResult<FeatureFlag[], Error> => {
-  return useQuery({
-    queryKey: flagKeys.list(projectId),
-    queryFn: async () => {
-      const { data } = await api.get<FeatureFlag[]>('/api/feature-flags', {
-        headers: {
-          'x-project-id': projectId,
-        },
-      })
-      return data
-    },
-    enabled: projectId !== '' && options.enabled !== false,
-  })
-}
+import { useAuthStore } from '~/stores/auth.store'
+import { useDrawer } from '~/contexts'
 
 export const useToggleFeatureFlag = (): UseMutationResult<
   FeatureFlag,

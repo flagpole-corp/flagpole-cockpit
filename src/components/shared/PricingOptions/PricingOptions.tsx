@@ -16,7 +16,7 @@ import Tab from '@mui/material/Tab'
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome'
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded'
 import CheckoutButton from '../CheckoutButton/CheckoutButton'
-import { useStripeProducts, useStripeEnvironment, type ProductWithFeatures } from '~/lib/queries/stripe'
+import { useStripeProducts, useStripeEnvironment, type ProductWithFeatures } from '~/lib/api/stripe'
 
 interface TierData {
   id: string

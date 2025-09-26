@@ -1,12 +1,9 @@
 import type { UseMutationResult } from '@tanstack/react-query'
 import { useMutation } from '@tanstack/react-query'
-import api from '../axios'
-import { toast } from 'react-toastify'
+import type { AcceptInvitationResponse } from './types'
 import { useNavigate } from 'react-router-dom'
-
-export interface AcceptInvitationResponse {
-  success: boolean
-}
+import api from '~/lib/axios'
+import { toast } from 'react-toastify'
 
 export const useAcceptInvitation = (): UseMutationResult<
   AcceptInvitationResponse,

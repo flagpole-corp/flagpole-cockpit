@@ -4,7 +4,7 @@ import { Box, Paper, Typography, Stack } from '@mui/material'
 import { z } from 'zod'
 import { Form } from '~/components/forms'
 import { FormTextField } from '~/components/forms/FormTextField'
-import { useResetPassword } from '~/lib/queries/auth'
+import { useResetPassword } from '~/lib/api/auth'
 
 const resetPasswordSchema = z
   .object({

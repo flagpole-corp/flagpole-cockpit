@@ -1,39 +1,9 @@
-import type { UseQueryResult, UseMutationResult } from '@tanstack/react-query'
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import type { InviteUserDto, UsersControllerInviteData, UsersControllerUpdateUserData } from '@flagpole/api-types'
+import type { UseMutationResult } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import api from '~/lib/axios'
-import type {
-  InviteUserDto,
-  UsersControllerFindAllData,
-  UsersControllerInviteData,
-  UsersControllerUpdateUserData,
-} from '@flagpole/api-types'
-
-export type User = NonNullable<UsersControllerFindAllData>[number]
-export type OrganizationRole = InviteUserDto['role']
-
-export interface UpdateUserRequest {
-  id: string
-  role?: OrganizationRole
-  projects?: string[]
-  firstName?: string
-  lastName?: string
-}
-
-export const userKeys = {
-  all: ['users'] as const,
-  lists: () => [...userKeys.all, 'list'] as const,
-  detail: (id: string) => [...userKeys.all, id] as const,
-}
-
-export const useUsers = (): UseQueryResult<User[], Error> => {
-  return useQuery({
-    queryKey: userKeys.lists(),
-    queryFn: async (): Promise<User[]> => {
-      const { data } = await api.get<UsersControllerFindAllData>('/api/users')
-      return data || []
-    },
-  })
-}
+import type { UpdateUserRequest } from './types'
+import { userKeys } from './types'
 
 export const useInviteUser = (): UseMutationResult<UsersControllerInviteData, Error, InviteUserDto> => {
   const queryClient = useQueryClient()

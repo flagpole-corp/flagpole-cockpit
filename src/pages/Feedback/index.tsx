@@ -2,7 +2,7 @@ import { z } from 'zod'
 import { Form } from '~/components/forms'
 import { FormSelect } from '~/components/forms/FormSelect'
 import { FormTextField } from '~/components/forms/FormTextField'
-import { useSendFeedback } from '~/lib/queries/feedback'
+import { useSendFeedback } from '~/lib/api/feedback'
 import { Box, Typography } from '@mui/material'
 
 const feedbackSchema = z.object({

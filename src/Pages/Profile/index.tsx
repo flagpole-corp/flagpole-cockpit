@@ -1,5 +1,5 @@
 import { Box, CircularProgress, Grid2 as Grid, Stack, Typography } from '@mui/material'
-import { useUpdateProfile } from '~/lib/queries/user-profile'
+import { useUpdateProfile } from '~/lib/api/user-profile'
 import type { ProfileFormData } from '~/lib/schemas/profile.schema'
 import { useAuthStore } from '~/stores/auth.store'
 import { AccountInfo } from './AccountInfo'

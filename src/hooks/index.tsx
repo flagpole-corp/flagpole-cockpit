@@ -1,1 +1,1 @@
-export * from './ui/useModal'
+export * from './ui'

@@ -1,68 +1,9 @@
-import type { UseQueryResult, UseMutationResult } from '@tanstack/react-query'
-import { useQuery, useMutation } from '@tanstack/react-query'
+import type { UseMutationResult } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
+import type { AuthResponse, ForgotPasswordResponse, LoginCredentials, ResetPasswordResponse } from './types'
 import { useAuthStore } from '~/stores/auth.store'
 import api from '~/lib/axios'
 import { toast } from 'react-toastify'
-
-export interface LoginCredentials {
-  email: string
-  password: string
-  remember?: boolean
-}
-
-export type SubscriptionWarning = {
-  showWarning: boolean
-  daysRemaining?: number
-  expiresAt?: string
-  message?: string
-}
-
-export interface User {
-  _id: string
-  email: string
-  firstName: string
-  lastName?: string
-  currentOrganization: string
-  organizations: Array<{
-    organization: string
-    role: string
-    joinedAt: string
-  }>
-  subscriptionWarning?: SubscriptionWarning
-}
-
-export interface AuthResponse {
-  access_token: string
-  user: User
-}
-
-interface ForgotPasswordResponse {
-  message: string
-}
-
-interface ResetPasswordResponse {
-  message: string
-}
-
-export const authKeys = {
-  user: ['auth', 'user'] as const,
-}
-
-export const useUser = (): UseQueryResult<User, Error> => {
-  const { token, user, setUser } = useAuthStore()
-
-  return useQuery({
-    queryKey: authKeys.user,
-    queryFn: async () => {
-      const { data } = await api.get<User>('/api/auth/me')
-      setUser(data)
-      return data
-    },
-    initialData: user,
-    enabled: !!token,
-    staleTime: 5 * 60 * 1000, // 5 min
-  })
-}
 
 export const useLogin = (): UseMutationResult<AuthResponse, Error, LoginCredentials> => {
   const { setUser, setToken, setRememberMe } = useAuthStore()
