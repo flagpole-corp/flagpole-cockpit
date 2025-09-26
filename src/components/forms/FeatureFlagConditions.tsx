@@ -138,7 +138,7 @@ export function FeatureFlagConditions({ control, name }: FeatureFlagConditionsPr
         <Typography variant="subtitle2" gutterBottom>
           Add Condition
         </Typography>
-        <Stack direction="row" spacing={1} flexWrap="wrap" gap={1}>
+        <Stack direction={'row'} flexWrap="wrap" gap={2}>
           {Object.entries(CONDITION_TYPES).map(([type, config]) => (
             <Button
               key={type}

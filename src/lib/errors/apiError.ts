@@ -1,6 +1,11 @@
 import type { AxiosError } from 'axios'
 
-export type ErrorCode = 'AUTHENTICATION_ERROR' | 'SERVER_ERROR' | 'NETWORK_ERROR' | 'UNKNOWN_ERROR'
+export type ErrorCode =
+  | 'AUTHENTICATION_ERROR'
+  | 'SERVER_ERROR'
+  | 'NETWORK_ERROR'
+  | 'UNKNOWN_ERROR'
+  | 'FEATURE_NOT_AVAILABLE'
 
 export interface ApiErrorType {
   message: string

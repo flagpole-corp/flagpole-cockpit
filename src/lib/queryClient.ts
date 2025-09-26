@@ -69,9 +69,13 @@ const handleQueryError = (error: Error, query: Query<unknown, unknown, unknown, 
   toast.error(errorMessage)
 }
 
-const handleMutationError = (error: Error): void => {
+const handleMutationError = (error: Error, mutation: any): void => {
   const apiError = createApiError(error)
   const errorMessage = extractErrorMessage(error)
+
+  if (mutation.options?.meta?.skipGlobalError) {
+    return
+  }
 
   if (isAuthError(apiError)) {
     const { setToken, setUser } = useAuthStore.getState()
@@ -86,7 +90,6 @@ const handleMutationError = (error: Error): void => {
     toast.error(errorMessage)
     return
   }
-
   toast.error(errorMessage)
 }
 

@@ -32,7 +32,7 @@ const Feedback = (): JSX.Element => {
         Feedback
       </Typography>
 
-      <Typography paragraph color="text.secondary" sx={{ mb: 4 }}>
+      <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
         We value your input! Use this form to report bugs, suggest new features, or share any other feedback about our
         platform. Your feedback helps us improve and better serve your needs.
       </Typography>

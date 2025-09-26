@@ -132,7 +132,6 @@ export const useCreateFeatureFlag = (): UseMutationResult<FeatureFlag, Error, Cr
     //eslint-disable-next-line
     mutationFn: async (createFlagData: any) => {
       const { projectId } = createFlagData
-
       delete createFlagData?.projectId
 
       const { data } = await api.post<FeatureFlag>('/api/feature-flags', createFlagData, {
@@ -149,6 +148,9 @@ export const useCreateFeatureFlag = (): UseMutationResult<FeatureFlag, Error, Cr
       })
       closeDrawer()
       toast.success('Feature flag created successfully')
+    },
+    meta: {
+      skipGlobalError: true,
     },
     onError: () => {
       toast.error('Failed to create feature flag')

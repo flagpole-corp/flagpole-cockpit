@@ -22,11 +22,5 @@ export const useRequestDemo = (): UseMutationResult<void, Error, RequestDemo> =>
     onSuccess: () => {
       toast.success('Demo request submitted successfully. Our team will contact you shortly.')
     },
-    // eslint-disable-next-line
-    onError: (error: any) => {
-      console.error({ error })
-      const message = error.response?.data?.message || 'Failed to submit demo request'
-      toast.error(message)
-    },
   })
 }

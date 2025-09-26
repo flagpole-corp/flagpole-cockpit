@@ -4,17 +4,21 @@ import { queryClient } from './lib/queryClient'
 import { ProjectProvider } from './contexts/ProjectContext'
 import { ModalProvider } from './contexts/ModalContext'
 import { DrawerProvider } from './contexts/DrawerContext'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 
 const App = (): JSX.Element => {
   return (
     <QueryClientProvider client={queryClient}>
-      <ModalProvider>
-        <DrawerProvider>
-          <ProjectProvider>
-            <AppRouter />
-          </ProjectProvider>
-        </DrawerProvider>
-      </ModalProvider>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <ModalProvider>
+          <DrawerProvider>
+            <ProjectProvider>
+              <AppRouter />
+            </ProjectProvider>
+          </DrawerProvider>
+        </ModalProvider>
+      </LocalizationProvider>
     </QueryClientProvider>
   )
 }

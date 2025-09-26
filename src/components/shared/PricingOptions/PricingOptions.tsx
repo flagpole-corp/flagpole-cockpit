@@ -50,10 +50,7 @@ export const PricingOptions = (): JSX.Element => {
       const prices = product.prices.filter((price) => price.recurring?.interval === billingInterval)
 
       prices.forEach((price) => {
-        const displayAmount =
-          billingInterval === 'year'
-            ? price.unit_amount / 1200 // Convert to monthly equivalent for annual billing
-            : price.unit_amount / 100
+        const displayAmount = billingInterval === 'year' ? price.unit_amount / 1200 : price.unit_amount / 100
 
         tiers.push({
           id: product.id,
@@ -94,8 +91,6 @@ export const PricingOptions = (): JSX.Element => {
     <Container
       id="pricing"
       sx={{
-        pt: { xs: 4, sm: 12 },
-        pb: { xs: 8, sm: 16 },
         position: 'relative',
         display: 'flex',
         flexDirection: 'column',
@@ -109,12 +104,6 @@ export const PricingOptions = (): JSX.Element => {
           textAlign: { sm: 'left', md: 'center' },
         }}
       >
-        <Typography component="h2" variant="h4" gutterBottom sx={{ color: 'text.primary' }}>
-          Pricing
-        </Typography>
-        <Typography variant="body1" sx={{ color: 'text.secondary' }}>
-          Quickly build an effective pricing table for your potential customers with this layout.
-        </Typography>
         {environmentData?.isTestMode && (
           <Alert severity="info" sx={{ mt: 2 }}>
             You're viewing test mode pricing. Real charges will not be made.
@@ -132,17 +121,14 @@ export const PricingOptions = (): JSX.Element => {
       <Grid container spacing={3} sx={{ alignItems: 'center', justifyContent: 'center', width: '100%' }}>
         {isLoading
           ? [...Array(3)].map((_, index) => (
-              <Grid size={{ xs: 12, sm: 6, md: 4 }} key={index}>
+              <Grid size={{ xs: 12, md: 4 }} key={index}>
                 <Card sx={{ p: 2, height: '100%' }}>
                   <Skeleton variant="rectangular" height={400} />
                 </Card>
               </Grid>
             ))
           : tiers?.map((tier) => (
-              <Grid
-                size={{ xs: 12, sm: tier.title === 'Enterprise' ? 12 : 6, md: 4 }}
-                key={`${tier.id}-${tier.interval}`}
-              >
+              <Grid size={{ xs: 12, md: 4 }} key={`${tier.id}-${tier.interval}`}>
                 <Card
                   sx={[
                     {
