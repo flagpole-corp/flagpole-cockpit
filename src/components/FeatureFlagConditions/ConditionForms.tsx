@@ -6,6 +6,7 @@ import { FormSelect } from '~/components/FormSelect'
 import { FormCheckboxGroup } from '~/components/FormCheckboxGroup'
 import type { FeatureFlagFormData } from '~/lib/types/feature-flags'
 import type { ChangeEvent } from 'react'
+import { FormDateTimePicker } from '../FormDatepickerField'
 
 interface BaseConditionFormProps {
   control: Control<FeatureFlagFormData>
@@ -99,7 +100,19 @@ export const TimeConditionForm = ({ control, index, onDelete }: BaseConditionFor
           <DeleteIcon />
         </IconButton>
       </Box>
-      <FormTextField
+      <FormDateTimePicker
+        control={control}
+        name={`conditions.conditions.${index}.rules.startDate` as const}
+        label="Start Date"
+      />
+
+      <FormDateTimePicker
+        control={control}
+        name={`conditions.conditions.${index}.rules.endDate` as const}
+        label="End Date"
+      />
+      {/* <FormTextField
+        slotProps={{ inputLabel: { shrink: true } }}
         control={control}
         name={`conditions.conditions.${index}.rules.startDate` as const}
         type="datetime-local"
@@ -107,12 +120,13 @@ export const TimeConditionForm = ({ control, index, onDelete }: BaseConditionFor
         fullWidth
       />
       <FormTextField
+        slotProps={{ inputLabel: { shrink: true } }}
         control={control}
         name={`conditions.conditions.${index}.rules.endDate`}
         type="datetime-local"
         label="End Date"
         fullWidth
-      />
+      /> */}
       <FormSelect
         control={control}
         name={`conditions.conditions.${index}.rules.timeZone`}
