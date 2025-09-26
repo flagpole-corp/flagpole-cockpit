@@ -12,7 +12,7 @@ import { Box, Step, StepLabel, StepContent, Button, Paper, Typography, Stepper }
 import type { FeatureFlag } from '~/lib/queries/flags'
 import { useCreateFeatureFlag } from '~/lib/queries/flags'
 import ReactConfetti from 'react-confetti'
-import { useWindowSize } from '~/hooks/useWindowSize'
+import { useWindowSize } from '~/hooks/ui/useWindowSize'
 
 interface CodeBlockProps {
   code: string
