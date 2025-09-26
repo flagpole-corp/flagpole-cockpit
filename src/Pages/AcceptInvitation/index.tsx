@@ -5,7 +5,7 @@ import { Box, Stack, Button, CardContent, Card, Link, Typography } from '@mui/ma
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { FormTextField } from '~/components/FormTextField'
+import { FormTextField } from '~/components/forms/FormTextField'
 import { useAcceptInvitation } from '~/lib/queries/onboarding'
 import Content from '../SignIn/Content'
 import type { SystemStyleObject } from '@mui/system'

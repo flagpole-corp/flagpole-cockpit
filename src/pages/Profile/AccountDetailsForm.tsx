@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, Divider, Grid2 as Grid, Typography, Box } from '@mui/material'
-import { Form } from '~/components/Form'
-import { FormTextField } from '~/components/FormTextField'
+import { Form } from '~/components/forms'
+import { FormTextField } from '~/components/forms/FormTextField'
 import type { User } from '~/lib/queries/auth'
 import { profileSchema } from '~/lib/schemas/profile.schema'
 import type { ProfileFormData } from '~/lib/schemas/profile.schema'
