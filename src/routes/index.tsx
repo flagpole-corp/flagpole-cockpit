@@ -1,13 +1,10 @@
 import { createBrowserRouter, Navigate, RouterProvider, type RouteObject } from 'react-router-dom'
 import { ProtectedRoute } from '../components/auth/ProtectedRoute/ProtectedRoute'
-import SignIn from '~/pages/SignIn'
-import AcceptInvitation from '~/pages/AcceptInvitation'
+import { SignIn, AcceptInvitation, GoogleCallback, ResetPassword } from '~/pages'
 import { createRoute } from '../factories/createRoute'
 import { BasePageLayout } from '~/components'
 import { DASHBOARD_ROUTES } from './dashboard'
 import RequestDemo from '~/pages/RequestDemo'
-import ResetPassword from '~/pages/ResetPassword'
-import AuthCallback from '~/pages/Auth/Callback'
 
 export const APP_ROUTES = {
   HOME: createRoute({ path: '/' }),
@@ -40,7 +37,7 @@ export const router = createBrowserRouter([
     path: APP_ROUTES.GOOGLE_CALLBACK.path,
     element: (
       // <ProtectedRoute guestOnly>
-      <AuthCallback />
+      <GoogleCallback />
       // </ProtectedRoute>
     ),
   },

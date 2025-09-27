@@ -14,10 +14,9 @@ import {
   Link,
   TextField,
   Typography,
+  styled,
 } from '@mui/material'
-import { styled } from '@mui/material/styles'
-import { GoogleIcon } from '../../../pages/SignIn/CustomIcons'
-import { ForgotPasswordInput, Logo } from '~/components'
+import { ForgotPasswordInput, Logo, GoogleIcon } from '~/components'
 import { loginSchema, type LoginFormData } from '~/lib/schemas/auth.schema'
 import { useAuthStore } from '~/stores/auth.store'
 
@@ -37,7 +36,7 @@ const Card = styled(MuiCard)(({ theme }) => ({
   }),
 }))
 
-const SignInCard = (): JSX.Element => {
+export const SignInCard = (): JSX.Element => {
   const navigate = useNavigate()
   const location = useLocation()
   const { login, loginWithGoogle, error: authError, isLoading, setError } = useAuthStore()
@@ -217,5 +216,3 @@ const SignInCard = (): JSX.Element => {
     </Card>
   )
 }
-
-export default SignInCard

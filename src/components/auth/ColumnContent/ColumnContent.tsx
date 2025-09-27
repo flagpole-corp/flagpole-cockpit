@@ -30,7 +30,7 @@ const items = [
   },
 ]
 
-const Content = (): JSX.Element => {
+export const ColumnContent = (): JSX.Element => {
   return (
     <Stack sx={{ flexDirection: 'column', alignSelf: 'center', gap: 4, maxWidth: 450 }}>
       {items.map((item, index) => (
@@ -49,5 +49,3 @@ const Content = (): JSX.Element => {
     </Stack>
   )
 }
-
-export default Content

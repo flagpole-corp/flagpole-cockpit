@@ -2,34 +2,16 @@ import { useState } from 'react'
 import { useSearchParams, Navigate } from 'react-router-dom'
 import type { Theme } from '@mui/material'
 import { Box, Stack, Button, CardContent, Card, Link, Typography } from '@mui/material'
-import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { FormTextField } from '~/components/forms/FormTextField'
 import { useAcceptInvitation } from '~/lib/api/onboarding'
-import Content from '../SignIn/Content'
 import type { SystemStyleObject } from '@mui/system'
-import { Logo } from '~/components'
+import { Logo, ColumnContent } from '~/components'
+import { acceptInvitationSchema } from './types'
+import type { AcceptInvitationFormData } from './types'
 
-const acceptInvitationSchema = z
-  .object({
-    password: z
-      .string()
-      .min(8, 'Password must be at least 8 characters')
-      .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
-      .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
-      .regex(/[0-9]/, 'Password must contain at least one number')
-      .regex(/[^A-Za-z0-9]/, 'Password must contain at least one special character'),
-    confirmPassword: z.string(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: 'Passwords do not match',
-    path: ['confirmPassword'],
-  })
-
-type AcceptInvitationFormData = z.infer<typeof acceptInvitationSchema>
-
-const AcceptInvitation = (): JSX.Element => {
+export const AcceptInvitation = (): JSX.Element => {
   const [searchParams] = useSearchParams()
   const [isSuccess, setIsSuccess] = useState(false)
   const token = searchParams.get('token')
@@ -97,7 +79,7 @@ const AcceptInvitation = (): JSX.Element => {
         }),
       ]}
     >
-      <Content />
+      <ColumnContent />
       <Card sx={{ height: 'fit-content', my: 'auto' }}>
         <CardContent>
           <Link href="/">
@@ -137,12 +119,9 @@ const AcceptInvitation = (): JSX.Element => {
                 error={!!errors.confirmPassword}
                 helperText={errors.confirmPassword?.message}
               />
-
-              {/* <Stack direction="row" spacing={2} justifyContent="flex-end"> */}
               <Button fullWidth type="submit" variant="contained" disabled={isSubmitting}>
                 {isSubmitting ? 'Setting up...' : 'Set Password'}
               </Button>
-              {/* </Stack> */}
             </Stack>
           </Box>
         </CardContent>
@@ -150,5 +129,3 @@ const AcceptInvitation = (): JSX.Element => {
     </Stack>
   )
 }
-
-export default AcceptInvitation

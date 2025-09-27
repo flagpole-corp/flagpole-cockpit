@@ -1,10 +1,9 @@
 import Stack from '@mui/material/Stack'
-import Content from './Content'
-import SignInCard from '../../components/auth/SignInCard/SignInCard'
+import { ColumnContent, SignInCard } from '~/components'
 import type { Theme } from '@mui/material'
 import type { SystemStyleObject } from '@mui/system'
 
-const SignIn = (): JSX.Element => {
+export const SignIn = (): JSX.Element => {
   return (
     <Stack
       direction="column"
@@ -49,12 +48,10 @@ const SignIn = (): JSX.Element => {
             m: 'auto',
           }}
         >
-          <Content />
+          <ColumnContent />
           <SignInCard />
         </Stack>
       </Stack>
     </Stack>
   )
 }
-
-export default SignIn

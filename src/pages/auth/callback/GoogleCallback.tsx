@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { Box, CircularProgress, Typography, Alert, Card, CardContent, Button } from '@mui/material'
 import { useAuthStore } from '~/stores/auth.store'
 
-const AuthCallback = (): JSX.Element => {
+export const GoogleCallback = (): JSX.Element => {
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
   const { handleGoogleCallback, setError } = useAuthStore()
@@ -222,5 +222,3 @@ const AuthCallback = (): JSX.Element => {
     </Box>
   )
 }
-
-export default AuthCallback
