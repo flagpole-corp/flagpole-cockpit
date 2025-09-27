@@ -1,7 +1,7 @@
 import { lazy, Suspense } from 'react'
 import type { NonIndexRouteConfig } from './config'
 
-const Dashboard = lazy(() => import('~/pages/Dashboard'))
+const Dashboard = lazy(() => import('~/pages/dashboard'))
 const Flags = lazy(() => import('~/pages/Flags'))
 const Projects = lazy(() => import('~/pages/Projects'))
 const Users = lazy(() => import('~/pages/Users'))
