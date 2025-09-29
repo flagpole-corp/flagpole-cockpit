@@ -6,8 +6,7 @@ import { FormTextField } from '~/components/forms/FormTextField'
 import type { RequestDemo as RequestDemoType } from '~/lib/api/request-demo'
 import { requestDemoSchema, useRequestDemo } from '~/lib/api/request-demo'
 import { Form } from '~/components/forms'
-import { Logo } from '~/components'
-import Content from '../SignIn/Content'
+import { Logo, ColumnContent } from '~/components'
 import type { SystemStyleObject } from '@mui/system'
 
 const RequestDemo = (): JSX.Element => {
@@ -81,7 +80,7 @@ const RequestDemo = (): JSX.Element => {
             }),
           ]}
         >
-          <Content />
+          <ColumnContent />
           <Card>
             <CardContent>
               <Link href="/">

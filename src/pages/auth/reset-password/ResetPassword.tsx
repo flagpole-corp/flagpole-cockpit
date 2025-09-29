@@ -24,7 +24,7 @@ const resetPasswordSchema = z
 
 type ResetPasswordFormData = z.infer<typeof resetPasswordSchema>
 
-const ResetPassword = (): JSX.Element => {
+export const ResetPassword = (): JSX.Element => {
   const [searchParams] = useSearchParams()
   const [isSuccess, setIsSuccess] = useState(false)
   const token = searchParams.get('token')
@@ -90,5 +90,3 @@ const ResetPassword = (): JSX.Element => {
     </Box>
   )
 }
-
-export default ResetPassword
