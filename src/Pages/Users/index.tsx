@@ -3,13 +3,11 @@ import { Box, CircularProgress } from '@mui/material'
 import { toast } from 'react-toastify'
 import { useUsers, useDeleteUser } from '~/lib/api/users'
 import { DeleteConfirmationDialog } from '~/components/modals/DeleteConfirmationDialog'
-import { UsersPageHeader } from './UsersPageHeader'
-import { UsersDataGrid } from './UsersDataGrid'
-import { useUserActions } from './hooks/useUserActions'
-import { useUsersTableColumns } from './hooks/useUsersTableColumns'
+import { UsersPageHeader, UsersDataGrid } from './components'
+import { useUserActions, useUsersTableColumns } from './hooks'
 import type { UserToDelete } from './types'
 
-const Users = (): JSX.Element => {
+export const Users = (): JSX.Element => {
   const [userToDelete, setUserToDelete] = useState<UserToDelete | null>(null)
 
   const { data: users, isLoading } = useUsers()

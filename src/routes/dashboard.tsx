@@ -1,10 +1,10 @@
 import { lazy, Suspense } from 'react'
 import type { NonIndexRouteConfig } from './config'
 
-const Dashboard = lazy(() => import('~/pages/dashboard'))
+const Dashboard = lazy(() => import('~/pages/Dashboard'))
 const Flags = lazy(() => import('~/pages/Flags'))
 const Projects = lazy(() => import('~/pages/Projects'))
-const Users = lazy(() => import('~/pages/Users'))
+const Users = lazy(() => import('~/pages/users'))
 const PaymentSuccess = lazy(() => import('~/pages/PaymentSuccess'))
 const PaymentCancel = lazy(() => import('~/pages/PaymentCancel'))
 const Pricing = lazy(() => import('~/pages/Pricing'))
