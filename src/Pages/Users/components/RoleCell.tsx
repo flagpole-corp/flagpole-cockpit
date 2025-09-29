@@ -1,6 +1,6 @@
 import { Chip } from '@mui/material'
 import type { ChipProps } from '@mui/material/Chip'
-import type { BackendInviteUserDto } from './types'
+import type { BackendInviteUserDto } from '../types'
 
 interface RoleCellProps {
   role: BackendInviteUserDto['role']

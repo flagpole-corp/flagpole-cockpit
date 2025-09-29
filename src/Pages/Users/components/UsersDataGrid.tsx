@@ -1,7 +1,7 @@
 import { Stack, Alert } from '@mui/material'
 import { DataGrid } from '@mui/x-data-grid'
 import type { GridColDef } from '@mui/x-data-grid'
-import type { BackendUser } from './types'
+import type { BackendUser } from '../types'
 
 interface UsersDataGridProps {
   users: BackendUser[] | undefined

@@ -2,7 +2,7 @@ import { Box, IconButton } from '@mui/material'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
 import EmailIcon from '@mui/icons-material/Email'
-import type { BackendUser, UserToDelete } from './types'
+import type { BackendUser, UserToDelete } from '../types'
 
 interface UserActionsCellProps {
   user: BackendUser

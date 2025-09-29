@@ -1,8 +1,8 @@
 import type { GridColDef } from '@mui/x-data-grid'
-import { UserActionsCell } from '../UserActionsCell'
-import { ProjectsCell } from '../ProjectsCell'
-import { RoleCell } from '../RoleCell'
-import { StatusCell } from '../StatusCell'
+import { UserActionsCell } from '../components/UserActionsCell'
+import { ProjectsCell } from '../components/ProjectsCell'
+import { RoleCell } from '../components/RoleCell'
+import { StatusCell } from '../components/StatusCell'
 import type { BackendUser, UserToDelete } from '../types'
 
 interface UseUsersTableColumnsProps {

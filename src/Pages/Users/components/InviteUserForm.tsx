@@ -2,7 +2,7 @@ import { Stack } from '@mui/material'
 import type { Control } from 'react-hook-form'
 import { FormTextField } from '~/components/forms/FormTextField'
 import { FormSelect } from '~/components/forms/FormSelect'
-import type { InviteUserFormData, BackendInviteUserDto } from './types'
+import type { InviteUserFormData, BackendInviteUserDto } from '../types'
 
 interface InviteUserFormProps {
   control: Control<InviteUserFormData>
