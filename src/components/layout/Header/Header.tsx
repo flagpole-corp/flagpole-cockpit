@@ -5,12 +5,15 @@ import { MenuButton } from '../../shared/MenuButton/MenuButton'
 import ColorModeIconDropdown from '../../../theming/ColorModeIconDropdown'
 
 import { Typography } from '@mui/material'
+import { useNavigate } from 'react-router-dom'
 
 type HeaderProps = {
   title?: string
 }
 
 export const Header = ({ title }: HeaderProps): JSX.Element => {
+  const navigate = useNavigate()
+
   return (
     <>
       <Stack
@@ -27,7 +30,7 @@ export const Header = ({ title }: HeaderProps): JSX.Element => {
       >
         <NavbarBreadcrumbs />
         <Stack direction="row" sx={{ gap: 1 }}>
-          <MenuButton showBadge aria-label="Open notifications">
+          <MenuButton onClick={(): void => navigate('/activity-logs')} showBadge aria-label="Open notifications">
             <NotificationsRoundedIcon />
           </MenuButton>
           <ColorModeIconDropdown />
