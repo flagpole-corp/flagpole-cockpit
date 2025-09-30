@@ -2,6 +2,8 @@ import { toast } from 'react-toastify'
 import { useDrawer } from '~/contexts/DrawerContext'
 import { Form } from '~/components/forms'
 import { useInviteUser, useUpdateUser, useResendInvitation } from '~/lib/api/users'
+import type { Project } from '~/lib/api/projects'
+import { useProjects } from '~/lib/api/projects'
 import { InviteUserForm } from '../components/InviteUserForm'
 import { EditUserForm } from '../components/EditUserForm'
 import type { BackendUpdateUserDto } from '../types'
@@ -27,18 +29,25 @@ export const useUserActions = (): UseUserActionsReturn => {
   const inviteUser = useInviteUser()
   const updateUser = useUpdateUser()
   const resendInvitation = useResendInvitation()
+  const { data: projects } = useProjects()
 
   const handleInvite = (): void => {
     openDrawer({
       content: (
         <Form<InviteUserFormData>
           onSubmit={async (data): Promise<void> => {
+            // If admin or owner, assign all projects
+            let projectsToAssign = data.projects || []
+            if ((data.role === 'admin' || data.role === 'owner') && projects) {
+              projectsToAssign = projects.map((p) => p._id)
+            }
+
             const inviteData: BackendInviteUserDto = {
               firstName: data.firstName,
               lastName: data.lastName,
               email: data.email,
               role: data.role,
-              projects: data.projects,
+              projects: projectsToAssign,
             }
 
             await inviteUser.mutateAsync(inviteData)
@@ -49,6 +58,7 @@ export const useUserActions = (): UseUserActionsReturn => {
           schema={inviteUserSchema}
           defaultValues={{
             role: 'member' as const,
+            projects: [],
           }}
         >
           {(control): JSX.Element => <InviteUserForm control={control} />}
@@ -59,19 +69,30 @@ export const useUserActions = (): UseUserActionsReturn => {
   }
 
   const handleEdit = (user: BackendUser): void => {
-    const userRole = user.organizations[0]?.role
+    const userRole = user.organizationRole
     if (!userRole || !isValidRole(userRole)) {
       toast.error('Invalid user role detected')
       return
     }
 
+    // Get user's current project IDs
+    const userProjectIds = user.projects?.map((p: Project) => p._id) || []
+
     openDrawer({
       content: (
         <Form<EditUserFormData>
           onSubmit={async (data): Promise<void> => {
+            // If admin or owner, assign all projects
+            let projectsToAssign = data.projects || []
+            if ((data.role === 'admin' || data.role === 'owner') && projects) {
+              projectsToAssign = projects.map((p) => p._id)
+            }
+
             const updateData: BackendUpdateUserDto = {
               role: data.role,
-              projects: data.projects,
+              projects: projectsToAssign,
+              firstName: data.firstName,
+              lastName: data.lastName,
             }
 
             await updateUser.mutateAsync({
@@ -88,6 +109,7 @@ export const useUserActions = (): UseUserActionsReturn => {
             role: userRole as NonNullable<BackendInviteUserDto['role']>,
             firstName: user.firstName,
             lastName: user.lastName,
+            projects: userProjectIds,
           }}
         >
           {(control): JSX.Element => <EditUserForm control={control} />}
@@ -101,8 +123,8 @@ export const useUserActions = (): UseUserActionsReturn => {
     try {
       await resendInvitation.mutateAsync(userId)
       toast.success('Invitation resent successfully')
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error) {
+      // eslint-disable-next-line
+    } catch (error: any) {
       toast.error('Failed to resend invitation')
     }
   }

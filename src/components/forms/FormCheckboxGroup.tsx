@@ -10,6 +10,7 @@ type FormCheckboxGroupProps<T extends FieldValues, K extends Path<T>> = {
     value: string | number | boolean
     label: string
   }>
+  disabled?: boolean
   helperText?: string
 }
 
@@ -19,6 +20,7 @@ export function FormCheckboxGroup<T extends FieldValues, K extends Path<T>>({
   label,
   options,
   helperText,
+  disabled = false,
 }: FormCheckboxGroupProps<T, K>): JSX.Element {
   const {
     field: { value, onChange },
@@ -43,6 +45,7 @@ export function FormCheckboxGroup<T extends FieldValues, K extends Path<T>>({
       <FormGroup>
         {options.map((option) => (
           <FormControlLabel
+            disabled={disabled}
             key={String(option.value)}
             control={
               <Checkbox checked={currentValue.includes(option.value as never)} onChange={handleChange(option.value)} />
