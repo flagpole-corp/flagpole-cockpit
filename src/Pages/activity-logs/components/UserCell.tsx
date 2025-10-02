@@ -1,4 +1,3 @@
-// ~/pages/activity-logs/components/UserCell.tsx
 import { Box, Typography } from '@mui/material'
 
 interface UserCellProps {

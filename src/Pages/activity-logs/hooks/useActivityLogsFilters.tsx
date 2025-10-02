@@ -1,4 +1,3 @@
-// ~/pages/activity-logs/hooks/useActivityLogsFilters.tsx
 import { useProjects } from '~/lib/api/projects'
 import { useUsers } from '~/lib/api/users'
 import type { ActivityLogFilters } from '~/lib/api/activity-logs/types'
@@ -8,7 +7,25 @@ interface UseActivityLogsFiltersProps {
   onFiltersChange: (filters: ActivityLogFilters) => void
 }
 
-export const useActivityLogsFilters = ({ filters, onFiltersChange }: UseActivityLogsFiltersProps): any => {
+interface FilterOption {
+  value: string
+  label: string
+}
+
+interface UseActivityLogsFiltersReturn {
+  filterOptions: {
+    projects: FilterOption[]
+    users: FilterOption[]
+    entityTypes: FilterOption[]
+    actions: FilterOption[]
+  }
+  handleFilterChange: (key: keyof ActivityLogFilters, value: string | number | undefined) => void
+}
+
+export const useActivityLogsFilters = ({
+  filters,
+  onFiltersChange,
+}: UseActivityLogsFiltersProps): UseActivityLogsFiltersReturn => {
   const { data: projects } = useProjects()
   const { data: users } = useUsers()
 
@@ -27,19 +44,21 @@ export const useActivityLogsFilters = ({ filters, onFiltersChange }: UseActivity
 
     entityTypes: [
       { value: 'project', label: 'Project' },
-      { value: 'feature-flag', label: 'Feature Flag' },
-      { value: 'user', label: 'User' },
+      { value: 'feature_flag', label: 'Feature Flag' },
     ],
 
     actions: [
-      { value: 'created', label: 'Created' },
-      { value: 'updated', label: 'Updated' },
-      { value: 'deleted', label: 'Deleted' },
-      { value: 'toggled', label: 'Toggled' },
+      { value: 'feature_flag.created', label: 'Feature Flag Created' },
+      { value: 'feature_flag.updated', label: 'Feature Flag Updated' },
+      { value: 'feature_flag.deleted', label: 'Feature Flag Deleted' },
+      { value: 'feature_flag.toggled', label: 'Feature Flag Toggled' },
+      { value: 'project.created', label: 'Project Created' },
+      { value: 'project.updated', label: 'Project Updated' },
+      { value: 'project.deleted', label: 'Project Deleted' },
     ],
   }
 
-  const handleFilterChange = (key: keyof ActivityLogFilters, value: any): void => {
+  const handleFilterChange = (key: keyof ActivityLogFilters, value: string | number | undefined): void => {
     onFiltersChange({
       ...filters,
       [key]: value,

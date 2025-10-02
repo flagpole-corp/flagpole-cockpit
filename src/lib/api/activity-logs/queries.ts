@@ -1,4 +1,3 @@
-// ~/lib/api/activity-logs/queries.ts
 import type { UseQueryResult } from '@tanstack/react-query'
 import { useQuery } from '@tanstack/react-query'
 import type {
@@ -21,6 +20,7 @@ export const useActivityLogs = (filters: ActivityLogFilters = {}): UseQueryResul
       if (filters.projectId) params.append('projectId', filters.projectId)
       if (filters.entityType) params.append('entityType', filters.entityType)
       if (filters.action) params.append('action', filters.action)
+      if (filters.userId) params.append('userId', filters.userId)
       params.append('limit', (filters.limit || 50).toString())
       params.append('skip', (filters.skip || 0).toString())
 

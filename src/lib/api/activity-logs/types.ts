@@ -1,4 +1,3 @@
-// ~/lib/api/activity-logs/types.ts
 export interface ActivityLog {
   _id: string
   action: string
@@ -18,14 +17,14 @@ export interface ActivityLog {
   metadata?: {
     changes?: Array<{
       field: string
-      oldValue: any
-      newValue: any
+      oldValue: unknown
+      newValue: unknown
     }>
     description?: string
-    initialState?: any
-    memberAdded?: any
-    memberRemoved?: any
-    memberRoleChanged?: any
+    initialState?: unknown
+    memberAdded?: unknown
+    memberRemoved?: unknown
+    memberRoleChanged?: unknown
   }
   createdAt: string
   updatedAt: string
@@ -56,18 +55,20 @@ export interface ActivityLogFilters {
   projectId?: string
   entityType?: string
   action?: string
+  userId?: string
   limit?: number
   skip?: number
 }
 
 export const activityLogKeys = {
   all: ['activity-logs'] as const,
-  lists: () => [...activityLogKeys.all, 'list'] as const,
-  list: (filters: ActivityLogFilters) => [...activityLogKeys.lists(), filters] as const,
-  project: (projectId: string, limit?: number) =>
+  lists: (): readonly ['activity-logs', 'list'] => [...activityLogKeys.all, 'list'] as const,
+  list: (filters: ActivityLogFilters): readonly ['activity-logs', 'list', ActivityLogFilters] =>
+    [...activityLogKeys.lists(), filters] as const,
+  project: (projectId: string, limit?: number): readonly (string | number)[] =>
     [...activityLogKeys.all, 'project', projectId, ...(limit ? [limit] : [])] as const,
-  featureFlag: (flagId: string, limit?: number) =>
+  featureFlag: (flagId: string, limit?: number): readonly (string | number)[] =>
     [...activityLogKeys.all, 'feature-flag', flagId, ...(limit ? [limit] : [])] as const,
-  entity: (entityType: string, entityId: string, limit?: number) =>
+  entity: (entityType: string, entityId: string, limit?: number): readonly (string | number)[] =>
     [...activityLogKeys.all, 'entity', entityType, entityId, ...(limit ? [limit] : [])] as const,
 }
