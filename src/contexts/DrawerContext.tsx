@@ -8,6 +8,7 @@ interface DrawerOptions {
   content: ReactNode
   size?: DrawerSizes
   title?: string
+  or?: string
 }
 
 interface DrawerContextType {

@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react'
 import type { NonIndexRouteConfig } from './config'
 
+const ActivityLogs = lazy(() => import('~/pages/activity-logs'))
 const Dashboard = lazy(() => import('~/pages/dashboard'))
 const Flags = lazy(() => import('~/pages/flags'))
 const Projects = lazy(() => import('~/pages/projects'))
@@ -26,7 +27,6 @@ export const DASHBOARD_ROUTES: NonIndexRouteConfig[] = [
     path: '/flags',
     element: (
       <Suspense fallback={<>Loading...</>}>
-        {' '}
         <Flags />
       </Suspense>
     ),
@@ -36,7 +36,6 @@ export const DASHBOARD_ROUTES: NonIndexRouteConfig[] = [
     path: '/projects',
     element: (
       <Suspense fallback={<>Loading...</>}>
-        {' '}
         <Projects />
       </Suspense>
     ),
@@ -46,7 +45,6 @@ export const DASHBOARD_ROUTES: NonIndexRouteConfig[] = [
     path: '/users',
     element: (
       <Suspense fallback={<>Loading...</>}>
-        {' '}
         <Users />
       </Suspense>
     ),
@@ -56,7 +54,6 @@ export const DASHBOARD_ROUTES: NonIndexRouteConfig[] = [
     path: '/pricing',
     element: (
       <Suspense fallback={<>Loading...</>}>
-        {' '}
         <Pricing />
       </Suspense>
     ),
@@ -66,17 +63,24 @@ export const DASHBOARD_ROUTES: NonIndexRouteConfig[] = [
     path: '/feedback',
     element: (
       <Suspense fallback={<>Loading...</>}>
-        {' '}
         <Feedback />
       </Suspense>
     ),
     title: 'Feedback',
   },
   {
+    path: '/activity-logs',
+    element: (
+      <Suspense fallback={<>Loading...</>}>
+        <ActivityLogs />
+      </Suspense>
+    ),
+    title: 'Activity Logs',
+  },
+  {
     path: '/payment/success',
     element: (
       <Suspense fallback={<>Loading...</>}>
-        {' '}
         <PaymentSuccess />
       </Suspense>
     ),
@@ -86,7 +90,6 @@ export const DASHBOARD_ROUTES: NonIndexRouteConfig[] = [
     path: '/payment/cancel',
     element: (
       <Suspense fallback={<>Loading...</>}>
-        {' '}
         <PaymentCancel />
       </Suspense>
     ),
