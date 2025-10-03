@@ -1,17 +1,16 @@
 import { lazy, Suspense } from 'react'
 import type { NonIndexRouteConfig } from './config'
 
-const ActivityLogs = lazy(() => import('~/pages/activity-logs'))
-const Dashboard = lazy(() => import('~/pages/Dashboard'))
-const Flags = lazy(() => import('~/pages/Flags'))
-const Projects = lazy(() => import('~/pages/Projects'))
+const Dashboard = lazy(() => import('~/pages/dashboard'))
+const Flags = lazy(() => import('~/pages/flags'))
+const Projects = lazy(() => import('~/pages/projects'))
 const Users = lazy(() => import('~/pages/users'))
-const PaymentSuccess = lazy(() => import('~/pages/PaymentSuccess'))
-const PaymentCancel = lazy(() => import('~/pages/PaymentCancel'))
-const Pricing = lazy(() => import('~/pages/Pricing'))
-const Profile = lazy(() => import('~/pages/Profile'))
-const Feedback = lazy(() => import('~/pages/Feedback'))
-const Onboarding = lazy(() => import('~/pages/Onboarding'))
+const PaymentSuccess = lazy(() => import('~/pages/payment-success'))
+const PaymentCancel = lazy(() => import('~/pages/payment-cancel'))
+const Pricing = lazy(() => import('~/pages/pricing'))
+const Profile = lazy(() => import('~/pages/profile'))
+const Feedback = lazy(() => import('~/pages/feedback'))
+const Onboarding = lazy(() => import('~/pages/onboarding'))
 
 export const DASHBOARD_ROUTES: NonIndexRouteConfig[] = [
   {
