@@ -4,7 +4,7 @@ import { SignIn, AcceptInvitation, GoogleCallback, ResetPassword } from '~/pages
 import { createRoute } from '../factories/createRoute'
 import { BasePageLayout } from '~/components'
 import { DASHBOARD_ROUTES } from './dashboard'
-import RequestDemo from '~/pages/RequestDemo'
+import RequestDemo from '~/pages/request-demo'
 
 export const APP_ROUTES = {
   HOME: createRoute({ path: '/' }),
