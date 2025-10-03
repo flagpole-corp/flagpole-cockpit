@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react'
 import type { NonIndexRouteConfig } from './config'
 
+const ActivityLogs = lazy(() => import('~/pages/activity-logs'))
 const Dashboard = lazy(() => import('~/pages/dashboard'))
 const Flags = lazy(() => import('~/pages/flags'))
 const Projects = lazy(() => import('~/pages/projects'))
